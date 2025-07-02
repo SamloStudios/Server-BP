@@ -1,0 +1,44 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "skyblock_scene",
+				"npc_name": "NPC",
+				"text": "Hola mundo",
+				"buttons": [
+					{
+						"name": "Button",
+						"commands": ["/dialogue open @s @initiator skyblock_1st_interaction_pnj", "/summon firework"]
+					}
+				]
+			},
+			{
+				"scene_tag": "skyblock_1st_interaction_pnj",
+				"npc_name": "NPC",
+				"text": "Hello! My dear brother, I have been searching for you. There is a terrible monster fighting us, you must help us survive, after all you ARE a HERO!!! ",
+				"buttons": [
+					{
+						"name": "Ofc",
+						"commands": ["/dialogue open @s @initiator skyblock_scene"]
+					},
+					{
+						"name": "Ofc no!",
+						"commands": ["/dialogue open @s @initiator skyblock_scene_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "skyblock_scene_2",
+				"npc_name": "NPC",
+				"text": "HAHA HAHAHAHHA YOu HAVE FALLEN INTO MY TRAP MWAHAHAHAH!!!\nIm THE MONSTER!!!",
+				"buttons": [
+					{
+						"name": "Button",
+						"commands": ["/dialogue open @s @initiator skyblock_scene_2", "/say LOLAMENTO NOOB"]
+					}
+				]
+			}
+		]
+	}
+}

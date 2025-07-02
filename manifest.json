@@ -1,0 +1,46 @@
+{
+	"format_version": 2,
+	"header": {
+		"name": "SERVER BP",
+		"description": "SERVER Behavior Pack",
+		"uuid": "36600586-4414-a266-6862-cd7140b29433",
+		"version": [1, 0, 0],
+		"min_engine_version": [1, 16, 0]
+	},
+	"metadata": {
+		"authors": ["Samlo"],
+		"generated_with": {
+			"blockbench_entity_wizard": ["1.7.0"],
+			"blockbench_item_wizard": ["1.2.0"]
+		}
+	},
+	"modules": [
+		{
+			"description": "Behavior",
+			"version": [1, 0, 0],
+			"uuid": "2ceada67-a607-39ba-0342-c524273591fc",
+			"type": "data"
+		},
+		{
+			"description": "Scripting",
+			"version": [1, 0, 0],
+			"uuid": "878aedce-fca8-4d84-8650-645c4dcde5f5",
+			"type": "script",
+			"entry": "scripts/main.js"
+		}
+	],
+	"dependencies": [
+		{
+			"uuid": "a3b6b85b-bf57-86e2-c93d-fbecc7fe70d6",
+			"version": [1, 0, 5]
+		},
+		{
+			"module_name": "@minecraft/server",
+			"version": "2.1.0-beta"
+		},
+		{
+			"module_name": "@minecraft/server-ui",
+			"version": "2.1.0-beta" 
+		}
+	]
+}

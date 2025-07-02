@@ -1,0 +1,13 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "security:keyRecipe"
+        },
+        "tags": [
+            "campfire"
+        ],
+        "input": "foundry:keyShapedMold",
+        "output": "security:key"
+    }
+}

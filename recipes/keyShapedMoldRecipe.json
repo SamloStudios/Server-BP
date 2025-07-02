@@ -1,0 +1,30 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "foundry:keyShapedMoldRecipe"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "GPP",
+            " # "
+        ],
+        "key": {
+            "#": {
+                "item": "foundry:clayMold"
+            },
+            "G": {
+                "item": "minecraft:gold_ingot"
+            },
+            "P": {
+                "item": "minecraft:gold_nugget"
+            }
+        },
+        "result": {
+            "item": "foundry:keyShapedMold",
+            "count": 1
+        }
+    }
+}
