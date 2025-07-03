@@ -441,9 +441,13 @@ world.beforeEvents.chatSend.subscribe((event) => {
     if (message === "!update") {
         if (!isAdmin(player)) return;
         world.sendMessage("§d§lINTENTANDO ACTUALIZAR EL MUNDO EN 10seg");
-        system.runTimeout(()=>{
-            console.log("@$update")
+        system.runTimeout(()=> {
+            player.runCommand("kick @a '§aEl server se esta actualizando...'");
         }, 10*20);
+        system.runTimeout(()=> {
+            console.log("@$update");
+        }, 10*20 + 20);
+        return;
     }
 
     event.cancel = false; // Prevent the message from being sent to the chat
