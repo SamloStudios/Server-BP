@@ -103,7 +103,6 @@ world.beforeEvents.chatSend.subscribe((event) => {
         };
 
         const newHome =  JSON.stringify(newHomeData); // homeData -> JSON homeData
-        print(newHome);
 
         player.setDynamicProperty(`home`, newHome); // Save the home
         player.sendMessage(`§aTu casa ha sido registrada exitosamente. ${player.name}, ${pos.x}, ${pos.y}, ${pos.z}`);
@@ -229,8 +228,7 @@ world.beforeEvents.chatSend.subscribe((event) => {
     }
 
     if (message === "!cleardp") {
-        let tags = player.getTags();
-        if (!tags.includes("admin")) return; //VALIDATION
+        if (!isAdmin(player)) return; //VALIDATION
 
         player.sendMessage("§gTodas las propiedades del mundo han sido eliminadas")
         world.clearDynamicProperties();
@@ -238,8 +236,7 @@ world.beforeEvents.chatSend.subscribe((event) => {
     }
 
     if (message === "!clearmydp") {
-        let tags = player.getTags();
-        if (!tags.includes("admin")) return; //VALIDATION
+        if (!isAdmin(player)) return; //VALIDATION
 
         player.sendMessage("§gTodas tus propiedades dinamicas han sido eliminadas")
         player.clearDynamicProperties();
@@ -247,8 +244,7 @@ world.beforeEvents.chatSend.subscribe((event) => {
     }
 
     if (message.startsWith("!setplayerdp")) {
-        let tags = player.getTags();
-        if (!tags.includes("admin")) {
+        if (!isAdmin(player)) {
             player.sendMessage("§cNo tienes permiso para usar este comando.");
             return; // VALIDATION: Solo admins pueden usar este comando
         }
@@ -298,8 +294,7 @@ world.beforeEvents.chatSend.subscribe((event) => {
     }
 
     if (message.startsWith("!owner")) {
-        let tags = player.getTags();
-        if (!tags.includes("admin")) return; //VALIDATION
+        if (!isAdmin(player)) return;
 
         const args = message.split(' ');
         let newOwner;
@@ -443,9 +438,23 @@ world.beforeEvents.chatSend.subscribe((event) => {
         return;
     }
 
+    if (message === "!update") {
+        if (!isAdmin(player)) return;
+        world.sendMessage("§d§lINTENTANDO ACTUALIZAR EL MUNDO EN 10seg");
+        system.runTimeout(()=>{
+            console.log("@$update")
+        }, 10*20);
+    }
+
     event.cancel = false; // Prevent the message from being sent to the chat
     player.sendMessage(`§eComando no reconocido. Usa !help para ver la lista de comandos disponibles.`);
 })
+
+function isAdmin(player) {
+    let tags = player.getTags();
+    if (!tags.includes("admin")) return false; //VALIDATION
+    else return true;
+}
 
 function getPlayerWarpC(player){
     let wCount = player.getDynamicProperty("warp:count");
