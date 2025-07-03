@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.80", 
+  "minecraft:item": {
+    "description": {
+      "identifier": "debug:stick",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "stick",
+      "minecraft:display_name": {
+        "value": "Debug Stick"
+      },
+      "minecraft:custom_components": [
+        "utils:stick"
+      ]
+    }
+  }
+}

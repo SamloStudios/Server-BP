@@ -2,6 +2,7 @@ import { system, world, Player, ItemComponentRegistry, EquipmentSlot, ItemTypes}
 import { getChestOwner, setChestOwner } from 'utils/ownershipUtils.js'
 import { displayActionBar } from 'utils/displayUtils.js'
 import { ActionFormData } from '@minecraft/server-ui'; // Importar ActionForm para la GUI
+import { DebugStick } from './Components/debugStick';
 
 system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
     itemComponentRegistry.registerCustomComponent(
@@ -11,6 +12,10 @@ system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
     itemComponentRegistry.registerCustomComponent(
         "custom:security_disabler",
         SecurityDisabler
+    );
+    itemComponentRegistry.registerCustomComponent(
+        "utils:stick",
+        DebugStick
     );
 });
 
