@@ -445,7 +445,7 @@ world.beforeEvents.chatSend.subscribe((event) => {
             player.runCommand("kick @a '§aEl server se esta actualizando...'");
         }, 10*20);
         system.runTimeout(()=> {
-            console.log("@$update");
+            console.log("@$update36457");
         }, 10*20 + 20);
         return;
     }
