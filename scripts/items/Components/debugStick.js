@@ -7,21 +7,11 @@ export const DebugStick = {
     onUseOn(event) {
         const { itemStack, block, source } = event;
 
-        // The itemStack.typeId check is no longer strictly necessary here
-        // because this 'onUseOn' method is *only* invoked if the item has
-        // the 'utils:stick' custom component.
-        // However, if you want to ensure it's specifically 'debug:stick' and not another item
-        // that somehow also uses 'utils:stick', you could keep it. For this context, it's fine without.
-        // if (itemStack.typeId === 'debug:stick') { // Removed as redundant given component registration
-
-        // Prevent the default action of the stick (e.g., placing the stick itself)
-        event.cancel = true;
-
         const player = source;
         const blockLocation = block.location;
 
-        let debugInfo = `--- Block Debug Info ---\n`;
-        debugInfo += `Type: ${block.typeId}\n`;
+        let debugInfo = `§a--- Block Debug Info ---\n`;
+        debugInfo += `§gType: §c${block.typeId}§g\n`;
         debugInfo += `Location: X:${blockLocation.x}, Y:${blockLocation.y}, Z:${blockLocation.z}\n`;
 
         // Get block properties/states (these are "Vanilla Block States" and custom block states)
@@ -29,19 +19,43 @@ export const DebugStick = {
 
             const blockPermutation = block.permutation;
             if (blockPermutation) {
-                debugInfo += `States:\n`;
-                // Use Map.prototype.entries() explicitly if getAllStates() isn't returning
-                // an iterable that 'for...of' expects for direct destructuring.
-                // However, getAllStates() *should* return a Map, which is iterable by default.
-                // Let's ensure we are getting the values correctly.
+            // STEP 1: Get ALL states as a plain JavaScript object
+            const allBlockStatesObject = blockPermutation.getAllStates(); 
+            print(JSON.stringify(blockPermutation.getAllStates()))
+            // 'allBlockStatesObject' is now an object like { "wood_type": "spruce", ... }
 
-                const statesMap = JSON.stringify(blockPermutation.getAllStates()); // This returns a Map<string, any>
+            debugInfo += `States:\n`;
 
-                debugInfo += `  - JSON: ${statesMap}\n`;
-                
+            // Check if the object has any properties
+            const stateKeys = Object.keys(allBlockStatesObject);
+            if (stateKeys.length === 0) {
+                debugInfo += `  (No specific states for this block permutation)\n`;
+            } else {
+                // STEP 2: Iterate over the object's entries using Object.entries()
+                for (const [key, value] of Object.entries(allBlockStatesObject)) { 
+                    debugInfo += `  - ${key}: ${value}\n`;
+                }
+
+                // STEP 3: Now, to specifically get a furnace's orientation:
+                // Access properties using bracket notation, not .get()
+                const cardinalDirectionKey = 'minecraft:cardinal_direction';
+                if (Object.prototype.hasOwnProperty.call(allBlockStatesObject, cardinalDirectionKey)) {
+                    const orientationValue = allBlockStatesObject[cardinalDirectionKey];
+                    // 'orientationValue' is now the string (e.g., "north", "south")
+                    debugInfo += `  Specific Orientation (cardinal): ${orientationValue}\n`;
+                } else {
+                    debugInfo += `  'minecraft:cardinal_direction' state not found.\n`;
+                }
+
+                const genericDirectionKey = 'direction'; // For older or custom blocks
+                if (Object.prototype.hasOwnProperty.call(allBlockStatesObject, genericDirectionKey)) {
+                    const orientationValue = allBlockStatesObject[genericDirectionKey];
+                    debugInfo += `  Specific Orientation (generic direction): ${orientationValue}\n`;
+                }
             }
-
-// ...
+        } else {
+            debugInfo += `Block Permutation is null or undefined.\n`;
+        }
 
         // Get NBT-like data for Block Entities (e.g., Chests, Furnaces, Signs)
         try {
