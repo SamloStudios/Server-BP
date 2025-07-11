@@ -1,8 +1,8 @@
-import { system, world, Player, ItemComponentRegistry, EquipmentSlot, ItemTypes} from '@minecraft/server'
+import { system, Player, EquipmentSlot} from '@minecraft/server'
 import { getChestOwner, setChestOwner } from 'utils/ownershipUtils.js'
 import { displayActionBar } from 'utils/displayUtils.js'
 import { ActionFormData } from '@minecraft/server-ui'; // Importar ActionForm para la GUI
-import { DebugStick } from './Components/debugStick';
+import { DebugStick } from './admin/debugStick';
 
 system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
     itemComponentRegistry.registerCustomComponent(

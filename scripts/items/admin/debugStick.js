@@ -9,6 +9,9 @@ export const DebugStick = {
 
         const player = source;
         const blockLocation = block.location;
+        const below = {x: blockLocation.x, y: blockLocation.y-5, z: blockLocation.z}
+
+        // world.getDimension("overworld").placeFeature("minecraft:pagoda", blockLocation, true);
 
         let debugInfo = `§a--- Block Debug Info ---\n`;
         debugInfo += `§gType: §c${block.typeId}§g\n`;
@@ -20,8 +23,7 @@ export const DebugStick = {
             const blockPermutation = block.permutation;
             if (blockPermutation) {
             // STEP 1: Get ALL states as a plain JavaScript object
-            const allBlockStatesObject = blockPermutation.getAllStates(); 
-            print(JSON.stringify(blockPermutation.getAllStates()))
+            const allBlockStatesObject = blockPermutation.getAllStates();
             // 'allBlockStatesObject' is now an object like { "wood_type": "spruce", ... }
 
             debugInfo += `States:\n`;

@@ -1,9 +1,10 @@
 // BLOCK EVENTS --------
 import "blockEventsHandler.js";
-import "explosion/beforeExplosion.js"
+import "blockEvents/explosion/beforeExplosion.js"
 
 // ITEMS --------
-import "items/itemComponents.js";
+import "items/securityComponents.js";
+import "items/drinksComponents.js"
 
 // BOT --------
 import "bot/botCommands.js";

@@ -11,7 +11,7 @@
       "minecraft:max_stack_size": 1,
       "minecraft:icon": "stick",
       "minecraft:display_name": {
-        "value": "Debug Stick"
+        "value": "§aDebug Stick"
       },
       "minecraft:custom_components": [
         "utils:stick"

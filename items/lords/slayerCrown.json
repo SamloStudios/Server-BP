@@ -1,0 +1,21 @@
+{
+	"format_version": "1.21.80",
+	"minecraft:item": {
+		"description": {
+			"identifier": "dragons:slayerCrown",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dragon_slayer_crown",
+			"minecraft:glint": true,
+			"minecraft:wearable": {
+				"slot": "slot.armor.head",
+				"protection": 5
+			},
+            "minecraft:should_despawn": false
+		}
+	}
+}

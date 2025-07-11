@@ -1,0 +1,76 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "custom:transmutation_table",
+			"menu_category": {
+				"category": "items"
+			},
+			"states": {
+				"custom:is_cursed" : [true, false],
+				"custom:color" : ["none", "green", "red", "blue"],
+				"custom:upgrade" : [0, 1, 2, 3]
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Mesa de transmutación",
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 9.38,
+				"item_specific_speeds": [
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:wooden_tier')"
+						},
+						"destroy_speed": 1.44
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:stone_tier')"
+						},
+						"destroy_speed": 0.75
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:iron_tier')"
+						},
+						"destroy_speed": 0.5
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:golden_tier')"
+						},
+						"destroy_speed": 0.25
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:diamond_tier')"
+						},
+						"destroy_speed": 0.38
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:netherite_tier')"
+						},
+						"destroy_speed": 0.31
+					}
+				]
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 30
+			},
+			"minecraft:geometry": "geometry.mesa_transmutacion",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "transmutation_table_blue",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:map_color": "#757575"
+		},
+		"permutations": [
+			
+		]
+	}
+}

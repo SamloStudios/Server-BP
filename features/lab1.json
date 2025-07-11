@@ -1,0 +1,29 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "minecraft:lab1"
+        },
+        "structure_name": "mystructure:lab1",
+        "adjustment_radius": 16,
+        "constraints": {
+            "grounded": {},
+            "block_intersection": {
+                "block_allowlist": [
+                    "minecraft:air",
+                    "minecraft:diorite",
+                    "minecraft:granite",
+                    "minecraft:andesite",
+                    "minecraft:gravel",
+					"minecraft:stone",
+					"minecraft:dirt",
+					"minecraft:grass_block"
+                ],
+                "block_whitelist": [
+                    "minecraft:air"
+                ]
+            }
+        },
+        "facing_direction": "random"
+    }
+}

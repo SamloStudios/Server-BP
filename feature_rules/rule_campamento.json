@@ -1,0 +1,62 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:feature_rules": {
+        "description": {
+            "identifier": "minecraft:rule_campamento",
+            "places_feature": "minecraft:campamento"
+        },
+        "conditions": {
+          "placement_pass": "before_surface_pass",
+          "minecraft:biome_filter": [
+            {
+              "any_of": [
+                {
+                  "test": "has_biome_tag",
+                  "operator": "==",
+                  "value": "taiga"
+                },
+                {
+                  "test": "has_biome_tag",
+                  "operator": "==",
+                  "value": "cold"
+                }
+              ]
+            },
+            {
+              "all_of": [
+                {
+                  "test": "has_biome_tag",
+                  "operator": "!=",
+                  "value": "river"
+                },
+                {
+                  "test": "has_biome_tag",
+                  "operator": "!=",
+                  "value": "frozen_river"
+                },
+                {
+                  "test": "has_biome_tag",
+                  "operator": "!=",
+                  "value": "ocean"
+                }
+              ]
+            }
+          ]
+        },
+        
+
+        "distribution": {
+          "iterations": 1,
+          "scatter_chance": "(0.8)",
+          "x": {
+            "extent": [0, 15],
+            "distribution": "uniform"
+          },
+          "y": "query.heightmap(variable.worldx, variable.worldz) -1",
+          "z": {
+            "extent": [0, 15],
+            "distribution": "uniform"
+          }
+        }
+     }
+}

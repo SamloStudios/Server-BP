@@ -1,0 +1,20 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "minecraft:hongo_grande2"
+        },
+        "structure_name": "mystructure:hongo_grande2",
+        "adjustment_radius": 5,
+        "constraints": {
+            "grounded": {},
+            "block_intersection": {
+                "block_allowlist": [
+                    "minecraft:air",
+					"minecraft:end_stone"
+                ]
+            }
+        },
+        "facing_direction": "random"
+    }
+}

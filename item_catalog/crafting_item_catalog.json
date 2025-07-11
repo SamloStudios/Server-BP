@@ -1,0 +1,52 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:crafting_items_catalog": {
+        "categories": [
+            {
+                "category_name": "items",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "drinks:vodka_glassmug",
+                            "name": "Bandits: Bandit Drinks"
+                        },
+                        "items": [
+                            "drinks:beer_glassmug",
+                            "drinks:vodka_glassmug"
+                        ]
+                    }
+                ]
+            },
+            {
+                "category_name": "items",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "foundry:keyShapedMold",
+                            "name": "Foundry: Molds"
+                        },
+                        "items": [
+                            "foundry:keyShapedMold",
+                            "foundry:lockpickShapedMold"
+                        ]
+                    }
+                ]
+            },
+            {
+                "category_name": "items",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "security:key",
+                            "name": "Security: Utils"
+                        },
+                        "items": [
+                            "security:key",
+                            "security:lockpick"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

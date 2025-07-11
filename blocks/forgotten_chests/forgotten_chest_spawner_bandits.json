@@ -2,7 +2,7 @@
 	"format_version": "1.21.50",
 	"minecraft:block": {
 		"description": {
-			"identifier": "custom:forgotten_chest_spawner",
+			"identifier": "custom:forgotten_chest_spawner_bandits",
 			"menu_category": {
 				"category": "construction"
 			},
@@ -62,13 +62,13 @@
 			"minecraft:geometry": "geometry.forgotten_chest_spawner",
 			"minecraft:material_instances": {
 				"*": {
-					"texture": "forgotten_chest",
+					"texture": "forgotten_chest_bandits",
 					"render_method": "opaque"
 				}
 			},
 			"minecraft:light_emission": 6,
 			"minecraft:map_color": "#757575",
-			"minecraft:loot": "loot_tables/blocks/forgotten_chest_spawner.json"
+			"minecraft:loot": "loot_tables/blocks/nothing.json"
 		},
 		"permutations": [
 			{

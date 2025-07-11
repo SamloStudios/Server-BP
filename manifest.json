@@ -5,7 +5,7 @@
 		"description": "SERVER Behavior Pack",
 		"uuid": "36600586-4414-a266-6862-cd7140b29433",
 		"version": [1, 0, 0],
-		"min_engine_version": [1, 16, 0]
+		"min_engine_version": [1, 21, 90]
 	},
 	"metadata": {
 		"authors": ["Samlo"],
