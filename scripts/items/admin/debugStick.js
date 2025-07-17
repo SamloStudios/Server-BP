@@ -1,5 +1,6 @@
 // debug_stick_component.js (or whatever you name this file)
-import { system, BlockPermutation, world } from '@minecraft/server'; // Add 'world' import
+import { system, world } from '@minecraft/server'; // Add 'world' import
+// import { getChestOwner } from "utils/ownershipUtils.js"
 
 export const DebugStick = {
     // The onUseOn method is automatically called when an item with this custom component
@@ -24,6 +25,7 @@ export const DebugStick = {
             if (blockPermutation) {
             // STEP 1: Get ALL states as a plain JavaScript object
             const allBlockStatesObject = blockPermutation.getAllStates();
+            // print(JSON.stringify(allBlockStatesObject));
             // 'allBlockStatesObject' is now an object like { "wood_type": "spruce", ... }
 
             debugInfo += `States:\n`;
@@ -39,21 +41,21 @@ export const DebugStick = {
                 }
 
                 // STEP 3: Now, to specifically get a furnace's orientation:
-                // Access properties using bracket notation, not .get()
-                const cardinalDirectionKey = 'minecraft:cardinal_direction';
-                if (Object.prototype.hasOwnProperty.call(allBlockStatesObject, cardinalDirectionKey)) {
-                    const orientationValue = allBlockStatesObject[cardinalDirectionKey];
-                    // 'orientationValue' is now the string (e.g., "north", "south")
-                    debugInfo += `  Specific Orientation (cardinal): ${orientationValue}\n`;
-                } else {
-                    debugInfo += `  'minecraft:cardinal_direction' state not found.\n`;
-                }
+                // Access properties using bracket notation, not .get() CASE 1
+                // const cardinalDirectionKey = 'minecraft:cardinal_direction';
+                // if (Object.prototype.hasOwnProperty.call(allBlockStatesObject, cardinalDirectionKey)) {
+                //     const orientationValue = allBlockStatesObject[cardinalDirectionKey];
+                //     // 'orientationValue' is now the string (e.g., "north", "south")
+                //     debugInfo += `  Specific Orientation (cardinal): ${orientationValue}\n`;
+                // } else {
+                //     debugInfo += `  'minecraft:cardinal_direction' state not found.\n`;
+                // }
 
-                const genericDirectionKey = 'direction'; // For older or custom blocks
-                if (Object.prototype.hasOwnProperty.call(allBlockStatesObject, genericDirectionKey)) {
-                    const orientationValue = allBlockStatesObject[genericDirectionKey];
-                    debugInfo += `  Specific Orientation (generic direction): ${orientationValue}\n`;
-                }
+                // const genericDirectionKey = 'minecraft:block_face'; // For older or custom blocks CASE 2
+                // if (Object.prototype.hasOwnProperty.call(allBlockStatesObject, genericDirectionKey)) {
+                //     const orientationValue = allBlockStatesObject[genericDirectionKey];
+                //     debugInfo += `  Specific Orientation (generic direction): ${orientationValue}\n`;
+                // }
             }
         } else {
             debugInfo += `Block Permutation is null or undefined.\n`;
@@ -100,25 +102,11 @@ export const DebugStick = {
             debugInfo += `Error getting inventory: ${e.message}\n`;
         }
 
-
-        // For custom blocks, you might have custom components defined in their JSON.
-        try {
-            // Example for a custom component you might define on a block
-            const customValueComponent = block.getComponent("my_mod:custom_value");
-            if (customValueComponent) {
-                // Assuming 'my_mod:custom_value' component has a 'value' property
-                debugInfo += `Custom Block Value: ${customValueComponent.value}\n`;
-            }
-        } catch (e) {
-            // This catch block is important because getComponent throws if the component doesn't exist.
-            // console.warn(`Block does not have 'my_mod:custom_value' component.`);
-        }
-
         // Other common block properties
         debugInfo += `Is Air: ${block.isAir}\n`;
         debugInfo += `Is Waterloggable: ${block.isWaterloggable}\n`;
         debugInfo += `Dimension: ${block.dimension.id}\n`;
-        debugInfo += `Permutation Hash: ${blockPermutation ? blockPermutation.permutationHash : 'N/A'}\n`;
+        
 
 
         // Send all gathered information to the player's chat

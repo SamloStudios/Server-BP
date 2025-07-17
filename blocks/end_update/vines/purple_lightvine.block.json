@@ -1,0 +1,102 @@
+{
+	"format_version": "1.21.60",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:purple_lightvine",
+			"menu_category": {
+				"category": "nature"
+			},
+			"states": {
+				"custom:role" : ["top", "middle", "root"]
+			}
+		},
+		"components": {
+			"minecraft:custom_components": [
+				"custom:purple_lightvine_block"
+			],
+			"minecraft:tick": {
+				"interval_range": [
+					30, 32
+				]
+			},
+			"minecraft:collision_box": {
+				"origin": [-4, 0, -4],
+				"size": [8, 16, 8]
+			},
+			"minecraft:selection_box": {
+				"origin": [-4, 0, -4],
+				"size": [8, 16, 8]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 0
+			},
+			"minecraft:geometry": "geometry.purple_lightvine_normal",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "purple_lightvine_middle",
+					"render_method": "alpha_test",
+					"ambient_occlusion": false,
+					"face_dimming": false
+				}
+			},
+			"minecraft:light_emission": 15,
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#beff00",
+			"minecraft:liquid_detection": {
+				"detection_rules": [
+					{
+						"liquid_type": "water",
+						"on_liquid_touches": "popped"
+					}
+				]
+			}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('custom:role') == 'middle'",
+				"components": {
+					"minecraft:geometry": "geometry.purple_lightvine_normal",
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "purple_lightvine_middle",
+							"render_method": "alpha_test",
+							"ambient_occlusion": false,
+							"face_dimming": false
+						}
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('custom:role') == 'root'",
+				"components": {
+					"minecraft:geometry": "geometry.purple_lightvine_normal",
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "purple_lightvine_root",
+							"render_method": "alpha_test",
+							"ambient_occlusion": false,
+							"face_dimming": false
+						}
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('custom:role') == 'top'",
+				"components": {
+					"minecraft:geometry": "geometry.purple_lightvine_top",
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "purple_lightvine_top",
+							"render_method": "alpha_test",
+							"ambient_occlusion": false,
+							"face_dimming": false
+						}
+					}
+				}
+			}
+		]
+	}
+}

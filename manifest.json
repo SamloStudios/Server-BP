@@ -11,7 +11,8 @@
 		"authors": ["Samlo"],
 		"generated_with": {
 			"blockbench_entity_wizard": ["1.7.0"],
-			"blockbench_item_wizard": ["1.2.0"]
+			"blockbench_item_wizard": ["1.2.0"],
+			"blockbench_block_wizard": ["1.4.1"]
 		}
 	},
 	"modules": [
@@ -40,7 +41,7 @@
 		},
 		{
 			"module_name": "@minecraft/server-ui",
-			"version": "2.1.0-beta" 
+			"version": "2.1.0-beta"
 		}
 	]
 }

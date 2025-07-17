@@ -54,16 +54,8 @@
 			"minecraft:destructible_by_explosion": {
 				"explosion_resistance": 3
 			},
-			"minecraft:geometry": "geometry.purple_fungus_block",
-			"minecraft:material_instances": {
-				"*": {
-					"texture": "purple_fungus_block",
-					"face_dimming": false,
-					"ambient_occlusion": false,
-					"render_method": "opaque"
-				}
-			},
-			"minecraft:light_emission": 15,
+			"minecraft:light_emission": 10,
+			"minecraft:light_dampening": 15,
 			"minecraft:map_color": "#6977ff"
 		}
 	}

@@ -1,8 +1,8 @@
-import { Player, system, world} from '@minecraft/server';
+import { world} from '@minecraft/server';
 import { beforePlayerInteraction } from './blockEvents/beforeInteraction.js'
-import { beforePlayerPlaceBlock } from './blockEvents/beforePlaceBlock';
-import { afterPlayerPlaceBlock } from './blockEvents/afterPlaceBlock';
-import { beforePlayerBreakBlock } from './blockEvents/beforeBreakBlock';
+import { beforePlayerPlaceBlock } from './blockEvents/beforePlaceBlock.js';
+import { afterPlayerPlaceBlock } from './blockEvents/afterPlaceBlock.js';
+import { beforePlayerBreakBlock } from './blockEvents/beforeBreakBlock.js';
 
 world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
     beforePlayerInteraction(event);

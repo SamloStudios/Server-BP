@@ -1,6 +1,7 @@
 // BLOCK EVENTS --------
-import "blockEventsHandler.js";
-import "blockEvents/explosion/beforeExplosion.js"
+import "blocks/blockEventsHandler.js";
+import "blocks/blockComponentsHandler.js"
+import "blocks/blockEvents/explosion/beforeExplosion.js"
 
 // ITEMS --------
 import "items/securityComponents.js";

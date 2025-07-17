@@ -5,7 +5,7 @@
             "identifier": "minecraft:lab1"
         },
         "structure_name": "mystructure:lab1",
-        "adjustment_radius": 16,
+        "adjustment_radius": 10,
         "constraints": {
             "grounded": {},
             "block_intersection": {

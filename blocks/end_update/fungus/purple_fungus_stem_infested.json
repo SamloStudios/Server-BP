@@ -1,18 +1,25 @@
 {
-	"format_version": "1.21.70",
+	"format_version": "1.21.90",
 	"minecraft:block": {
 		"description": {
-			"identifier": "endupdate:purple_fungus_stem",
+			"identifier": "endupdate:purple_fungus_stem_infested",
 			"menu_category": {
 				"category": "nature"
 			},
 			"traits": {
 				"minecraft:placement_position": {
-					"enabled_states": ["minecraft:block_face"]
+					"enabled_states": [
+						"minecraft:block_face"
+					]
 				}
+			},
+			"states": {
+				"custom:variant" : [0, 1]
 			}
 		},
 		"components": {
+			"custom:purple_fungus_stem_infested_block" : {},
+		 	"minecraft:loot": "loot_tables/nothing.json",
 			"minecraft:collision_box": true,
 			"minecraft:selection_box": true,
 			"minecraft:destructible_by_mining": {
@@ -56,32 +63,31 @@
 					}
 				]
 			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
 			"minecraft:geometry" : {
 				"identifier": "geometry.block",
 				"culling": "block:render_rules"
 			},
-			"minecraft:destructible_by_explosion": {
-				"explosion_resistance": 200
-			},
 			"minecraft:material_instances": {
 				"*" : {
-					"texture": "purple_fungus_stem_side",
-					"render_method": "opaque"
+					"texture": "purple_fungus_stem_infested1",
+					"isotropic": false
 				},
-				"up" : {
+				"up": {
 					"texture": "purple_fungus_stem_top",
-					"isotropic": true,
-					"render_method": "opaque"
+					"isotropic": true
 				},
-				"down" : {
+				"down": {
 					"texture": "purple_fungus_stem_top",
-					"isotropic": true,
-					"render_method": "opaque"
+					"isotropic": true
 				}
 			},
 			"minecraft:light_emission": 4,
 			"minecraft:light_dampening": 15,
-			"minecraft:map_color": "#ffffff"
+			"minecraft:map_color": "#ffffff",
+			"minecraft:display_name": "Tallo de hongo purpura infestado"
 		},
 		"permutations": [
 			{
@@ -105,6 +111,42 @@
 				"components": {
 					"minecraft:transformation": {
 						"rotation": [90, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('custom:variant') == 0",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "purple_fungus_stem_infested1"
+						},
+						"up": {
+							"texture": "purple_fungus_stem_top",
+							"isotropic": true
+						},
+						"down": {
+							"texture": "purple_fungus_stem_top",
+							"isotropic": true
+						}
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('custom:variant') == 1",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "purple_fungus_stem_infested2"
+						},
+						"up": {
+							"texture": "purple_fungus_stem_top",
+							"isotropic": true
+						},
+						"down": {
+							"texture": "purple_fungus_stem_top",
+							"isotropic": true
+						}
 					}
 				}
 			}

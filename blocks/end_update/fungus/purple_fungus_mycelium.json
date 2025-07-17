@@ -57,11 +57,14 @@
 				"*": {
 					"texture": "purple_fungus_gils",
 					"render_method": "opaque",
-					"face_dimming": false,
-					"ambient_occlusion": false
+					"face_dimming": true,
+					"ambient_occlusion": true
 				}
 			},
-			"minecraft:map_color": "#ffcd17"
+			"minecraft:flammable": true,
+			"minecraft:friction": 0.1,
+			"minecraft:light_dampening": 15,
+			"minecraft:map_color": "#00000f"
 		}
 	}
 }

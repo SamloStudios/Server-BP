@@ -42,12 +42,12 @@
 
         "distribution": {
           "iterations": 1,
-          "scatter_chance": "(0.2)",
+          "scatter_chance": "(0.15)",
           "x": {
             "extent": [0, 15],
             "distribution": "uniform"
           },
-          "y": "query.heightmap(variable.worldx, variable.worldz)+50",
+          "y": "query.heightmap(variable.worldx, variable.worldz)+ 40 + math.round(math.random(0, 30))",
           "z": {
             "extent": [0, 15],
             "distribution": "uniform"

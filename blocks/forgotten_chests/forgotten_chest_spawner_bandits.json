@@ -68,7 +68,7 @@
 			},
 			"minecraft:light_emission": 6,
 			"minecraft:map_color": "#757575",
-			"minecraft:loot": "loot_tables/blocks/nothing.json"
+			"minecraft:loot": "loot_tables/nothing.json"
 		},
 		"permutations": [
 			{
