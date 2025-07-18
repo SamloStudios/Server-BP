@@ -16,7 +16,7 @@
 			},
 			"custom:snark_angry": {
 				"minecraft:angry": {
-					"duration": 20,
+					"duration": 10,
 					"broadcast_anger": true,
 					"broadcast_range": 20,
 					"angry_sound": "ambient.worried",
