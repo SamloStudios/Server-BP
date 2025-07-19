@@ -7,7 +7,7 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry, itemComponentRe
 		"custom:purple_fungus_stem_infested_block",
 		PurpleFungusInfested
 	);
-	itemComponentRegistry.registerCustomComponent(
+	blockComponentRegistry.registerCustomComponent(
 		"custom:purple_lightvine_block",
 		PurpleLightvine
 	)

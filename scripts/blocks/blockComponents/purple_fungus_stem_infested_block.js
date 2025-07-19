@@ -1,4 +1,4 @@
-import { system, BlockPermutation, EquipmentSlot, ItemEnchantableComponent, ItemComponentTypes} from "@minecraft/server";
+import { BlockPermutation, EquipmentSlot, ItemComponentTypes} from "@minecraft/server";
 
 export const PurpleFungusInfested = {
     
@@ -13,7 +13,27 @@ export const PurpleFungusInfested = {
 
     onRandomTick: (event) => {
         const { block, dimension } = event;
-        // Your code here
+        let adyacentBlocks = [];
+        adyacentBlocks.push(block.above());
+        adyacentBlocks.push(block.below());
+        adyacentBlocks.push(block.north());
+        adyacentBlocks.push(block.south());
+        adyacentBlocks.push(block.east());
+        adyacentBlocks.push(block.west());
+        for (let adyacentBlock of adyacentBlocks) {
+            const randomChance = Math.floor(Math.random() * 15);
+            if (adyacentBlock.typeId === "endupdate:purple_fungus_stem") {
+                if (randomChance < 1) {
+                    const oldBlockRotation = adyacentBlock.permutation.getState("minecraft:block_face");
+                    const randomVariant = Math.floor(Math.random() * 2);
+                    const newBlock = BlockPermutation.resolve("endupdate:purple_fungus_stem_infested")
+                        .withState("custom:variant", randomVariant)
+                        .withState("minecraft:block_face", oldBlockRotation);
+                    adyacentBlock.setPermutation(newBlock);
+                    return;
+                }
+            }
+        }
     },
 
     onPlayerBreak(event) {

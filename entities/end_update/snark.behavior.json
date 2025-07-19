@@ -35,7 +35,10 @@
 			}
 		},
 		"components": {
-			
+			"minecraft:behavior.random_stroll": {
+				"priority": 6,
+				"speed_multiplier": 1
+			},
 			"minecraft:experience_reward": {
 				"on_death": "query.last_hit_by_player ? 5 : 0"
 			},
@@ -169,7 +172,7 @@
 			},
 			"minecraft:become_angry": {
 				"remove": {
-					"custom:snark_calm": {}
+					"component_groups": ["custom:snark_calm"]
 				},
 				"add": {
 					"component_groups": ["custom:snark_angry"]
@@ -177,7 +180,7 @@
 			},
 			"minecraft:on_calm": {
 				"remove": {
-					"custom:snark_angry": {}
+					"component_groups": ["custom:snark_angry"]
 				},
 				"add": {
 					"component_groups": ["custom:snark_calm"]

@@ -8,5 +8,5 @@ import "items/securityComponents.js";
 import "items/drinksComponents.js"
 
 // BOT --------
-import "bot/botCommands.js";
+import "bot/bot.js";
 import "bot/botWelcome.js"
