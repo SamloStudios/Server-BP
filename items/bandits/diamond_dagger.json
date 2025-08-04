@@ -4,7 +4,7 @@
         "description": {
             "identifier": "bandits:diamond_dagger",
             "menu_category": {
-                "category": "items"
+                "category": "equipment"
             }
         },
         "components": {

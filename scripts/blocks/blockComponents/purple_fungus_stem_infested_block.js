@@ -13,6 +13,7 @@ export const PurpleFungusInfested = {
 
     onRandomTick: (event) => {
         const { block, dimension } = event;
+        if (dimension.typeId !== "minecraft:the_end") return;
         let adyacentBlocks = [];
         adyacentBlocks.push(block.above());
         adyacentBlocks.push(block.below());

@@ -3,7 +3,7 @@
     "minecraft:crafting_items_catalog": {
         "categories": [
             {
-                "category_name": "items",
+                "category_name": "equipment",
                 "groups": [
                     {
                         "group_identifier": {
@@ -13,6 +13,16 @@
                         "items": [
                             "drinks:beer_glassmug",
                             "drinks:vodka_glassmug"
+                        ]
+                    },
+                    {
+                        "group_identifier": {
+                            "icon": "bandits:diamond_dagger",
+                            "name": "Bandits: Daggers"
+                        },
+                        "items": [
+                            "bandits:diamond_dagger",
+                            "bandits:iron_dagger"
                         ]
                     }
                 ]
@@ -26,6 +36,7 @@
                             "name": "Foundry: Molds"
                         },
                         "items": [
+                            "foundry:claymold",
                             "foundry:keyShapedMold",
                             "foundry:lockpickShapedMold"
                         ]
@@ -43,6 +54,39 @@
                         "items": [
                             "security:key",
                             "security:lockpick"
+                        ]
+                    }
+                ]
+            },
+            {
+                "category_name": "nature",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "endupdate:purple_fungus_block",
+                            "name": "End Update: Purple Fungus"
+                        },
+                        "items": [
+                            "endupdate:purple_fungus_block",
+                            "endupdate:purple_fungus_mycelium",
+                            "endupdate:purple_fungus_stem",
+                            "endupdate:purple_fungus_stem_infested"
+                        ]
+                    }
+                ]
+            },
+            {
+                "category_name": "nature",
+                "groups": [
+                    {
+                        "group_identifier": {
+                            "icon": "endupdate:blue_fungus_block",
+                            "name": "End Update: Blue Fungus"
+                        },
+                        "items": [
+                            "endupdate:blue_fungus_block",
+                            "endupdate:blue_fungus_mycelium",
+                            "endupdate:blue_fungus_stem"
                         ]
                     }
                 ]

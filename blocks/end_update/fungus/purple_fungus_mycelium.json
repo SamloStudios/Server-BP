@@ -51,8 +51,13 @@
 					}
 				]
 			},
-			"minecraft:destructible_by_explosion": false,
-			"minecraft:geometry": "geometry.purple_fungus_mycelium",
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 70
+			},
+			"minecraft:geometry": {
+				"identifier": "geometry.block",
+				"culling": "block:render_rules"
+			},
 			"minecraft:material_instances": {
 				"*": {
 					"texture": "purple_fungus_gils",

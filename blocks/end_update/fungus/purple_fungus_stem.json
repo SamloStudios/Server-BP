@@ -61,7 +61,7 @@
 				"culling": "block:render_rules"
 			},
 			"minecraft:destructible_by_explosion": {
-				"explosion_resistance": 200
+				"explosion_resistance": 80
 			},
 			"minecraft:material_instances": {
 				"*" : {

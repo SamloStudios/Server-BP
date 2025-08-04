@@ -1,0 +1,106 @@
+{
+	"format_version": "1.21.70",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:lukai_weed",
+			"menu_category": {
+				"category": "nature"
+			},
+			"states": {
+				"custom:growth" : [0, 1, 2],
+				"custom:player_placed" : [false, true]
+			}
+		},
+		
+		"components": {
+			"minecraft:display_name": "Hierba de lukai",
+			"behavior:on_random_tick" : {
+				"probability" : 0.1,
+				"grow" : {
+					"probability" : 0.5,
+					"state" : "custom:growth",
+					"levels" : [0, 1, 2],
+					"product" : "endupdate:lukai_large_weed"
+				}
+			},
+			"placement:set_randomizer" : {
+				"state" : "custom:growth",
+				"values" : [0, 1, 2]
+			},
+			"placement:rules" : {
+				"whitelist" : "end_stone",
+				"rules" : "solid, not_same_type"
+			},
+			"sensor:broken_base" : {},
+
+			"minecraft:loot": "loot_tables/nothing.json",
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"tag:minecraft:is_shears_item_destructible" : {},
+			"minecraft:geometry" : {
+				"identifier": "geometry.any_grass"
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:material_instances": {
+				"*" : {
+					"texture": "lukai_weed",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion" : false
+				}
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#ffffff",
+			"minecraft:liquid_detection": {
+				"detection_rules": [
+					{
+						"can_contain_liquid": false,
+						"on_liquid_touches": "popped"
+					}
+				]
+			}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('custom:growth') == 1 ",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "lukai_weed_stage1",
+							"render_method": "alpha_test",
+							"face_dimming": false,
+							"ambient_occlusion" : false
+						}
+					},
+					"minecraft:light_emission": 1
+				}
+			},
+			{
+				"condition": "q.block_state('custom:growth') == 2 ",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "lukai_weed_stage2",
+							"render_method": "alpha_test",
+							"face_dimming": false,
+							"ambient_occlusion" : false
+						}
+					},
+					"minecraft:light_emission": 2
+				}
+			}
+		]
+	}
+}

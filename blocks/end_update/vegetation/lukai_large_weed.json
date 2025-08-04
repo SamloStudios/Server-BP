@@ -1,0 +1,59 @@
+{
+	"format_version": "1.21.70",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:lukai_large_weed"
+		},
+		"components": {
+			"emitter:particles": {
+				"id" : "particle:lukai",
+				"probability" : 0.6,
+				"random_timeout" : [0, 2]
+			},
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+			"sensor:broken_base" : {},
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"minecraft:display_name": "Hierba larga de lukai",
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": {
+				"origin": [-4, 0, -4],
+				"size": [8, 16, 8]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"tag:minecraft:is_shears_item_destructible" : {},
+			"minecraft:geometry" : {
+				"identifier": "geometry.any_tall_grass"
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:material_instances": {
+				"*" : {
+					"texture": "lukai_large_weed",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion" : false
+				}
+			},
+			"minecraft:light_emission": 2,
+			"minecraft:loot": "loot_tables/blocks/plants/lukai_large_weed.json",
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#ffffff",
+			"minecraft:liquid_detection": {
+				"detection_rules": [
+					{
+						"can_contain_liquid": false,
+						"on_liquid_touches": "popped"
+					}
+				]
+			}
+		}
+	}
+}

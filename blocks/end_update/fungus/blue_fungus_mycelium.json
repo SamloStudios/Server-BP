@@ -1,0 +1,76 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:blue_fungus_mycelium",
+			"menu_category": {
+				"category": "nature"
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Micelio de hongo azul",
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 3,
+				"item_specific_speeds": [
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:wooden_tier')"
+						},
+						"destroy_speed": 1.5
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:stone_tier')"
+						},
+						"destroy_speed": 0.75
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:iron_tier')"
+						},
+						"destroy_speed": 0.5
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:golden_tier')"
+						},
+						"destroy_speed": 0.25
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:diamond_tier')"
+						},
+						"destroy_speed": 0.4
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:netherite_tier')"
+						},
+						"destroy_speed": 0.35
+					}
+				]
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 70
+			},
+			"minecraft:geometry": {
+				"identifier": "geometry.block",
+				"culling": "block:render_rules"
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "blue_fungus_mycelium",
+					"render_method": "opaque",
+					"face_dimming": true,
+					"ambient_occlusion": true
+				}
+			},
+			"minecraft:flammable": true,
+			"minecraft:friction": 0.1,
+			"minecraft:light_dampening": 15,
+			"minecraft:map_color": "#00000f"
+		}
+	}
+}

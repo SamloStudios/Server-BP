@@ -1,0 +1,16 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "security:snarkFleshRecipe"
+        },
+        "tags": [
+            "furnace",
+            "campfire",
+            "smoker",
+            "soul_campfire"
+        ],
+        "input": "endupdate:snark_flesh_raw",
+        "output": "endupdate:snark_flesh"
+    }
+}

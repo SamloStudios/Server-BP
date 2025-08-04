@@ -1,0 +1,24 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:item": {
+        "description": {
+            "identifier": "endupdate:blue_fungus_growths",
+            "menu_category": {
+                "category": "nature"
+            }
+        },
+        "components": {
+            "minecraft:block_placer": {
+                "block": "endupdate:blue_fungus_growths",
+                "replace_block_item": true
+            },
+            "minecraft:icon": "blue_fungus_growths",
+            "minecraft:display_name": {
+                "value": "Crecimientos de hongo azul"
+            },
+            "minecraft:fuel": {
+                "duration": 4
+            }
+        }
+    }
+}

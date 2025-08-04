@@ -1,0 +1,20 @@
+{
+	"pools": [
+		{
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "item",
+					"name": "endupdate:snark_shell",
+					"weight": 1
+				},
+				{
+					"type": "item",
+					"name": "endupdate:snark_flesh_raw",
+					"weight": 2,
+					"count": 0
+				}
+			]
+		}
+	]
+}

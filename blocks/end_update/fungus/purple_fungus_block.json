@@ -1,5 +1,5 @@
 {
-	"format_version": "1.21.50",
+	"format_version": "1.21.80",
 	"minecraft:block": {
 		"description": {
 			"identifier": "endupdate:purple_fungus_block",
@@ -8,6 +8,15 @@
 			}
 		},
 		"components": {
+			"emitter:particles" : {
+				"id" : "particle:purple_fungus",
+				"probability" : 1,
+				"random_timeout" : [0, 3]
+			},
+			"minecraft:tick": {
+				"interval_range": [60, 60],
+				"looping": true
+			},
 			"minecraft:collision_box": true,
 			"minecraft:selection_box": true,
 			"minecraft:destructible_by_mining": {
@@ -52,9 +61,9 @@
 				]
 			},
 			"minecraft:destructible_by_explosion": {
-				"explosion_resistance": 3
+				"explosion_resistance": 60
 			},
-			"minecraft:light_emission": 10,
+			"minecraft:light_emission": 6,
 			"minecraft:light_dampening": 15,
 			"minecraft:map_color": "#6977ff"
 		}

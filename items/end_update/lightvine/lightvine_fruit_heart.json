@@ -1,0 +1,32 @@
+{
+	"format_version": "1.21.80",
+	"minecraft:item": {
+		"description": {
+			"identifier": "endupdate:lightvine_fruit_heart",
+			"menu_category": {
+				"category": "equipment",
+				"group": "minecraft:itemGroup.name.miscFood"
+			}
+		},
+		"components": {
+			"minecraft:max_stack_size": 16,
+			"minecraft:icon": "lightvine_fruit_heart",
+			"minecraft:use_animation": "eat",
+            "minecraft:use_modifiers": {
+                "use_duration": 2
+            },
+            "minecraft:food": {
+                "can_always_eat": true,
+                "nutrition": 4,
+                "saturation_modifier": 0.1,
+                "using_converts_to": "minecraft:air"
+            },
+            "minecraft:display_name": {
+                "value": "Corazón de Fruta Luminosa"
+            },
+			"minecraft:custom_components": [
+				"custom:lightvine_fruit_heart"
+			]
+		}
+	}
+}

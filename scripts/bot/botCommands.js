@@ -20,11 +20,12 @@ const eventTimers = [];
 
 const RANKS = [
   { level: 0, name: "Plebeyo", color: "§7" },
-  { level: 5, name: "Escudero", color: "§a" },
-  { level: 10, name: "Caballero", color: "§b" },
-  { level: 20, name: "Barón", color: "§9" },
-  { level: 40, name: "Conde", color: "§5" },
-  { level: 80, name: "Duque", color: "§6" },
+  { level: 5, name: "Burgués", color: "§a", requirements: (p) => p.misiones >= 3 && p.dinero >= 100 },
+  { level: 15, name: "Noble", color: "§b" },
+  { level: 25, name: "Caballero", color: "§3" },
+  { level: 40, name: "Barón", color: "§9" },
+  { level: 65, name: "Conde", color: "§5" },
+  { level: 90, name: "Duque", color: "§6" },
   { level: 160, name: "Príncipe", color: "§c" },
   { level: 320, name: "Rey", color: "§4" },
   { level: 640, name: "Emperador", color: "§l§6" }
@@ -64,10 +65,23 @@ function getLevelFromXP(xp) {
   let xpAcc = 0;
   while (xp >= xpAcc + xpNeeded) {
     xpAcc += xpNeeded;
-    xpNeeded *= 2;
+    xpNeeded += 10 * level;
     level++;
   }
   return level;
+}
+
+function getNextLevelXP(level) {
+    // Retorna la cantidad de XP necesaria para el siguiente nivel
+    let initlevel = 0;
+    let xpNeeded = 10;
+    let xpAcc = 0;
+    while (initlevel < level+1) {
+        xpAcc += xpNeeded;
+        xpNeeded += 10 * initlevel;
+        initlevel++;
+    }
+    return xpAcc;
 }
 
 function getRank(level) {
@@ -285,11 +299,48 @@ world.beforeEvents.chatSend.subscribe((event) => {
     if (message === "!stats") {
         const data = getPlayerData(player);
         const rank = getRank(data.level);
-        player.sendMessage(`§6Tus stats:
-    Nivel: §a${data.level}
-    XP: §a${data.xp}
+        player.sendMessage(`
+            §6Tus stats:
+    Nivel: §a${data.level}§6
+    XP: §a${data.xp}§3
     Rango: ${rank.color}${rank.name}§r
     Balance: §e${data.balance} monedas`);
+        return;
+    }
+
+    if (message === "!rank") {
+        const data = getPlayerData(player);
+        const rank = getRank(data.level);
+        const index = RANKS.findIndex(r => r.name === rank.name);
+        const next = RANKS[index + 1];
+
+        player.sendMessage(`\n§6Tu rango actual: ${rank.color}${rank.name}`);
+        if (next) {
+        player.sendMessage(`§7Siguiente rango: ${next.color}${next.name}`);
+        player.sendMessage(`§7Requisitos para el siguiente rango: [${data.level} -> ${next.level}] = §a(${next.level - data.level})§7 niveles más`);
+        const nextLevelXp = getNextLevelXP(getLevelFromXP(data.xp)); 
+        player.sendMessage(`§7Requerimientos para el siguiente nivel: [${data.xp} -> ${nextLevelXp}] = §d(${nextLevelXp - data.xp}) XP §7más`);
+        player.sendMessage(`§7Recompensas: §b${next.rank_rewards ? next.rank_rewards : "No hay recompensa definida para este rango"}`);
+        player.sendMessage(`§8Para subir de rango completa más misiones, gana monedas, reputación, nivel, etc.`);
+        } else {
+        player.sendMessage(`§b¡Has alcanzado el máximo rango posible!`);
+        }
+        return;
+    }
+
+    if (message.startsWith("!addxp")) {
+        // if (!isAdmin(player)) return;
+        const args = message.split(' ');
+        addPlayerXp(player, args.length > 1 ? parseInt(args[1]) : 0);
+        return;
+    }
+
+    if (message === "!resetxp") {
+        let data = getPlayerData(player);
+        data.xp = 0;
+        data.level = 0;
+        savePlayerData(player, data);
+        player.sendMessage("§aTu XP ha sido reiniciado.");
         return;
     }
 
@@ -354,7 +405,8 @@ world.beforeEvents.chatSend.subscribe((event) => {
         return;
     }
 
-    if (message === "!respuesta") {
+    if (message.startsWith("!respuesta")) {
+        const args = message.split(' ');
         if (!mathQuizActive.active) {
             player.sendMessage("§cNo hay minijuego activo.");
             return;
@@ -365,8 +417,8 @@ world.beforeEvents.chatSend.subscribe((event) => {
         }
         const respuesta = parseInt(args[1]);
         if (respuesta === mathQuizActive.answer) {
+            addPlayerXp(player, 10); // Añadir XP al jugador
             const data = getPlayerData(player);
-            data.xp += 10;
             data.balance += mathQuizActive.reward;
             savePlayerData(player, data);
             player.sendMessage(`§a¡Correcto! Ganaste 10 XP y ${mathQuizActive.reward} monedas.`);
@@ -515,23 +567,46 @@ function isAdmin(player) {
     return player.getTags().includes("admin");
 }
 
-// Evento para mostrar nombres con color según rango en chat general
-world.beforeEvents.chatSend.subscribe(event => {
-  const player = event.sender;
-  if (!event.message.startsWith("!")) {
-      // Actualizar XP al enviar mensaje (menos comandos)
+function addPlayerXp(player, amount) {
     const data = getPlayerData(player);
-    data.xp += 1; // Gana 1 XP por mensaje normal
+    const oldRank = getRank(data.level);
+    const oldLevel = data.level;
+    data.xp += amount;
     const newLevel = getLevelFromXP(data.xp);
     if (newLevel > data.level) {
-      data.level = newLevel;
-      player.sendMessage(`§a¡Has subido al nivel ${newLevel}!`);
+        data.level = newLevel;
+        
+        for (let i = oldLevel; i < newLevel; i++) { // Aumentar monedas 
+            data.balance += (i+1) * 10; // Gana monedas al subir de nivel
+            player.sendMessage(`§a¡Has ganado ${(i+1) * 10} monedas por subir de nivel!`);
+            // player.sendMessage(`§a¡Has subido al nivel ${i+1}!`);
+            world.sendMessage(`§b¡${oldRank.color}${player.name}§b ha subido al nivel ${i+1}!`);
+        }
+
+        const newRank = getRank(newLevel);
+        if (newRank !== oldRank) {
+            system.run(()=> {
+                player.runCommand("summon fireworks_rocket");
+                player.runCommand(`playsound random.levelup @s`);
+            })
+            world.sendMessage(`§b¡${oldRank.color}${player.name} ha alcanzado el rango ${newRank.color}${newRank.name}§r!`);
+            player.sendMessage(`§b¡Felicidades! Has alcanzado el rango ${newRank.color}${newRank.name}§r`);
+        }
     }
     savePlayerData(player, data);
+}
 
-    event.cancel = true;
-    sendRankedChat(player, event.message);
-  }
+// Evento para mostrar nombres con color según rango en chat general
+world.beforeEvents.chatSend.subscribe(event => {
+    const player = event.sender;
+    if (!event.message.startsWith("!")) {
+        // Actualizar XP al enviar mensaje (menos comandos)
+        addPlayerXp(player, 1);
+
+        event.cancel = true; // cancelar el mensaje normal
+        // Envia un mensaje formateado con el color del rango
+        sendRankedChat(player, event.message);
+    }
 });
 
 // let secondsPassed = 0;
@@ -549,4 +624,4 @@ world.beforeEvents.chatSend.subscribe(event => {
 
 
 
-// system.run(mainTick);
+// system.run(mainTick());

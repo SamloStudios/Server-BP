@@ -1,5 +1,5 @@
 {
-	"format_version": "1.21.60",
+	"format_version": "1.21.90",
 	"minecraft:block": {
 		"description": {
 			"identifier": "endupdate:purple_lightvine",
@@ -11,22 +11,19 @@
 			}
 		},
 		"components": {
-			"minecraft:custom_components": [
-				"custom:purple_lightvine_block"
-			],
+			"custom:purple_lightvine_block" : {},
+
+			"minecraft:display_name": "Enredadera Luminosa",
 			"minecraft:tick": {
 				"interval_range": [
-					30, 32
+					50, 50
 				]
-			},
-			"minecraft:collision_box": {
-				"origin": [-4, 0, -4],
-				"size": [8, 16, 8]
 			},
 			"minecraft:selection_box": {
 				"origin": [-4, 0, -4],
 				"size": [8, 16, 8]
 			},
+			"minecraft:collision_box" : false,
 			"minecraft:destructible_by_mining": {
 				"seconds_to_destroy": 0
 			},
@@ -42,7 +39,7 @@
 					"face_dimming": false
 				}
 			},
-			"minecraft:light_emission": 15,
+			"minecraft:light_emission": 13,
 			"minecraft:light_dampening": 0,
 			"minecraft:map_color": "#beff00",
 			"minecraft:liquid_detection": {
@@ -66,7 +63,9 @@
 							"ambient_occlusion": false,
 							"face_dimming": false
 						}
-					}
+					},
+					"minecraft:light_emission": 9,
+					"custom:purple_lightvine_block" : {}
 				}
 			},
 			{
@@ -80,7 +79,9 @@
 							"ambient_occlusion": false,
 							"face_dimming": false
 						}
-					}
+					},
+					"minecraft:light_emission": 4,
+					"custom:purple_lightvine_block" : {}
 				}
 			},
 			{
@@ -94,7 +95,14 @@
 							"ambient_occlusion": false,
 							"face_dimming": false
 						}
-					}
+					},
+					"emitter:particles": {
+						"id" : "particle:lightvine_fruit",
+						"probability" : 0.6
+					},
+					"minecraft:light_emission": 13,
+					"custom:purple_lightvine_block" : {},
+					"minecraft:loot": "loot_tables/blocks/vines/purple_lightvine_top.json"
 				}
 			}
 		]

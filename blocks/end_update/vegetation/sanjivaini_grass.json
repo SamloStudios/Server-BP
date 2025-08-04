@@ -1,0 +1,114 @@
+{
+	"format_version": "1.21.70",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:sanjivaini_grass",
+			"menu_category": {
+				"category": "nature"
+			},
+			"states": {
+				"custom:variant" : [1, 0]
+			}
+		},
+		"components": {
+			"emitter:particles": {
+				"particle_disabler" : {
+					"state": "custom:variant",
+					"value": 1
+				},
+				"id" : "particle:sanjivaini",
+				"probability" : 0.8,
+				"random_timeout" : [0, 2],
+				"on_destroy" : {
+					"id" : "particle:sanjivaini",
+					"probability" : 1,
+					"use_disabler" : false
+				}
+			},
+			"behavior:use_interaction" : {
+				"probability" : 1,
+				"disabler" : {
+					"state": "custom:variant",
+					"value": 1
+				},
+				"set_state" : {
+					"state" : "custom:variant",
+					"value" : 0
+				},
+				"particles" : {
+					"id" : "particle:smoke_particle_0"
+				}
+			},
+			"behavior:on_random_tick" : {
+				"set_state" : {
+					"state" : "custom:variant",
+					"value" : 1
+				}
+			},
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+			"sensor:broken_base" : {},
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"minecraft:display_name": "Hierba de sanjivaini",
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"tag:minecraft:is_shears_item_destructible" : {},
+			"minecraft:geometry" : {
+				"identifier": "geometry.sanjivaini_grass"
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 20
+			},
+			"minecraft:material_instances": {
+				"*" : {
+					"texture": "sanjivaini_grass",
+					"render_method": "alpha_test",
+					"ambient_occlusion" : false,
+					"face_dimming": false
+				}
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#ffffff",
+			"minecraft:liquid_detection": {
+				"detection_rules": [
+					{
+						"can_contain_liquid": false,
+						"on_liquid_touches": "popped"
+					}
+				]
+			}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('custom:variant') == 0 ",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/plants/sanjivaini_grass.json"
+				}
+			},
+			{
+				"condition": "q.block_state('custom:variant') == 1 ",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "lukai_weed_stage1",
+							"render_method": "alpha_test",
+							"ambient_occlusion" : false, 
+							"face_dimming": false
+						}
+					},
+					"minecraft:loot": "loot_tables/nothing.json"
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,39 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "foundry:snark_lantern_Recipe"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            " S ",
+            "SHS",
+            " # "
+        ],
+        "key": {
+            "#": {
+                "item": "endupdate:purple_fungus_mycelium"
+            },
+            "H": {
+                "item": "endupdate:lightvine_fruit_heart"
+            },
+            "S": {
+                "item": "endupdate:snark_shell"
+            }
+        },
+        "result": {
+            "item": "endupdate:lightfruit_snark_lantern",
+            "count": 1
+        },
+        "unlock": [
+            {
+                "item": "endupdate:lightvine_fruit_heart"
+            },
+            {
+                "item": "endupdate:snark_shell"
+            }
+        ]
+    }
+}

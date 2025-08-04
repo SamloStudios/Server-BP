@@ -1,0 +1,28 @@
+{
+	"format_version": "1.21.80",
+	"minecraft:item": {
+		"description": {
+			"identifier": "endupdate:snark_flesh",
+			"menu_category": {
+				"category": "items"
+			}
+		},
+		"components": {
+			"minecraft:max_stack_size": 64,
+			"minecraft:icon": "snark_flesh",
+            "minecraft:display_name": {
+                "value": "Carne de snark cocida"
+            },
+            "minecraft:use_animation": "eat",
+            "minecraft:use_modifiers": {
+                "use_duration": 2
+            },
+            "minecraft:food": {
+                "can_always_eat": false,
+                "nutrition": 6,
+                "saturation_modifier": 0.5,
+                "using_converts_to": "minecraft:air"
+            }
+		}
+	}
+}

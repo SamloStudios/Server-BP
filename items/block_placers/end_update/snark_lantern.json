@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:item": {
+        "description": {
+            "identifier": "endupdate:lightfruit_snark_lantern",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:block_placer": {
+                "block": "endupdate:lightfruit_snark_lantern",
+                "replace_block_item": true
+            },
+            "minecraft:icon": "snark_lantern_placer",
+            "minecraft:display_name": {
+                "value": "Lampara de Snark Luminosa"
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:item": {
+        "description": {
+            "identifier": "endupdate:lukai_weed",
+            "menu_category": {
+                "category": "nature"
+            }
+        },
+        "components": {
+            "minecraft:block_placer": {
+                "block": "endupdate:lukai_weed",
+                "replace_block_item": true
+            },
+            "minecraft:icon": "lukai_weed",
+            "minecraft:display_name": {
+                "value": "Hierba de lukai"
+            }
+        }
+    }
+}

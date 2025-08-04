@@ -16,7 +16,7 @@
 			},
 			"custom:snark_angry": {
 				"minecraft:angry": {
-					"duration": 10,
+					"duration": 15,
 					"broadcast_anger": true,
 					"broadcast_range": 20,
 					"angry_sound": "ambient.worried",
@@ -30,7 +30,8 @@
 				},
 				"minecraft:behavior.melee_attack": {
 					"priority": 4,
-					"track_target": true
+					"track_target": true,
+					"can_spread_on_fire": true
 				}
 			}
 		},
@@ -40,7 +41,7 @@
 				"speed_multiplier": 1
 			},
 			"minecraft:experience_reward": {
-				"on_death": "query.last_hit_by_player ? 5 : 0"
+				"on_death": "query.last_hit_by_player ? 8 : 0"
 			},
 			"minecraft:type_family": {
 				"family": ["snark", "parasite"]
@@ -51,11 +52,11 @@
 			},
 			"minecraft:nameable": {},
 			"minecraft:loot": {
-				"table": "loot_tables/entities/silverfish.json"
+				"table": "loot_tables/entities/snark.json"
 			},
 			"minecraft:health": {
-				"value": 20,
-				"max": 20
+				"value": 25,
+				"max": 25
 			},
 			"minecraft:hurt_on_condition": {
 				"damage_conditions": [
@@ -72,7 +73,7 @@
 				]
 			},
 			"minecraft:movement": {
-				"value": 0.50
+				"value": 0.60
 			},
 			"minecraft:navigation.walk": {
 				"can_path_over_water": true
@@ -81,7 +82,7 @@
 			"minecraft:jump.static": {},
 			"minecraft:can_climb": {},
 			"minecraft:attack": {
-				"damage": 2
+				"damage": 3
 			},
 			"minecraft:collision_box": {
 				"width": 0.4,
@@ -124,7 +125,7 @@
 								}
 							]
 						},
-						"max_dist": 8
+						"max_dist": 14
 					}
 				]
 			},
@@ -148,7 +149,7 @@
 				"look_time": [
 					2.0, 3.0
 				],
-				"target_distance": 6,
+				"target_distance": 16,
 				"priority": 6
 			},
 			"minecraft:behavior.hurt_by_target": {

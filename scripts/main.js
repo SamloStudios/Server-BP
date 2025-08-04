@@ -6,7 +6,8 @@ import "blocks/blockEvents/explosion/beforeExplosion.js"
 // ITEMS --------
 import "items/securityComponents.js";
 import "items/drinksComponents.js"
+import "items/endComponents.js"
 
 // BOT --------
-import "bot/bot.js";
+import "bot/botCommands.js";
 import "bot/botWelcome.js"

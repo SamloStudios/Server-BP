@@ -4,24 +4,8 @@ import { truncateFloat } from './botUtils.js';
 
 
 
-// UTILIDADES BÁSICAS (boring, just keep reading bro)
-function truncateFloat(num, decimals) {
-  return Math.floor(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
-}
-
-function getTime() {
-  const date = new Date();
-  return `${date.getHours()}:${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`;
-}
-
-
-
-
-
-
 
 // DATOS Y VARIABLES GLOBALES
-let playerTpRequests = [];
 let activeMathQuiz = null;
 const mathQuizIntervalTicks = 20 * 60 * 5; // Automaticamente cada "ratito"
 let currentMission = null;
@@ -29,10 +13,6 @@ let missionStartTick = 0;
 const missionDurationTicks = 20 * 60 * 60 * 24; // Si se te dificulta multiplicar como a mí es lo de un día maso
 let missionEndTick = 0;
 let missionDifficultyLevel = 1;
-
-
-
-
 
 
 
@@ -65,7 +45,7 @@ function calcularRango(jugador) {
   return rankList[0]; // Campesino por defecto
 }
 
-// Obtiene información general de un jugador (mockup con scores)
+// Obtiene información general de un jugador (mockup con scores) TO DO
 function obtenerDatosJugador(player) {
   return {
     misiones: getScore(player, 'misiones'),
@@ -80,7 +60,7 @@ function obtenerDatosJugador(player) {
   };
 }
 
-// Asignar y mostrar el rango al hablar
+// Asignar y mostrar el rango al hablar INNECESARIO PERO VERIFICAR
 world.beforeEvents.chatSend.subscribe(e => {
   const jugador = e.sender;
   const rango = calcularRango(jugador);
@@ -118,34 +98,31 @@ world.beforeEvents.chatSend.subscribe(e => {
 
 
 // ================================
-// Popularidad o reputación 
+// Popularidad o reputación  (Es una buena idea, pero no esta implementada) //No borrar
 // ================================
 
+// // Obtiene la reputación actual 
+// function getReputacion(player) {
+//   const rep = player.getDynamicProperty("reputacion");
+//   return rep === undefined ? 0 : rep;
+// }
 
+// // Modifica la reputación
+// function modificarReputacion(player, cambio) {
+//   let rep = getReputacion(player);
+//   rep += cambio;
+//   if (rep < 0) rep = 0;
+//   player.setDynamicProperty("reputacion", rep);
+//   player.sendMessage(`§6Tu reputación ha cambiado en ${cambio}. Ahora tienes ${rep} puntos.`);
+// }
 
-// Obtiene la reputación actual 
-function getReputacion(player) {
-  const rep = player.getDynamicProperty("reputacion");
-  return rep === undefined ? 0 : rep;
-}
-
-// Modifica la reputación
-function modificarReputacion(player, cambio) {
-  let rep = getReputacion(player);
-  rep += cambio;
-  if (rep < 0) rep = 0;
-  player.setDynamicProperty("reputacion", rep);
-  player.sendMessage(`§6Tu reputación ha cambiado en ${cambio}. Ahora tienes ${rep} puntos.`);
-}
-
-world.beforeEvents.chatSend.subscribe(event => {
-  if(event.message === "!reputacion") {
-    event.cancel = true;
-    const rep = getReputacion(event.sender);
-    event.sender.sendMessage(`§bTu reputación actual es: §e${rep}`);
-  }
-});
-
+// world.beforeEvents.chatSend.subscribe(event => {
+//   if(event.message === "!reputacion") {
+//     event.cancel = true;
+//     const rep = getReputacion(event.sender);
+//     event.sender.sendMessage(`§bTu reputación actual es: §e${rep}`);
+//   }
+// });
 
 
 
@@ -156,22 +133,6 @@ world.beforeEvents.chatSend.subscribe(event => {
 
 
 
-
-// TP REQUESTS
-function addTpRequest(senderName, targetName) {
-  playerTpRequests.push({ sender: senderName, target: targetName });
-  system.runTimeout(() => {
-    // Expira en 40 segundos
-    const index = playerTpRequests.findIndex(r => r.sender === senderName && r.target === targetName);
-    if (index !== -1) {
-      playerTpRequests.splice(index, 1);
-      world.sendMessage(`§cLa solicitud de teletransporte de ${senderName} a ${targetName} ha caducado.`);
-    }
-  }, 40 * 20);
-}
-function removeTpRequest(senderName, targetName) {
-  playerTpRequests = playerTpRequests.filter(r => !(r.sender === senderName && r.target === targetName));
-}
 
 
 
@@ -204,10 +165,10 @@ function modificarDinero(player, cantidad) {
 
 // Inventario simple en DynamicProperties
 function getInventario(player) {
-  let inv = player.getDynamicProperty('inventario');
+  let inv = player.getDynamicProperty('inventario'); // ERROR
   if (!inv) {
     inv = {};
-    player.setDynamicProperty('inventario', inv);
+    player.setDynamicProperty('inventario', inv); //ERROR
   }
   return inv;
 }
@@ -343,7 +304,7 @@ function venderItem(player, item, cantidad) {
 }
 
 // Contratos
-function crearContrato(jugador1, jugador2, descripcion, diasVencimiento) {
+function crearContrato(jugador1, jugador2, descripcion, diasVencimiento) { // El contrato no es persistente
   let ahora = Date.now();
   let vencimiento = ahora + diasVencimiento * 86400000;
   let id = Math.floor(Math.random() * 1000000);
@@ -920,7 +881,7 @@ function scheduleMathQuiz() {
 }
 
 system.run(() => {
-    scheduleMathQuiz();
+    scheduleMathQuiz(); // Iniciar el primer quiz al arrancar el servidor
 })
 
 
@@ -965,13 +926,11 @@ const PROPERTY_HEIGHT = 6; // Altura vertical
 const PROPERTY_BASE_COST = 5000;  // Precio inicial 
 const PROPERTY_COST_MULTIPLIER = 2.5; // Factor multiplicador por propiedad adquirida
 
-// FUNCIONES 
-
+// FUNCIONES GOLD
 function getPlayerPropertyCount(player) {
   const count = player.getDynamicProperty('propertyCount');
   return count ? count : 0;
 }
-
 function setPlayerPropertyCount(player, count) {
   player.setDynamicProperty('propertyCount', count);
 }
@@ -1319,7 +1278,7 @@ Fecha compra: ${new Date(prop.boughtAt).toLocaleString()}
   sendMessage(player, "§cComando no reconocido.");
 });
 
-// EVENTO
+// EVENTO GOLD
 function isActionAllowed(player, blockPos, dimension) {
   const propIds = world.getDynamicPropertyIds().filter(id => id.startsWith('property:'));
   for (const pid of propIds) {
@@ -1346,293 +1305,29 @@ function isActionAllowed(player, blockPos, dimension) {
 
 
 
-// TELETRANSPORTE AL SPAWN AL RESPAWN
-world.events.playerSpawnAfter.subscribe(event => {
-  const player = event.player;
-  // Por ejemplo, teletransportar a spawn predeterminado
-  const spawnDim = world.getDimension("overworld");
-  player.teleport({ x: 155, y: 95, z: -51 }, { dimension: spawnDim });
-  player.sendMessage("§aBienvenido al spawn!");
- 
- 
+  // helpMsg +=
+  // `§d§l— Economía —\n` +
+  // `!balance - Mostrar tu saldo\n` +
+  // `!pay <jugador> <cantidad> - Pagar a otro jugador\n` +
+  // `!deposit <cantidad> - Depositar dinero en el banco\n` +
+  // `!withdraw <cantidad> - Retirar dinero del banco\n\n` +
 
+  // `§6§l— Misiones y Niveles —\n` +
+  // `!mission - Ver misión diaria actual\n` +
+  // `!mission progress - Ver progreso de misión\n` +
+  // `!levels - Ver tu nivel y experiencia\n` +
+  // `!leaderboard - Ver tabla de niveles\n\n` +
 
+  // `§f§l— Otros —\n` +
+  // `!mathquiz - Participar en el quiz matemático\n` +
+  // `!getByte - Bytes usados por propiedades dinámicas\n` +
+  // `!getAll - Propiedades dinámicas del mundo\n` +
+  // `!getmyAll - Tus propiedades dinámicas\n`;
 
-
-
- 
- // WARPS
- 
- const WARPS_KEY = 'serverWarps';
-
-// Función para obtener todos los warps guardados
-function getWarps() {
-  const warpsRaw = world.getDynamicProperty(WARPS_KEY);
-  if (!warpsRaw) return {};
-  try {
-    return JSON.parse(warpsRaw);
-  } catch {
-    return {};
-  }
-}
-
-// Guardar todos los warps
-function saveWarps(warps) {
-  world.setDynamicProperty(WARPS_KEY, JSON.stringify(warps));
-}
-
-// Enviar mensaje colorido
-function sendMsg(player, msg) {
-  player.sendMessage(msg);
-}
-
-// Comando en chat
-world.beforeEvents.chatSend.subscribe(event => {
-  const player = event.sender;
-  const msg = event.message.trim();
-  if (!msg.startsWith('!')) return;
-  event.cancel = true;
-
-  const args = msg.split(' ');
-  const cmd = args[0].toLowerCase();
-
-  // Permisos para admin: aquí simple validación por nombre
-  const isAdmin = player.hasTag('admin') || player.isOp;
-
-  if (cmd === '!setwarp') {
-    if (!isAdmin) {
-      sendMsg(player, '§cSolo administradores pueden crear warps.');
-      return;
-    }
-    if (args.length < 2) {
-      sendMsg(player, '§cUso: !setwarp <nombre>');
-      return;
-    }
-    const warpName = args[1].toLowerCase();
-    const warps = getWarps();
-
-    warps[warpName] = {
-      dimension: player.dimension.id,
-      x: player.location.x,
-      y: player.location.y,
-      z: player.location.z,
-      yaw: player.location.yaw,
-      pitch: player.location.pitch
-    };
-
-    saveWarps(warps);
-    sendMsg(player, `§aWarp '${warpName}' creado.`);
-    return;
-  }
-
-  if (cmd === '!warp') {
-    if (args.length < 2) {
-      sendMsg(player, '§cUso: !warp <nombre>');
-      return;
-    }
-    const warpName = args[1].toLowerCase();
-    const warps = getWarps();
-    if (!(warpName in warps)) {
-      sendMsg(player, `§cNo existe el warp '${warpName}'.`);
-      return;
-    }
-    const warp = warps[warpName];
-    try {
-      player.teleport(
-        { x: warp.x, y: warp.y, z: warp.z, yaw: warp.yaw, pitch: warp.pitch },
-        world.getDimension(warp.dimension)
-      );
-      sendMsg(player, `§aTeletransportado a '${warpName}'.`);
-    } catch (e) {
-      sendMsg(player, '§cError al teletransportar.');
-    }
-    return;
-  }
-
-  if (cmd === '!warplist') {
-    const warps = getWarps();
-    const keys = Object.keys(warps);
-    if (keys.length === 0) {
-      sendMsg(player, '§cNo hay warps configurados.');
-      return;
-    }
-    sendMsg(player, `§aWarps disponibles: ${keys.join(', ')}`);
-    return;
-  }
-
-  // Si el comando no es reconocido
-  sendMsg(player, '§cComando no reconocido.');
-});
- 
- 
- 
-
-//TELEPORTACION 
-
-
-const tpRequests = new Map(); // clave: targetPlayerName, valor: { sender, timeoutId }
-
-// Enviar solicitud de teletransporte
-function sendTpRequest(sender, targetName) {
-  if (tpRequests.has(targetName)) {
-    sender.sendMessage(`§c${targetName} ya tiene una solicitud pendiente.`);
-    return false;
-  }
-  tpRequests.set(targetName, { sender: sender.name });
-  world.sendMessage(`§d${sender.name} ha solicitado teletransportarse a ${targetName}. ${targetName}, escribe !tpaccept o !si para aceptar.`);
-  
-  // Expirar solicitud en 40 segundos
-  const timeoutId = system.runTimeout(() => {
-    if (tpRequests.has(targetName)) {
-      tpRequests.delete(targetName);
-      world.sendMessage(`§cLa solicitud de teletransporte de ${sender.name} a ${targetName} ha expirado.`);
-    }
-  }, 40 * 20);
-  
-  tpRequests.get(targetName).timeoutId = timeoutId;
-  return true;
-}
-
-// Aceptar solicitud
-function acceptTpRequest(targetPlayer) {
-  const req = tpRequests.get(targetPlayer.name);
-  if (!req) {
-    targetPlayer.sendMessage('§cNo tienes solicitudes de teletransporte pendientes.');
-    return false;
-  }
-  const senderPlayer = world.getPlayers().find(p => p.name === req.sender);
-  if (!senderPlayer) {
-    targetPlayer.sendMessage(`§cEl jugador ${req.sender} ya no está en línea.`);
-    tpRequests.delete(targetPlayer.name);
-    return false;
-  }
-
-  // Ejecutar teleport
-  senderPlayer.teleport(targetPlayer.location, targetPlayer.dimension);
-  senderPlayer.sendMessage(`§aTeletransportado a ${targetPlayer.name}.`);
-  targetPlayer.sendMessage(`§aHas aceptado la solicitud de teletransporte de ${senderPlayer.name}.`);
-  tpRequests.delete(targetPlayer.name);
-  return true;
-}
-
-// Manejo de comandos en chat
-world.beforeEvents.chatSend.subscribe(event => {
-  const player = event.sender;
-  const message = event.message.trim().toLowerCase();
-
-  if (!message.startsWith('!')) return;
-  event.cancel = true;
-
-  const args = message.split(' ');
-
-  if (args[0] === '!tpa') {
-    if (args.length < 2) {
-      player.sendMessage('§cUso: !tpa <nombre_jugador>');
-      return;
-    }
-    const targetName = args[1];
-    if (targetName === player.name.toLowerCase()) {
-      player.sendMessage('§cNo puedes enviarte una solicitud a ti mismo.');
-      return;
-    }
-    const targetPlayer = world.getPlayers().find(p => p.name.toLowerCase() === targetName);
-    if (!targetPlayer) {
-      player.sendMessage(`§cJugador ${targetName} no encontrado.`);
-      return;
-    }
-    sendTpRequest(player, targetPlayer.name);
-    return;
-  }
-
-  if (args[0] === '!tpaccept' || args[0] === '!si') {
-    acceptTpRequest(player);
-    return;
-  }
-
-  // Aquí puedes añadir otros comandos o enviar mensaje no reconocido
-  player.sendMessage('§cComando no reconocido. Usa !help para ver comandos.');
-});
-
-
-
-
-//AYUDA !HELP
-
-
-world.beforeEvents.chatSend.subscribe(event => {
-  const player = event.sender;
-  const message = event.message.trim().toLowerCase();
-
-  if (message !== '!help') return;
-  event.cancel = true;
-
-  const isAdmin = player.hasTag('admin') || player.isOp;
-
-  let helpMsg = `§g§l===== §dComandos disponibles§r§g =====\n\n` +
-  `§e§l— General —\n` +
-  `!help - Mostrar esta ayuda\n` +
-  `!hora - Mostrar la hora actual\n` +
-  `!spawn - Teletransportarse al spawn\n` +
-  `!dia - Cambiar a día (provisional)\n` +
-  `!clima - Pacificar el clima (provisional)\n\n` +
-
-  `§b§l— Casa y Teletransportes —\n` +
-  `!set - Establecer tu casa\n` +
-  `!home - Teletransportarte a tu casa\n` +
-  `!tpa <jugador> - Solicitar teletransportarte a un jugador\n` +
-  `!tpaccept / !si - Aceptar solicitud de teletransporte\n` +
-  `!reqs - Ver solicitudes de teletransporte pendientes\n\n` +
-
-  `§a§l— Warps —\n` +
-  `!warplist - Listar warps disponibles\n` +
-  `!warp <nombre> - Teletransportarse a un warp\n`;
-
-  if (isAdmin) {
-    helpMsg +=
-    `!setwarp <nombre> - Crear un warp\n` +
-    `!delwarp <nombre> - Eliminar un warp\n\n` +
-
-    `§c§l— Administración —\n` +
-    `!cleardp - Borrar todas las propiedades dinámicas del mundo\n` +
-    `!clearmydp - Borrar tus propiedades dinámicas\n` +
-    `!setplayerdp <jugador> <clave> <valor> - Establecer propiedad dinámica\n` +
-    `!owner <nombre> - Asignar propietario a un cofre (mirando el bloque)\n` +
-    `!update - Reiniciar servidor (kick a todos)\n\n`;
-  }
-
-  helpMsg +=
-  `§d§l— Economía —\n` +
-  `!balance - Mostrar tu saldo\n` +
-  `!pay <jugador> <cantidad> - Pagar a otro jugador\n` +
-  `!deposit <cantidad> - Depositar dinero en el banco\n` +
-  `!withdraw <cantidad> - Retirar dinero del banco\n\n` +
-
-  `§6§l— Misiones y Niveles —\n` +
-  `!mission - Ver misión diaria actual\n` +
-  `!mission progress - Ver progreso de misión\n` +
-  `!levels - Ver tu nivel y experiencia\n` +
-  `!leaderboard - Ver tabla de niveles\n\n` +
-
-  `§f§l— Otros —\n` +
-  `!mathquiz - Participar en el quiz matemático\n` +
-  `!getByte - Bytes usados por propiedades dinámicas\n` +
-  `!getAll - Propiedades dinámicas del mundo\n` +
-  `!getmyAll - Tus propiedades dinámicas\n`;
-
-  player.sendMessage(helpMsg);
-});
+  // player.sendMessage(helpMsg);
 
  
  
- 
- 
-  // Inicializar XP y nivel
-  if (getPlayerLevel(player) === 0) {
-    setPlayerLevel(player, 0);
-    player.setDynamicProperty("xp", 0);
-    player.setDynamicProperty("balance", 0);
-  }
-});
 
 
 //Creditos : DuctileCookie (más conocido por su nombre pasado NOTCH)

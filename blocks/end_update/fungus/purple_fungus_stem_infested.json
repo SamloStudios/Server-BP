@@ -64,7 +64,7 @@
 				]
 			},
 			"minecraft:destructible_by_explosion": {
-				"explosion_resistance": 200
+				"explosion_resistance": 50
 			},
 			"minecraft:geometry" : {
 				"identifier": "geometry.block",

@@ -1,0 +1,135 @@
+{
+	"format_version": "1.21.70",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:blue_fungus_growths",
+			"menu_category": {
+				"category": "nature"
+			},
+			"traits": {
+				"minecraft:placement_position": {
+					"enabled_states": ["minecraft:block_face"]
+				}
+			},
+			"states": {
+				"custom:variant" : [0, 1]
+			}
+		},
+		"components": {
+			"emitter:particles": {
+				"id" : "particle:fungus_growth",
+				"probability" : 0.03,
+				"random_timeout" : [0, 2],
+				"particle_disabler" : {
+					"state" : "minecraft:block_face",
+					"operator" : "!=",
+					"value" : "down"
+				}
+			},
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+			"placement:random_variant" : {
+				"values" : [0, 1]
+			},
+			"sensor:broken_base" : {},
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"minecraft:display_name": "Crecimientos de hongo azul",
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0.5
+			},
+			"tag:minecraft:is_shears_item_destructible" : {},
+			"minecraft:geometry" : {
+				"identifier": "geometry.any_grass"
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 20
+			},
+			"minecraft:material_instances": {
+				"*" : {
+					"texture": "blue_fungus_growths",
+					"render_method": "alpha_test"
+				}
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#ffffff",
+			"minecraft:liquid_detection": {
+				"detection_rules": [
+					{
+						"can_contain_liquid": false,
+						"on_liquid_touches": "popped"
+					}
+				]
+			}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('custom:variant') == 0 ",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "blue_fungus_growths2",
+							"render_method": "alpha_test"
+						}
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'down' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [180, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'up' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 90]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'east' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, -90]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [90, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'north' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [-90, 0, 0]
+					}
+				}
+			}
+		]
+	}
+}

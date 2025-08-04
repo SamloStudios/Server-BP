@@ -1,0 +1,24 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:item": {
+        "description": {
+            "identifier": "endupdate:purple_lightvine",
+            "menu_category": {
+                "category": "nature"
+            }
+        },
+        "components": {
+            "minecraft:block_placer": {
+                "block": "endupdate:purple_lightvine",
+                "replace_block_item": true
+            },
+            "minecraft:icon": "purple_lightvine_placer",
+            "minecraft:display_name": {
+                "value": "Enredadera Luminosa"
+            },
+            "minecraft:fuel": {
+                "duration": 4
+            }
+        }
+    }
+}

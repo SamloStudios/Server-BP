@@ -1,5 +1,5 @@
 // debug_stick_component.js (or whatever you name this file)
-import { system, world } from '@minecraft/server'; // Add 'world' import
+import { MolangVariableMap, system, world } from '@minecraft/server'; // Add 'world' import
 // import { getChestOwner } from "utils/ownershipUtils.js"
 
 export const DebugStick = {
@@ -13,6 +13,11 @@ export const DebugStick = {
         const below = {x: blockLocation.x, y: blockLocation.y-5, z: blockLocation.z}
 
         // world.getDimension("overworld").placeFeature("minecraft:pagoda", blockLocation, true);
+
+        // const molang = new MolangVariableMap()
+        // molang.setFloat("variable.steps", 5);
+
+        // block.dimension.spawnParticle("particle:icon", blockLocation, molang);
 
         let debugInfo = `§a--- Block Debug Info ---\n`;
         debugInfo += `§gType: §c${block.typeId}§g\n`;

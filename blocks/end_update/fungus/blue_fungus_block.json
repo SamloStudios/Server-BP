@@ -1,0 +1,63 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:blue_fungus_block",
+			"menu_category": {
+				"category": "nature"
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Bloque de hongo azul",
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.8,
+				"item_specific_speeds": [
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:wooden_tier')"
+						},
+						"destroy_speed": 0.9
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:stone_tier')"
+						},
+						"destroy_speed": 0.45
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:iron_tier')"
+						},
+						"destroy_speed": 0.3
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:golden_tier')"
+						},
+						"destroy_speed": 0.15
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:diamond_tier')"
+						},
+						"destroy_speed": 0.24
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:netherite_tier')"
+						},
+						"destroy_speed": 0.21
+					}
+				]
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 60
+			},
+			"minecraft:light_emission": 8,
+			"minecraft:light_dampening": 15,
+			"minecraft:map_color": "#6977ff"
+		}
+	}
+}

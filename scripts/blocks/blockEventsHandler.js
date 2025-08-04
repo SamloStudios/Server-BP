@@ -1,4 +1,4 @@
-import { world} from '@minecraft/server';
+import { world } from '@minecraft/server';
 import { beforePlayerInteraction } from './blockEvents/beforeInteraction.js'
 import { beforePlayerPlaceBlock } from './blockEvents/beforePlaceBlock.js';
 import { afterPlayerPlaceBlock } from './blockEvents/afterPlaceBlock.js';

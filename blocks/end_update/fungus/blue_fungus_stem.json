@@ -1,0 +1,114 @@
+{
+	"format_version": "1.21.70",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:blue_fungus_stem",
+			"menu_category": {
+				"category": "nature"
+			},
+			"traits": {
+				"minecraft:placement_position": {
+					"enabled_states": ["minecraft:block_face"]
+				}
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Tallo de hongo azul",
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 3,
+				"item_specific_speeds": [
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:wooden_tier')"
+						},
+						"destroy_speed": 1.5
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:stone_tier')"
+						},
+						"destroy_speed": 0.75
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:iron_tier')"
+						},
+						"destroy_speed": 0.5
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:golden_tier')"
+						},
+						"destroy_speed": 0.25
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:diamond_tier')"
+						},
+						"destroy_speed": 0.4
+					},
+					{
+						"item": {
+							"tags": "q.all_tags('minecraft:is_axe', 'minecraft:netherite_tier')"
+						},
+						"destroy_speed": 0.35
+					}
+				]
+			},
+			"minecraft:geometry" : {
+				"identifier": "geometry.block",
+				"culling": "block:render_rules"
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 100
+			},
+			"minecraft:material_instances": {
+				"*" : {
+					"texture": "blue_fungus_stem_side",
+					"render_method": "opaque"
+				},
+				"up" : {
+					"texture": "blue_fungus_stem_top",
+					"isotropic": true,
+					"render_method": "opaque"
+				},
+				"down" : {
+					"texture": "blue_fungus_stem_top",
+					"isotropic": true,
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:light_emission": 10,
+			"minecraft:light_dampening": 15,
+			"minecraft:map_color": "#ffffff"
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'up' || q.block_state('minecraft:block_face') == 'down' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'east' || q.block_state('minecraft:block_face') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 90]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'north' || q.block_state('minecraft:block_face') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [90, 0, 0]
+					}
+				}
+			}
+		]
+	}
+}

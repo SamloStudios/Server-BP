@@ -2,7 +2,7 @@
 	"format_version": "1.21.80",
 	"minecraft:item": {
 		"description": {
-			"identifier": "foundry:clayMold",
+			"identifier": "foundry:claymold",
 			"menu_category": {
 				"category": "items"
 			}
