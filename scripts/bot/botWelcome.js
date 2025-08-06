@@ -1,5 +1,4 @@
 import { world } from "@minecraft/server";
-import { formatPlayerName } from './botCommands.js';
 
 // Mensaje de bienvenida al spawnear
 world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {

@@ -1,5 +1,5 @@
 import { system, world } from '@minecraft/server';
-import { getTime } from './botUtils.js';
+import { getTime } from 'bot/botUtils.js';
 import { setHome, home } from './commands/home.js';
 import { reqs, tpa, tpaccept } from './commands/tp.js';
 import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
@@ -56,7 +56,7 @@ function getLevelFromXP(xp) {
     return level;
 }
 
-function getRank(player) {
+export function getRank(player) {
     const data = getPlayerData(player);
     let currentRank = RANKS[0];
     for (const rank of RANKS) {
@@ -371,7 +371,7 @@ world.beforeEvents.chatSend.subscribe(event => {
 });
 
 // Eventos para misiones
-world.afterEvents.blockBreak.subscribe(event => {
+world.afterEvents.playerBreakBlock.subscribe(event => {
     const player = event.player;
     updateMissionProgress(player, 'mine', 1);
 });
@@ -383,9 +383,10 @@ world.afterEvents.entityHurt.subscribe(event => {
     }
 });
 
-// Limpieza de solicitudes de teletransporte al desconectar
+// Limpieza de solicitudes de teletransporte al desconectar // Whaaat????
 world.afterEvents.playerLeave.subscribe(({ playerName }) => {
     playerMissions.delete(playerName);
-    const clan = clanData.get(getPlayerData({ name: playerName }).clan);
-    if (clan) clan.members.delete(playerName);
+    const clan = clanData.get(getPlayerData({ name: playerName }).clan); 
+    // Esto no tiene sentido bro, porque eliminar al jugador del clan??
+    if (clan) clan.members.delete(playerName); // No se esta siquiera guardando
 });
