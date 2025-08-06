@@ -1,18 +1,16 @@
-import { system, world, Player } from "@minecraft/server";
+import { world } from "@minecraft/server";
+import { formatPlayerName } from './botCommands.js';
 
-
-world.afterEvents.playerSpawn.subscribe(({player, initialSpawn}) => {
-    if (!initialSpawn) return; // change this to send to jail the bad players
-
-    let playerTags = player.getTags();
-
-    if (playerTags.includes("admin")) {
-        world.sendMessage(`§9§lBienvenido de vuelta: §u[ADMIN] ${player.name}`);
-    } else world.sendMessage(`§3${player.name} ha entrado al server`);
+// Mensaje de bienvenida al spawnear
+world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
+    if (!initialSpawn) return; // Ignora respawns
+    const message = player.hasTag("admin") 
+        ? `§9§lBienvenido de vuelta: §u[ADMIN] ${player.name}`
+        : `§3${player.name} ha entrado al server`;
+    world.sendMessage(message);
 });
 
-
-world.afterEvents.playerLeave.subscribe((event) => {
-    const playerName = event.playerName;
+// Mensaje al salir del servidor
+world.afterEvents.playerLeave.subscribe(({ playerName }) => {
     world.sendMessage(`§7§o${playerName} ha salido del server`);
 });
