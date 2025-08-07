@@ -2,9 +2,9 @@
     "format_version": "1.13.0",
     "minecraft:structure_template_feature": {
         "description": {
-            "identifier": "minecraft:hongo_azul1"
+            "identifier": "minecraft:hongo_p_caido1"
         },
-        "structure_name": "mystructure:hongoAzul1",
+        "structure_name": "mystructure:hongoPcaido1",
         "adjustment_radius": 5,
         "constraints": {
             "grounded": {},

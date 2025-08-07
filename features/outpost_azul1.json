@@ -2,12 +2,12 @@
     "format_version": "1.13.0",
     "minecraft:structure_template_feature": {
         "description": {
-            "identifier": "minecraft:hongo_azul1"
+            "identifier": "minecraft:outpost_azul1"
         },
-        "structure_name": "mystructure:hongoAzul1",
-        "adjustment_radius": 5,
+        "structure_name": "mystructure:outpostAzul1",
+        "adjustment_radius": 15,
         "constraints": {
-            "grounded": {},
+            "unburied": {},
             "block_intersection": {
                 "block_allowlist": [
                     "minecraft:air",

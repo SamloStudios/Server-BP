@@ -1,0 +1,25 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "endupdate:raw_purpur_block_recipe"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "PPP",
+            "PPP",
+            "PPP"
+        ],
+        "key": {
+            "P": {
+                "item": "endupdate:raw_purpur"
+            }
+        },
+        "result": {
+            "item": "endupdate:raw_purpur_block",
+            "count": 1
+        }
+    }
+}

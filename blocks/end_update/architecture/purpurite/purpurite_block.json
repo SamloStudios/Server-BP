@@ -8,6 +8,10 @@
 			}
 		},
 		"components": {
+			"break:restriction" : {
+				"item" : "endupdate:indigo_pickaxe"
+			},
+			"minecraft:loot": "loot_tables/nothing.json",
 			"minecraft:display_name": "Bloque de purpurita",
 			"minecraft:collision_box": true,
 			"minecraft:selection_box": true,
@@ -16,7 +20,7 @@
 			"tag:minecraft:netherite_tier_destructible" : {},
 			
 			"minecraft:destructible_by_mining": {
-				"seconds_to_destroy": 3.8
+				"seconds_to_destroy": 8.8
 			},
 			"minecraft:destructible_by_explosion": {
 				"explosion_resistance": 90

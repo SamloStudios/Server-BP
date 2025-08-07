@@ -2,11 +2,11 @@
     "format_version": "1.13.0",
     "minecraft:feature_rules": {
         "description": {
-            "identifier": "minecraft:rule_hongo_mini4",
-            "places_feature": "minecraft:hongo_mini4"
+            "identifier": "minecraft:rule_outpost_azul1",
+            "places_feature": "minecraft:outpost_azul1"
         },
         "conditions": {
-          "placement_pass": "surface_pass",
+          "placement_pass": "after_surface_pass",
           "minecraft:biome_filter": [
             {
               "any_of": [
@@ -42,12 +42,12 @@
 
         "distribution": {
           "iterations": 1,
-          "scatter_chance": "(1.8)",
+          "scatter_chance": "(0.12)",
           "x": {
             "extent": [0, 15],
             "distribution": "uniform"
           },
-          "y": "query.heightmap(variable.worldx, variable.worldz) -1",
+          "y": "query.heightmap(variable.worldx, variable.worldz)+ 60 + math.round(math.random(0, 30))",
           "z": {
             "extent": [0, 15],
             "distribution": "uniform"

@@ -1,0 +1,20 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "endupdate:purpur_polished_block_recipe"
+        },
+        "tags": [
+            "stonecutter"
+        ],
+        "ingredients": [
+            {
+                "item": "endupdate:raw_purpur_block"
+            }
+        ],
+        "result": {
+            "item": "endupdate:purpur_polished_block",
+            "count": 1
+        }
+    }
+}

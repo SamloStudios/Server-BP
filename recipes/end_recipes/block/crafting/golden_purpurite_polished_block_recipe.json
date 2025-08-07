@@ -1,0 +1,28 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "endupdate:golden_purpurite_polished_block_recipe"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "ggg",
+            "g#g",
+            "ggg"
+        ],
+        "key": {
+            "#": {
+                "item": "endupdate:purpurite_polished_block"
+            },
+            "g": {
+                "item": "minecraft:gold_nugget"
+            }
+        },
+        "result": {
+            "item": "endupdate:golden_purpurite_polished_block",
+            "count": 1
+        }
+    }
+}

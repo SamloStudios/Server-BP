@@ -1,5 +1,5 @@
 {
-	"format_version": "1.21.50",
+	"format_version": "1.21.90",
 	"minecraft:block": {
 		"description": {
 			"identifier": "endupdate:cut_purpurite_block",
@@ -11,12 +11,15 @@
 			"minecraft:display_name": "Bloque de purpurita cortado",
 			"minecraft:collision_box": true,
 			"minecraft:selection_box": true,
-
+			"break:restriction" : {
+				"item" : "endupdate:indigo_pickaxe"
+			},
+			"minecraft:loot": "loot_tables/nothing.json",
 			"tag:minecraft:is_pickaxe_item_destructible" : {},
 			"tag:minecraft:netherite_tier_destructible" : {},
 
 			"minecraft:destructible_by_mining": {
-				"seconds_to_destroy": 3.8
+				"seconds_to_destroy": 8.8
 			},
 			"minecraft:destructible_by_explosion": {
 				"explosion_resistance": 90
