@@ -1,15 +1,14 @@
 import { world } from "@minecraft/server";
+import { formatPlayerName } from './botCommands.js';
 
-// Mensaje de bienvenida al spawnear
 world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
-    if (!initialSpawn) return; // Ignora respawns
+    if (!initialSpawn) return;
     const message = player.hasTag("admin") 
-        ? `§9§lBienvenido de vuelta: §u[ADMIN] ${player.name}`
-        : `§3${player.name} ha entrado al server`;
+        ? `§9§lEl Gran Señor ${player.name} ha regresado al reino.`
+        : `§3El viajero ${player.name} ha llegado al reino.`;
     world.sendMessage(message);
 });
 
-// Mensaje al salir del servidor
 world.afterEvents.playerLeave.subscribe(({ playerName }) => {
-    world.sendMessage(`§7§o${playerName} ha salido del server`);
+    world.sendMessage(`§7§oEl viajero ${playerName} ha abandonado el reino.`);
 });

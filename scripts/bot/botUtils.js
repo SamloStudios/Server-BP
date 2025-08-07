@@ -3,7 +3,7 @@ export function getTime() {
     const now = new Date();
     let utcHours = now.getUTCHours();
     let utcMinutes = now.getUTCMinutes();
-    const timezoneOffsetHours = -6; // GMT-6
+    const timezoneOffsetHours = -6;
     let desiredHours = utcHours + timezoneOffsetHours;
 
     if (desiredHours < 0) desiredHours += 24;

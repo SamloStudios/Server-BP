@@ -1,12 +1,11 @@
 import { system, world } from "@minecraft/server";
-// import { truncateFloat } from "./botUtils"; Antes X
-import { truncateFloat } from "../botUtils"; //Despues
+import { truncateFloat } from './botUtils.js';
 
 export function setHome(player) {
     const pos = player.location;
     const dim = player.dimension.id;
     if (dim !== 'minecraft:overworld') {
-        player.sendMessage(`§cSolo puedes establecer tu casa en el Overworld.`);
+        player.sendMessage(`§cSolo los grandes señores pueden establecer hogares fuera del Overworld.`);
         return;
     }
     const newHomeData = {
@@ -18,14 +17,13 @@ export function setHome(player) {
         }
     };
     player.setDynamicProperty(`home`, JSON.stringify(newHomeData));
-    player.sendMessage(`§aTu casa ha sido registrada en ${newHomeData.location.x}, ${newHomeData.location.y}, ${newHomeData.location.z}.`);
-    console.log(`@$houseUpdate ${player.name} ${newHomeData.location.x} ${newHomeData.location.y} ${newHomeData.location.z} ${dim}`);
+    player.sendMessage(`§aTu hogar ha sido registrado en X:${newHomeData.location.x}, Y:${newHomeData.location.y}, Z:${newHomeData.location.z}.`);
 }
 
 export function home(player) {
     const home = player.getDynamicProperty(`home`);
     if (!home) {
-        player.sendMessage('§cNo tienes una casa registrada. Usa !set para establecer una.');
+        player.sendMessage('§cNo tienes un hogar registrado. Usa !set para establecer uno.');
         return;
     }
     const homeData = JSON.parse(home);
@@ -34,7 +32,7 @@ export function home(player) {
         const dim = world.getDimension(dimension);
         if (dim) {
             player.teleport(location, { dimension: dim });
-            player.sendMessage(`§aTeletransportándote a tu casa en ${dimension}...`);
+            player.sendMessage(`§aTeletransportándote a tu hogar en el reino...`);
         } else {
             player.sendMessage('§cDimensión no encontrada.');
         }

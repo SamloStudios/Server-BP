@@ -5,7 +5,7 @@ export const playerTpReqs = [];
 export function tpaccept(player) {
     const req = playerTpReqs.find(r => r.target === player.name);
     if (!req) {
-        player.sendMessage("§cNo tienes solicitudes pendientes.");
+        player.sendMessage("§cNo tienes solicitudes de teletransporte pendientes.");
         return;
     }
     const sender = world.getAllPlayers().find(p => p.name === req.sender);
@@ -16,7 +16,7 @@ export function tpaccept(player) {
     }
     system.run(() => {
         sender.teleport(player.location, { dimension: player.dimension });
-        sender.sendMessage(`§aTeletransportando a ${player.name}.`);
+        sender.sendMessage(`§aTeletransportado al viajero ${player.name}.`);
         player.sendMessage(`§aSolicitud de §g${req.sender}§a aceptada.`);
         removeTpReq(req.sender, req.target);
     });
