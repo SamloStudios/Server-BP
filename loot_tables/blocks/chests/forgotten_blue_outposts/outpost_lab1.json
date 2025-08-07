@@ -1,0 +1,231 @@
+{
+  "pools": [
+    {
+      "rolls": 3,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:iron_sword",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:crossbow",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:bow",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:shield",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:end_crystal",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:totem_of_undying",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:iron_helmet",
+          "weight": 2,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:chainmail_chestplate",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond_boots",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond_chestplate",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "enchant_randomly"
+            },
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.2,
+                "max": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond_leggings",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "enchant_randomly"
+            },
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.2,
+                "max": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:elytra",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:chorus_fruit",
+          "weight": 3,
+          "functions": [{ "function": "set_count", "count": { "min": 4, "max": 7 } }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:beetroot_soup",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:golden_apple",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "minecraft:potion",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Potion of Immunity" }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:potion",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Unstable Serum" }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:end_stone",
+          "weight": 3,
+          "functions": [{ "function": "set_count", "count": { "min": 8, "max": 16 } }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:obsidian",
+          "weight": 2,
+          "functions": [{ "function": "set_count", "count": { "min": 4, "max": 8 } }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:sculk",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:glass_bottle",
+          "weight": 1,
+          "functions": [{ "function": "set_name", "name": "Empty Antiserum Vial" }]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+            "type": "item",
+            "name": "minecraft:written_book",
+            "weight": 1,
+            "functions": [
+                {
+                    "function": "set_book_contents",
+                    "title": "Mutation Phase I",
+                    "author": "Dr. Arel",
+                    "pages": [
+                        "Day 03:\nInitial signs appear in Subject-03. Crouched-like posture, but increased aggression.\nNo external wounds.",
+                        "Day 06:\nSubject's voice replaced by low-frequency clicking. Sclera of eyes now fully violet.",
+                        "Day 09:\nSubject 03 escaped.\nContainment protocol 4 triggered.\nCaptain says it’s not the first case..."
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:written_book",
+            "weight": 1,
+            "functions": [
+                {
+                    "function": "set_book_contents",
+                    "title": "Mutation Phase II",
+                    "author": "Dr. Arel",
+                    "pages": [
+                        "Day 14:\nSubject-11’s teleportation is erratic. Controlled? No. It reacts to stress.",
+                        "Day 16:\nTissue samples exhibit crystalline spread. Similar to chorus fruit geometry.",
+                        "Day 19:\nWe lost Med Team-B. The screams lasted longer than I expected."
+                    ]
+                }
+            ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:name_tag",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Sujeto: Infectado-03" }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:name_tag",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Sujeto: Cura-11 fallida" }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:music_disc_13",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Audio Log: Terapia de campanas 1" }
+          ]
+        }
+      ]
+    }
+  ]
+}

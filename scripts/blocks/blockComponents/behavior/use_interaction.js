@@ -13,7 +13,7 @@ export const UseInteraction = {
         if (probability < Math.random()) return;
 
         const particle_disabler = p.params.disabler;
-        if (disabler(particle_disabler)) return;
+        if (disabler(particle_disabler, block)) return;
 
         if (p.params.set_state) {
             const s = p.params.set_state;
@@ -27,6 +27,11 @@ export const UseInteraction = {
             if (!s.probability || s.probability > Math.random()){
                 event.dimension.spawnParticle(s.id, block.center());
             }
+        }
+
+        if (p.params.sound) {
+            const s = p.params.sound;
+            block.dimension.playSound(s.id, block.center())
         }
     }   
 }

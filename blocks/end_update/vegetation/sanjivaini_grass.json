@@ -29,14 +29,17 @@
 				"probability" : 1,
 				"disabler" : {
 					"state": "custom:variant",
-					"value": 1
+					"value": 0
 				},
 				"set_state" : {
 					"state" : "custom:variant",
 					"value" : 0
 				},
 				"particles" : {
-					"id" : "particle:smoke_particle_0"
+					"id" : "particle:magic_poof"
+				},
+				"sound" : {
+					"id" : "magic.poof"
 				}
 			},
 			"behavior:on_random_tick" : {

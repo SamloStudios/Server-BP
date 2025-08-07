@@ -2,8 +2,8 @@
     "format_version": "1.13.0",
     "minecraft:feature_rules": {
         "description": {
-            "identifier": "minecraft:rule_hongo_grande4",
-            "places_feature": "minecraft:hongo_grande4"
+            "identifier": "minecraft:rule_hongo_p_caido1",
+            "places_feature": "minecraft:hongo_p_caido1"
         },
         "conditions": {
           "placement_pass": "surface_pass",

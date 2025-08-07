@@ -1,0 +1,287 @@
+{
+  "pools": [
+    {
+      "rolls": 3,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:iron_sword",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:crossbow",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:bow",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:shield",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:end_crystal",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:totem_of_undying",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:iron_helmet",
+          "weight": 2,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:chainmail_chestplate",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond_boots",
+          "weight": 1,
+          "functions": [{ "function": "enchant_randomly" }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond_chestplate",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "enchant_randomly"
+            },
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.2,
+                "max": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond_leggings",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "enchant_randomly"
+            },
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.2,
+                "max": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:elytra",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:chorus_fruit",
+          "weight": 3,
+          "functions": [{ "function": "set_count", "count": { "min": 4, "max": 7 } }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:beetroot_soup",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:golden_apple",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "minecraft:potion",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Intento de pocion de inmunidad" }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:potion",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Suero Inestable" }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:end_stone",
+          "weight": 3,
+          "functions": [{ "function": "set_count", "count": { "min": 8, "max": 16 } }]
+        },
+        {
+          "type": "item",
+          "name": "endupdate:purpur_ore",
+          "weight": 3,
+          "functions": [{ "function": "set_count", "count": { "min": 8, "max": 16 } }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:obsidian",
+          "weight": 2,
+          "functions": [{ "function": "set_count", "count": { "min": 4, "max": 8 } }]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:string",
+          "weight": 1
+        },
+        {
+          "type": "item",
+          "name": "minecraft:glass_bottle",
+          "weight": 1,
+          "functions": [{ "function": "set_name", "name": "Vial vacio de anti-suero" }]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            { "function": "set_name", "name": "Log del capitan" },
+            { "function": "set_lore", "lore": ["Evacuacion Fallida", "Tel Mires y Adra ya no son mas", "Eunaid aun resiste", "Repartan el mensaje a todos", "No hemos logrado avances", "Quiza es nuestro castigo..."]}
+          ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Nota del Soldado: Turno Nocturno" },
+                { "function": "set_lore", "lore": ["No se si me estoy volviendo loco", "yo si les tengo miedo", "aun veo sus ojos", "estoy enloqueciendo?"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Bitácora" },
+            { "function": "set_lore", "lore": ["Algo nos observa", "desde abajo.", "No es humano..."]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Informe" },
+            { "function": "set_lore", "lore": ["La niebla morada avanza", "Pero no estoy seguro de ello"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Fragmento" },
+            { "function": "set_lore", "lore": ["Perdimos la torre este", "No tienen miedo de nosotros"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Nota desesperada" },
+            { "function": "set_lore", "lore": ["La mutación comenzó", "ya no podemos hacer nada..."]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Registro de Guardia" },
+            { "function": "set_lore", "lore": ["Yo ya no confío en ellos", "mira sus dientes", "dicen que esto es normal?"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Nota" },
+            { "function": "set_lore", "lore": ["Sus ojos brillan en la oscuridad"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Informe de retirada" },
+            { "function": "set_lore", "lore": ["Demasiado tarde", "No logramos evacuar la ciudad", "Que los dioses nos protejan..."]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Apunte secreto" },
+                { "function": "set_lore", "lore": ["Yo también escucho las voces"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:paper",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Ultimo mensaje del centinela" },
+                { "function": "set_lore", "lore": ["Viene desde el sur", "Es esa niebla morada?"]}
+            ]
+        },
+        {
+            "type": "item",
+            "name": "minecraft:music_disc_13",
+            "weight": 1,
+            "functions": [
+                { "function": "set_name", "name": "Audio Log" },
+                { "function": "set_lore", "lore": ["Terapia de campanas 1"]}
+            ]
+        }
+      ]
+    }
+  ]
+}

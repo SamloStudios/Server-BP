@@ -1,0 +1,82 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "endupdate:purpurite_pillar",
+			"menu_category": {
+				"category": "nature"
+			},
+			"traits": {
+				"minecraft:placement_position": {
+					"enabled_states": ["minecraft:block_face"]
+				}
+			}
+		},
+		"components": {
+			"break:restriction" : {
+				"item" : "endupdate:indigo_pickaxe"
+			},
+			"minecraft:loot": "loot_tables/nothing.json",
+			"minecraft:display_name": "Pilar de purpurita",
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+
+			"tag:minecraft:is_pickaxe_item_destructible" : {},
+			"tag:minecraft:netherite_tier_destructible" : {},
+
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 8.8
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 90
+			},
+			"minecraft:light_dampening": 15,
+			"minecraft:map_color": "#6977ff",
+
+			"minecraft:material_instances": {
+				"*" : {
+					"texture": "purpurite_pillar",
+					"render_method": "opaque"
+				},
+				"up" : {
+					"texture": "purpurite_pillar_top",
+					"render_method": "opaque"
+				},
+				"down" : {
+					"texture": "purpurite_pillar_top",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:geometry" : {
+				"identifier": "geometry.block",
+				"culling": "block:render_rules"
+			}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'up' || q.block_state('minecraft:block_face') == 'down' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'east' || q.block_state('minecraft:block_face') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 90]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:block_face') == 'north' || q.block_state('minecraft:block_face') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [90, 0, 0]
+					}
+				}
+			}
+		]
+	}
+}

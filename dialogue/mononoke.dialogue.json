@@ -1,0 +1,23 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "mononoke_scene",
+				"npc_name": "NPC",
+				"text": "Hola amigo!",
+				"buttons": [
+					{
+						"name": "Monaliza",
+						"commands": ["/dialogue open @s @initiator mononoke_scene_2", "/kill @initiator"]
+					}
+				]
+			},
+			{
+				"scene_tag": "mononoke_scene_2",
+				"npc_name": "NPC",
+				"text": "Sample Text"
+			}
+		]
+	}
+}
