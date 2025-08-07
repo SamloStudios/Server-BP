@@ -9,7 +9,7 @@
 				"buttons": [
 					{
 						"name": "Button",
-						"commands": ["/dialogue open @s @initiator skyblock_1st_interaction_pnj", "/summon firework"]
+						"commands": ["/dialogue open @s @initiator skyblock_1st_interaction_pnj", "/summon fireworks_rocket"]
 					}
 				]
 			},

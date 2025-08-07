@@ -1,627 +1,649 @@
-import { PlayerSpawnAfterEvent, system, world} from '@minecraft/server';
+import { system, world, ItemStack} from '@minecraft/server';
 import { getTime } from './botUtils.js';
-import { setChestOwner } from 'utils/ownershipUtils.js';
-import { home, setHome} from './commands/home.js';
-import { reqs, tpa, tpaccept} from './commands/tp.js'
-import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
+import { setHome, home } from './commands/home.js';
+import { reqs, tpa, tpaccept } from './commands/tp.js';
+import { setWarp, delWarp, getWarps } from './commands/warp.js';
 
-
-// Variables y estructuras de datos globales
-const playerTpReqs = [];
-const clanData = new Map(); // clanName -> {leader: string, members: Set<string>} y jugador -> clanName
-const claims = new Map(); // clave: "dim:x:z" -> {owner, trusted:Set}
-const missions = [
-  { id: 1, description: "Mineraliza 50 bloques", type: "mine", target: 50, rewardXP: 20, rewardGold: 10 },
-  { id: 2, description: "Derrota a 10 mobs", type: "killMob", target: 10, rewardXP: 30, rewardGold: 20 },
-];
-const playerMissions = new Map();
-const mathQuizActive = { active: false, answer: null, reward: 0 };
-const eventTimers = [];
-
+// Definición de rangos y reputación
 const RANKS = [
-  { level: 0, name: "Plebeyo", color: "§7" },
-  { level: 5, name: "Burgués", color: "§a", requirements: (p) => p.misiones >= 3 && p.dinero >= 100 },
-  { level: 15, name: "Noble", color: "§b" },
-  { level: 25, name: "Caballero", color: "§3" },
-  { level: 40, name: "Barón", color: "§9" },
-  { level: 65, name: "Conde", color: "§5" },
-  { level: 90, name: "Duque", color: "§6" },
-  { level: 160, name: "Príncipe", color: "§c" },
-  { level: 320, name: "Rey", color: "§4" },
-  { level: 640, name: "Emperador", color: "§l§6" }
+    { level: 0, name: "Campesino", color: "§7", requirements: () => true },
+    { level: 5, name: "Aldeano", color: "§f", requirements: (data) => data.misiones >= 3 && data.balance >= 100 && data.reputation >= 0 },
+    { level: 10, name: "Escudero", color: "§a", requirements: (data) => data.misiones >= 7 && data.balance >= 300 && data.reputation >= 1 },
+    { level: 15, name: "Caballero", color: "§b", requirements: (data) => data.misiones >= 15 && data.reputation >= 2 && data.balance >= 700 },
+    { level: 25, name: "Barón", color: "§9", requirements: (data) => data.misiones >= 25 && data.claims >= 1 && data.balance >= 1500 && data.reputation >= 3 },
+    { level: 40, name: "Conde", color: "§6", requirements: (data) => data.misiones >= 40 && data.reputation >= 4 && data.balance >= 2500 },
+    { level: 60, name: "Duque", color: "§5", requirements: (data) => data.misiones >= 60 && data.clan && data.balance >= 5000 && data.reputation >= 5 },
+    { level: 90, name: "Príncipe", color: "§d", requirements: (data) => data.misiones >= 90 && data.events >= 1 && data.balance >= 8000 && data.reputation >= 6 },
+    { level: 120, name: "Rey", color: "§c", requirements: (data) => data.misiones >= 120 && data.balance >= 15000 && data.events >= 3 && data.reputation >= 6 },
+    { level: 640, name: "Emperador", color: "§4", requirements: (data) => data.admin }
 ];
 
+const REPUTATION_LEVELS = [
+    { level: -3, name: "Forajido", color: "§4" },
+    { level: -2, name: "Rufián", color: "§c" },
+    { level: -1, name: "Pícaro", color: "§e" },
+    { level: 0, name: "Neutral", color: "§7" },
+    { level: 1, name: "Honrado", color: "§a" },
+    { level: 2, name: "Noble", color: "§b" },
+    { level: 3, name: "Heroico", color: "§d" }
+];
 
-// ---------------------- FUNCIONES DE UTILIDAD ------------------------
+// Estructuras de datos
+const playerMissions = new Map();
+const clanData = new Map();
+const claims = new Map();
+const mathQuizActive = { active: false, answer: null, reward: 0 };
+const missions = [
+    { id: 1, description: "Minar 50 bloques", type: "mine", target: 50, rewardXP: 20, rewardGold: 10, minRank: "Campesino" },
+    { id: 2, description: "Derrotar 10 mobs", type: "killMob", target: 10, rewardXP: 30, rewardGold: 15, minRank: "Campesino" },
+    { id: 3, description: "Caminar 1000 bloques", type: "move", target: 1000, rewardXP: 25, rewardGold: 12, minRank: "Aldeano" },
+    { id: 4, description: "Cocinar 20 alimentos", type: "cook", target: 20, rewardXP: 15, rewardGold: 8, minRank: "Aldeano" },
+    { id: 5, description: "Minar 100 bloques de mineral", type: "mineOre", target: 100, rewardXP: 50, rewardGold: 25, minRank: "Escudero" },
+    { id: 6, description: "Derrotar un jefe (Wither o Ender Dragon)", type: "killBoss", target: 1, rewardXP: 200, rewardGold: 100, minRank: "Caballero" }
+];
+
+const propertyCache = new Map();
 
 function getPlayerData(player) {
-  const playerName = player.name;
-  const dataStr = world.getDynamicProperty(`playerData:${playerName}`);
-
-  // Si no hay datos, retorna valores vacios
-  if (!dataStr) {
-    return { xp: 0, level: 0, balance: 0};
-  }
-
-  // Si hay datos, intentar convertirlos a objeto
-  try {
-    return JSON.parse(dataStr);
-  } catch {
-    // Manejar error de parsing
-    console.error(`Error parsing player data for ${playerName}`);
-    return { xp: 0, level: 0, balance: 0}; // Si hay error, retorna datos vacios
-  }
+    const key = `playerData:${player.name}`;
+    if (!propertyCache.has(key)) {
+        const dataStr = world.getDynamicProperty(key);
+        propertyCache.set(key, dataStr ? JSON.parse(dataStr) : {
+            xp: 0, level: 0, balance: 200, misiones: 0, reputation: 0, claims: 0, events: 0, clan: null, distance: 0, cooked: 0, admin: player.hasTag('admin')
+        });
+    }
+    return propertyCache.get(key);
 }
 
 function savePlayerData(player, data) {
-  const playerName = player.name;
-  world.setDynamicProperty(`playerData:${playerName}`, JSON.stringify(data));
+    const key = `playerData:${player.name}`;
+    propertyCache.set(key, data);
+    world.setDynamicProperty(key, JSON.stringify(data));
 }
 
 function getLevelFromXP(xp) {
-  // XP necesario se duplica cada nivel para hacer progresión más dura
-  let level = 0;
-  let xpNeeded = 10;
-  let xpAcc = 0;
-  while (xp >= xpAcc + xpNeeded) {
-    xpAcc += xpNeeded;
-    xpNeeded += 10 * level;
-    level++;
-  }
-  return level;
-}
-
-function getNextLevelXP(level) {
-    // Retorna la cantidad de XP necesaria para el siguiente nivel
-    let initlevel = 0;
-    let xpNeeded = 10;
-    let xpAcc = 0;
-    while (initlevel < level+1) {
+    let level = 0, xpNeeded = 100, xpAcc = 0;
+    while (xp >= xpAcc + xpNeeded) {
         xpAcc += xpNeeded;
-        xpNeeded += 10 * initlevel;
-        initlevel++;
+        xpNeeded = Math.floor(xpNeeded * 1.2); // Sistema exponencial
+        level++;
     }
-    return xpAcc;
+    return level;
 }
 
-function getRank(level) {
-  // Retorna el rango correspondiente para el nivel dado
-  let currentRank = RANKS[0];
-  for (const rank of RANKS) {
-    if (level >= rank.level) currentRank = rank;
-    else break;
-  }
-  return currentRank;
-}
-
-function formatPlayerName(player) {
-  let data = getPlayerData(player);
-  let rank = getRank(data.level);
-  let prefix = isAdmin(player) ? "§l§c[Emperador] " : `§r${rank.color}[${rank.name}] `;
-  return prefix + "§r" + player.name;
-}
-
-function sendRankedChat(player, message) {
-  // Envía un mensaje con el prefijo de rango y color
-  let formattedName = formatPlayerName(player);
-  world.sendMessage(`${formattedName}: §f${message}`);
-}
-
-
-// ------------------- COMANDOS Y EVENTOS PRINCIPALES -------------------
-
-world.beforeEvents.chatSend.subscribe((event) => {
-  const message = event.message;
-  const player = event.sender;
-  
-    if (!message.startsWith('!')) {
-      return; // Ignore messages that are not commands
-    } else event.cancel = true; // Prevent the message from being sent to the chat
-
-    if (message === '!help') {
-      player.sendMessage(`§g§lComandos disponibles:§r§d
-        !hora - Ver la hora actual
-        !spawn - Teletransportarse al spawn\n
-        <-Home->
-        !set - Establecer posición de casa
-        !home - Teletransportarse a la casa registrada\n
-        <-Teleport->
-        !reqs - Ver solicitudes de teletransporte pendientes
-        !tpa <jugador> - Solicitar teletransporte a otro jugador
-        !si - Aceptar solicitud de teletransporte\n
-        <-Warp->
-        !warp - Teletransportes públicos
-        !setwarp <nombre> - Establecer un warp personalizado
-        !delwarp <nombre> - Eliminar un warp\n
-        <- Claim (Proximamente) ->
-        <- Trust (Proximamente)->\n
-        <- Clan ->
-        !clan crear <nombre> - Crear clan
-        !clan invitar <jugador> - Invitar clan
-        !clan info - Info clan\n
-        <- Otros ->
-        !stats - Ver tus stats y rango
-        !pay <jugador> <cantidad> - Pagar monedas
-        !mathquiz - Iniciar minijuego matemático
-      `);
-      return;
-    }
-
-    if (message === '!helpadmin') {
-        player.sendMessage(`§g§lComandos de administrador:§r§d
-        !owner <jugador> - Cambiar dueño de un bloque
-        !getByte - Ver bytes usados por propiedades dinámicas
-        !getAll - Ver todas las propiedades dinámicas del mundo
-        !getmyAll - Ver todas tus propiedades dinámicas
-        < - Propiedades Dinámicas - >
-        !cleardp - Limpiar todas las propiedades dinámicas del mundo (solo SamloGamer)
-        !clearmydp - Limpiar todas tus propiedades dinámicas
-        !setplayerdp <jugador> <clave> <valor> - Establecer propiedad dinámica de un jugador`
-        );
-        return;
-    }
-
-    if (message === '!hora') {
-        let hora = getTime();
-        player.sendMessage(`§dLa hora actual es ${hora}`);
-        return;
-    }
-
-    if (message === '!spawn') {
-        system.run(() => {
-            const overworld = world.getDimension("overworld");
-            if (player) {
-                player.teleport({ x: 155, y: 95, z: -51 }, { dimension: overworld });
-                player.sendMessage(`Teletransportandote al spawn...`);
-            }
-        });
-        return;
-    }
-
-    if (message === '!set') {
-        setHome(player);
-        return;
-    }
-
-    if (message === '!home') {
-        home(player);
-        return;
-    }
-
-    // Comandos Teleport -------------------------------------------
-    if (message.startsWith('!tpa')) {
-        const args = message.split(' ');
-        tpa(player, args);
-        return;
-    }
-    
-    if (message === '!si') {
-        tpaccept(player);
-        return;
-    }
-
-    if (message === '!reqs') {
-        reqs(player);
-        return;
-    }
-    
-
-    // Comandos WARP -------------------------------------------
-    // Comando !setwarp
-    if (message.startsWith('!setwarp')) {
-        const args = message.split(' ');
-        setWarp(player, args);
-        return;
-    }
-
-    if (message === '!warp') {
-        getWarps(player);
-        return;
-    }
-
-    if (message.startsWith('!warp ')) {
-        const args = message.split(' ');
-        warpTo(player, args);
-        return;
-    }
-
-    if (message.startsWith('!delwarp')) {
-        const args = message.split(' ');
-        delWarp(player, args);
-        return;
-    }
-
-    // Comandos Clan -------------------------------------------
-    if (message === "!clan") {
-        args = message.split(' ');
-        if (args.length < 2) {
-            player.sendMessage("§cUso: !clan <crear|invitar|info>");
-            return;
-        }
-        switch (args[1]) {
-            case "crear":
-                if (args.length < 3) {
-                    player.sendMessage("§cUso: !clan crear <nombre>");
-                    return;
-                }
-                if ([...clanData.keys()].includes(args[2])) {
-                    player.sendMessage("§cYa existe ese clan.");
-                    return;
-                }
-                clanData.set(args[2], { leader: player.name, members: new Set([player.name]) });
-                clanData.set(player.name, args[2]);
-                player.sendMessage(`§aClan '${args[2]}' creado.`);
-                break;
-            case "invitar":
-                if (args.length < 3) {
-                    player.sendMessage("§cUso: !clan invitar <jugador>");
-                    return;
-                }
-                const clanName = clanData.get(player.name);
-                if (!clanName) {
-                    player.sendMessage("§cNo perteneces a ningún clan.");
-                    return;
-                }
-                const clan = clanData.get(clanName);
-                if (clan.leader !== player.name) {
-                    player.sendMessage("§cSolo el líder puede invitar.");
-                    return;
-                }
-                const invitee = [...world.getPlayers()].find(p => p.name.toLowerCase() === args[2].toLowerCase());
-                if (!invitee) {
-                    player.sendMessage("§cJugador no encontrado.");
-                    return;
-                }
-                if (clanData.get(invitee.name)) {
-                    player.sendMessage("§cEl jugador ya pertenece a un clan.");
-                    return;
-                }
-                clan.members.add(invitee.name);
-                clanData.set(invitee.name, clanName);
-                player.sendMessage(`§aInvitado ${invitee.name} al clan.`);
-                invitee.sendMessage(`§aHas sido invitado al clan '${clanName}' por ${player.name}.`);
-                break;
-            case "info":
-                const cName = clanData.get(player.name);
-                if (!cName) {
-                    player.sendMessage("§cNo perteneces a ningún clan.");
-                    return;
-                }
-                const c = clanData.get(cName);
-                player.sendMessage(`§bClan '${cName}' - Líder: ${c.leader} - Miembros: ${[...c.members].join(", ")}`);
-                break;
-                default:
-                player.sendMessage("§cSubcomando no reconocido.");
-        }
-        return;
-    }
-
-    if (message === "!stats") {
-        const data = getPlayerData(player);
-        const rank = getRank(data.level);
-        player.sendMessage(`
-            §6Tus stats:
-    Nivel: §a${data.level}§6
-    XP: §a${data.xp}§3
-    Rango: ${rank.color}${rank.name}§r
-    Balance: §e${data.balance} monedas`);
-        return;
-    }
-
-    if (message === "!rank") {
-        const data = getPlayerData(player);
-        const rank = getRank(data.level);
-        const index = RANKS.findIndex(r => r.name === rank.name);
-        const next = RANKS[index + 1];
-
-        player.sendMessage(`\n§6Tu rango actual: ${rank.color}${rank.name}`);
-        if (next) {
-        player.sendMessage(`§7Siguiente rango: ${next.color}${next.name}`);
-        player.sendMessage(`§7Requisitos para el siguiente rango: [${data.level} -> ${next.level}] = §a(${next.level - data.level})§7 niveles más`);
-        const nextLevelXp = getNextLevelXP(getLevelFromXP(data.xp)); 
-        player.sendMessage(`§7Requerimientos para el siguiente nivel: [${data.xp} -> ${nextLevelXp}] = §d(${nextLevelXp - data.xp}) XP §7más`);
-        player.sendMessage(`§7Recompensas: §b${next.rank_rewards ? next.rank_rewards : "No hay recompensa definida para este rango"}`);
-        player.sendMessage(`§8Para subir de rango completa más misiones, gana monedas, reputación, nivel, etc.`);
-        } else {
-        player.sendMessage(`§b¡Has alcanzado el máximo rango posible!`);
-        }
-        return;
-    }
-
-    if (message.startsWith("!addxp")) {
-        // if (!isAdmin(player)) return;
-        const args = message.split(' ');
-        addPlayerXp(player, args.length > 1 ? parseInt(args[1]) : 0);
-        return;
-    }
-
-    if (message === "!resetxp") {
-        let data = getPlayerData(player);
-        data.xp = 0;
-        data.level = 0;
-        savePlayerData(player, data);
-        player.sendMessage("§aTu XP ha sido reiniciado.");
-        return;
-    }
-
-    if (message.startsWith("!pay")) {
-        const args = message.split(' ');
-        // Comando !pay <jugador> <cantidad>
-        if (message === "!pay") {
-        if (args.length < 3) {
-            player.sendMessage("§cUso: !pay <jugador> <cantidad>");
-            return;
-        }
-        const targetName = args[1].toLowerCase();
-        const amount = parseInt(args[2]);
-        if (isNaN(amount) || amount <= 0) {
-            player.sendMessage("§cCantidad inválida.");
-            return;
-        }
-        const targetPlayer = [...world.getPlayers()].find(p => p.name.toLowerCase().startsWith(targetName));
-        if (!targetPlayer) {
-            player.sendMessage("§cJugador no encontrado.");
-            return;
-        }
-        let senderData = getPlayerData(player);
-        if (senderData.balance < amount) {
-            player.sendMessage("§cNo tienes suficiente dinero.");
-            return;
-        }
-        let receiverData = getPlayerData(targetPlayer);
-        senderData.balance -= amount;
-        receiverData.balance += amount;
-        savePlayerData(player, senderData);
-        savePlayerData(targetPlayer, receiverData);
-        player.sendMessage(`§aPagaste ${amount} monedas a ${targetPlayer.name}.`);
-        targetPlayer.sendMessage(`§aRecibiste ${amount} monedas de ${player.name}.`);
-        return;
-        }
-    }
-
-    if (message === "!mission") {
-        // Mostrar misión actual
-        const currentMission = playerMissions.get(player.name);
-        if (!currentMission) {
-            player.sendMessage("§cNo tienes misiones activas.");
-            return;
-        }
-        player.sendMessage(`§aMisión actual: ${currentMission.description} Progreso: ${currentMission.progress || 0}/${currentMission.target}`);
-        return;
-    }
-
-    if (message === "!mathquiz") {
-        if (mathQuizActive.active) {
-            player.sendMessage("§cYa hay un minijuego activo, espera a que termine.");
-            return;
-        }
-        // Crear pregunta sencilla
-        const a = Math.floor(Math.random() * 10) + 1;
-        const b = Math.floor(Math.random() * 10) + 1;
-        mathQuizActive.answer = a + b;
-        mathQuizActive.reward = 10;
-        mathQuizActive.active = true;
-        world.sendMessage(`§eMinijuego matemático activo! ¿Cuánto es ${a} + ${b}? Responde con !respuesta <número>`);
-        return;
-    }
-
-    if (message.startsWith("!respuesta")) {
-        const args = message.split(' ');
-        if (!mathQuizActive.active) {
-            player.sendMessage("§cNo hay minijuego activo.");
-            return;
-        }
-        if (args.length < 2) {
-            player.sendMessage("§cUso: !respuesta <número>");
-            return;
-        }
-        const respuesta = parseInt(args[1]);
-        if (respuesta === mathQuizActive.answer) {
-            addPlayerXp(player, 10); // Añadir XP al jugador
-            const data = getPlayerData(player);
-            data.balance += mathQuizActive.reward;
-            savePlayerData(player, data);
-            player.sendMessage(`§a¡Correcto! Ganaste 10 XP y ${mathQuizActive.reward} monedas.`);
-            mathQuizActive.active = false;
-            mathQuizActive.answer = null;
-            mathQuizActive.reward = 0;
-        } else {
-            player.sendMessage("§cRespuesta incorrecta. Intenta de nuevo.");
-        }
-        return;
-    }
-
-    // Comandos de Propiedades Dinámicas -------------------------------------------
-    if (message === "!getByte"){
-        let xd = world.getDynamicPropertyTotalByteCount()
-        player.sendMessage(`§aTotal de bytes usados por propiedades dinámicas: ${xd}`);
-        return;
-    }
-
-    if (message === "!getAll") {
-        let properties = world.getDynamicPropertyIds();
-        if (properties.length === 0) {
-            player.sendMessage('§cNo hay propiedades dinámicas registradas.');
-            return;
-        }
-        let propertiesList = properties.map(prop => `§b${prop}`).join('\n');
-        player.sendMessage(`§aPropiedades dinámicas registradas:\n${propertiesList}`);
-        return;
-    }
-
-    if (message === "!getmyAll") {
-        let properties = player.getDynamicPropertyIds();
-        if (properties.length === 0) {
-            player.sendMessage('§cNo tienes propiedades dinámicas registradas.');
-            return;
-        }
-        let propertiesList = properties.map(prop => `§b${prop}`).join('\n');
-        player.sendMessage(`§aPropiedades dinámicas registradas:\n${propertiesList}`);
-        return;
-    }
-
-    if (message === "!cleardp") {
-        if (!isAdmin(player) && player.nameTag !== "SamloGamer") return; //VALIDATION
-
-        player.sendMessage("§gTodas las propiedades del mundo han sido eliminadas")
-        world.clearDynamicProperties();
-        return;
-    }
-
-    if (message === "!clearmydp") {
-        if (!isAdmin(player)) return; //VALIDATION
-
-        player.sendMessage("§gTodas tus propiedades dinamicas han sido eliminadas")
-        player.clearDynamicProperties();
-        return;
-    }
-
-    if (message.startsWith("!setplayerdp")) {
-        if (!isAdmin(player)) {
-            player.sendMessage("§cNo tienes permiso para usar este comando.");
-            return; // VALIDATION: Solo admins pueden usar este comando
-        }
-
-        const args = message.split(' ');
-        if (args.length < 4) {
-            player.sendMessage("§cUso: !setplayerdp <jugador> <clave> <valor>");
-            player.sendMessage("§eEjemplo: !setplayerdp Steve 'clan:guerreros' 'true'");
-            return;
-        }
-
-        const targetPlayerName = args[1];
-        const dpKey = args[2];
-        const dpValue = args.slice(3).join(' '); // El valor puede contener espacios
-
-        // Buscar al jugador objetivo
-        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetPlayerName.toLowerCase());
-
-        if (!targetPlayer) {
-            player.sendMessage(`§cJugador '${targetPlayerName}' no encontrado.`);
-            return;
-        }
-
-        // Intentar determinar el tipo de valor (número, booleano, string)
-        let finalValue;
-        if (dpValue.toLowerCase() === 'true') {
-            finalValue = true;
-        } else if (dpValue.toLowerCase() === 'false') {
-            finalValue = false;
-        } else if (!isNaN(Number(dpValue)) && !isNaN(parseFloat(dpValue))) {
-            finalValue = Number(dpValue);
-        } else {
-            finalValue = dpValue; // Dejar como string si no es booleano ni número
-        }
-
-        try {
-            targetPlayer.setDynamicProperty(dpKey, finalValue);
-            player.sendMessage(`§aPropiedad dinámica '${dpKey}' de '${targetPlayer.name}' establecida a: '${finalValue}' (${typeof finalValue}).`);
-            // Opcional: Notificar al jugador modificado (si está en línea)
-            if (targetPlayer.isOnline) {
-                targetPlayer.sendMessage(`§bTu propiedad '${dpKey}' ha sido modificada a: '${finalValue}'.`);
-            }
-        } catch (error) {
-            player.sendMessage(`§cError al establecer la propiedad: ${error.message}`);
-        }
-        return;
-    }
-
-    if (message.startsWith("!owner")) {
-        if (!isAdmin(player)) return;
-
-        const args = message.split(' ');
-        let newOwner;
-        if (args.length < 2) {
-            newOwner = "unknown";
-        } else newOwner = args[1];
-
-        if (newOwner === 'null') {
-            newOwner = undefined;
-        }
-
-        const blockHit = player.getBlockFromViewDirection();
-        if (blockHit) {
-            setChestOwner(blockHit.block, newOwner);
-        }
-        player.sendMessage("§gSet new owner as: " + newOwner)
-        return;
-    }
-
-    if (message === "!update") {
-        if (!isAdmin(player)) return;
-        world.sendMessage("§d§lINTENTANDO ACTUALIZAR EL MUNDO EN 10seg");
-        system.runTimeout(()=> {
-            player.runCommand("kick @a '§aEl server se esta actualizando...'");
-        }, 10*20);
-        system.runTimeout(()=> {
-            console.log("@$update36457");
-        }, 10*20 + 20);
-        return;
-    }
-
-    event.cancel = false; // Prevent the message from being sent to the chat
-    player.sendMessage(`§eComando no reconocido. Usa !help para ver la lista de comandos disponibles.`);
-})
-
-function isAdmin(player) {
-    return player.getTags().includes("admin");
-}
-
-function addPlayerXp(player, amount) {
+export function getRank(player) {
     const data = getPlayerData(player);
-    const oldRank = getRank(data.level);
-    const oldLevel = data.level;
+    let currentRank = RANKS[0];
+    for (const rank of RANKS) {
+        if (data.level >= rank.level && rank.requirements(data)) {
+            currentRank = rank;
+        } else {
+            break;
+        }
+    }
+    return currentRank;
+}
+
+function getReputation(player) {
+    const data = getPlayerData(player);
+    return REPUTATION_LEVELS.find(r => r.level === Math.max(-3, Math.min(3, data.reputation))) || REPUTATION_LEVELS[3];
+}
+
+export function formatPlayerName(player) {
+    const rank = getRank(player);
+    const rep = getReputation(player);
+    const prefix = player.hasTag('admin') ? "§l§c[Emperador] " : `${rank.color}[${rank.name}] ${rep.color}[${rep.name}] `;
+    return prefix + player.name;
+}
+
+export function sendRankedChat(player, message) {
+    world.sendMessage(`${formatPlayerName(player)}: §f${message}`);
+}
+
+function hasPermission(player, permission) {
+    return player.hasTag('admin') || player.hasTag(permission);
+}
+
+function addPlayerXp(player, amount, reason) {
+    const data = getPlayerData(player);
+    const oldRank = getRank(player);
     data.xp += amount;
     const newLevel = getLevelFromXP(data.xp);
     if (newLevel > data.level) {
         data.level = newLevel;
-        
-        for (let i = oldLevel; i < newLevel; i++) { // Aumentar monedas 
-            data.balance += (i+1) * 10; // Gana monedas al subir de nivel
-            player.sendMessage(`§a¡Has ganado ${(i+1) * 10} monedas por subir de nivel!`);
-            // player.sendMessage(`§a¡Has subido al nivel ${i+1}!`);
-            world.sendMessage(`§b¡${oldRank.color}${player.name}§b ha subido al nivel ${i+1}!`);
-        }
-
-        const newRank = getRank(newLevel);
+        data.balance += newLevel * 5;
+        player.sendMessage(`§a¡Has subido al nivel ${newLevel} por ${reason}! Ganaste ${newLevel * 5} Ringcoins.`);
+        const newRank = getRank(player);
         if (newRank !== oldRank) {
-            system.run(()=> {
+            system.run(() => {
                 player.runCommand("summon fireworks_rocket");
-                player.runCommand(`playsound random.levelup @s`);
-            })
-            world.sendMessage(`§b¡${oldRank.color}${player.name} ha alcanzado el rango ${newRank.color}${newRank.name}§r!`);
-            player.sendMessage(`§b¡Felicidades! Has alcanzado el rango ${newRank.color}${newRank.name}§r`);
+                player.runCommand("playsound random.levelup @s");
+            });
+            world.sendMessage(`§b¡${player.name} ha ascendido al rango ${newRank.color}${newRank.name}§r!`);
         }
     }
     savePlayerData(player, data);
 }
 
-// Evento para mostrar nombres con color según rango en chat general
+function modifyReputation(player, amount) {
+    const data = getPlayerData(player);
+    data.reputation = Math.max(-3, Math.min(3, data.reputation + amount));
+    savePlayerData(player, data);
+    const rep = getReputation(player);
+    player.sendMessage(`§6Tu reputación ahora es: ${rep.color}${rep.name}`);
+    const rank = getRank(player);
+    const expectedRank = RANKS.find(r => r.level <= data.level && r.requirements(data));
+    if (expectedRank !== rank) {
+        data.xp = Math.max(0, data.xp - 50);
+        player.sendMessage(`§cTu rango ha sido ajustado a ${expectedRank.color}${expectedRank.name} debido a tu reputación.`);
+    }
+}
+
+export function getDinero(player) {
+    return getPlayerData(player).balance || 0;
+}
+
+export function setDinero(player, cantidad) {
+    const data = getPlayerData(player);
+    data.balance = Math.max(0, cantidad);
+    savePlayerData(player, data);
+    player.sendMessage(`§6Tu saldo ahora es: §e${data.balance} Ringcoins`);
+}
+
+export function modificarDinero(player, cantidad) {
+    const data = getPlayerData(player);
+    data.balance = Math.max(0, (data.balance || 0) + cantidad);
+    savePlayerData(player, data);
+    player.sendMessage(`§6Tu saldo ha cambiado en ${cantidad}. Saldo actual: §e${data.balance} Ringcoins`);
+}
+
+function startMission(player, missionId) {
+    const mission = missions.find(m => m.id === missionId);
+    if (!mission) {
+        player.sendMessage('§cMisión no encontrada.');
+        return;
+    }
+    const rank = getRank(player);
+    if (RANKS.findIndex(r => r.name === mission.minRank) > RANKS.findIndex(r => r.name === rank.name)) {
+        player.sendMessage('§cNo tienes el rango necesario para esta misión.');
+        return;
+    }
+    if (playerMissions.has(player.name)) {
+        player.sendMessage('§cYa tienes una misión activa.');
+        return;
+    }
+    playerMissions.set(player.name, { missionId, progress: 0, assigned: Date.now() });
+    player.sendMessage(`§aHas comenzado la misión: ${mission.description}`);
+}
+
+function updateMissionProgress(player, type, amount) {
+    const missionData = playerMissions.get(player.name);
+    if (!missionData) return;
+    const mission = missions.find(m => m.id === missionData.missionId);
+    if (mission.type === type) {
+        missionData.progress += amount;
+        if (missionData.progress >= mission.target) {
+            completeMission(player, mission);
+        } else {
+            player.sendMessage(`§bProgreso de misión: ${missionData.progress}/${mission.target}`);
+        }
+        playerMissions.set(player.name, missionData);
+    }
+}
+
+function completeMission(player, mission) {
+    const data = getPlayerData(player);
+    data.xp += mission.rewardXP;
+    data.balance += mission.rewardGold;
+    data.misiones += 1;
+    savePlayerData(player, data);
+    playerMissions.delete(player.name);
+    player.sendMessage(`§a¡Misión completada! Recompensas: ${mission.rewardXP} XP, ${mission.rewardGold} Ringcoins.`);
+}
+
+function giveHelpBook(player) {
+    const inventory = player.getComponent('minecraft:inventory').container;
+    const book = new ItemStack("minecraft:writable_book");
+    system.run(()=>{
+        
+        book.setLore([
+            '§lComandos del Reino:',
+            '!help - Muestra este libro',
+            '!hora - Ver la hora actual',
+            '!spawn - Teletransportarse al spawn',
+            '!set - Establecer tu hogar',
+            '!home - Teletransportarse a tu hogar',
+            '!tpa <jugador> - Solicitar teletransporte',
+            '!si - Aceptar solicitud de teletransporte',
+            '!reqs - Ver solicitudes de teletransporte',
+            '!warp - Ver warps disponibles',
+            '!setwarp <nombre> - Crear un warp',
+            '!delwarp <nombre> - Eliminar un warp',
+            '!rango - Ver tu rango y reputación',
+            '!stats - Ver tus estadísticas completas',
+            '!mission <id> - Iniciar una misión',
+            '!mathquiz - Iniciar un quiz matemático',
+            '!answer <número> - Responder al quiz',
+            '!clan crear <nombre> - Crear un clan',
+            '!clan invitar <jugador> - Invitar a un clan',
+            '!clan info - Ver información del clan',
+            '!claim - Reclamar un terreno (30x30)',
+            '!pay <jugador> <cantidad> - Pagar Ringcoins',
+            '!prestamo <jugador> <monto> <días> - Prestar Ringcoins',
+            '!mortgage <propiedad> <monto> - Hipotecar una propiedad',
+            '!trade <jugador> <monto> <item> - Proponer un intercambio',
+            '!accepttrade <id> - Aceptar un intercambio',
+            '!adminstats <jugador> - Ver estadísticas (admin)',
+            '!setxp <jugador> <cantidad> - Establecer XP (admin)',
+            '!setmoney <jugador> <cantidad> - Establecer Ringcoins (admin)',
+            '!setrep <jugador> <nivel> - Establecer reputación (admin)'
+        ]);
+        book.nameTag = 'Libro de Comandos del Reino';
+        inventory.addItem(book);
+        player.sendMessage('§aRecibiste el Libro de Comandos en tu inventario.');
+    })
+}
+
+const commands = {
+    help: (player) => giveHelpBook(player),
+    hora: (player) => player.sendMessage(`§dLa hora actual es ${getTime()}`),
+    spawn: (player) => {
+        system.run(() => {
+            player.teleport({ x: 155, y: 95, z: -51 }, { dimension: world.getDimension('overworld') });
+            player.sendMessage('§aTeletransportándote al spawn del reino...');
+        });
+    },
+    set: setHome,
+    home: home,
+    tpa: tpa,
+    si: tpaccept,
+    reqs: reqs,
+    warp: getWarps,
+    setwarp: setWarp,
+    delwarp: delWarp,
+    rango: (player) => {
+        const rank = getRank(player);
+        const rep = getReputation(player);
+        const index = RANKS.findIndex(r => r.name === rank.name);
+        player.sendMessage(`§6Tu rango: ${rank.color}${rank.name}\n§6Tu reputación: ${rep.color}${rep.name}`);
+        if (RANKS[index + 1]) {
+            player.sendMessage(`§7Siguiente rango: ${RANKS[index + 1].name}`);
+        } else {
+            player.sendMessage(`§b¡Has alcanzado el máximo rango del reino!`);
+        }
+    },
+    stats: (player) => {
+        const data = getPlayerData(player);
+        const rank = getRank(player);
+        const rep = getReputation(player);
+        const warpCount = data.claims;
+        const home = player.getDynamicProperty('home') ? JSON.parse(player.getDynamicProperty('home')).location : 'No establecido';
+        player.sendMessage(`§6Estadísticas de ${player.name}:
+§bRango: ${rank.color}${rank.name}
+§bReputación: ${rep.color}${rep.name}
+§bNivel: ${data.level}
+§bXP: ${data.xp}
+§bRingcoins: ${data.balance}
+§bMisiones completadas: ${data.misiones}
+§bTerrenos reclamados: ${data.claims}/2
+§bDistancia recorrida: ${data.distance} bloques
+§bAlimentos cocinados: ${data.cooked}
+§bClan: ${data.clan || 'Ninguno'}
+§bHogar: ${typeof home === 'object' ? `X:${home.x}, Y:${home.y}, Z:${home.z}` : home}
+§bWarps: ${warpCount}`);
+    },
+    mission: (player, args) => {
+        if (args.length < 2) {
+            player.sendMessage(`§cUso: !mission <id>\n§bMisiones disponibles:\n${missions.map(m => `ID ${m.id}: ${m.description} (${m.minRank})`).join('\n')}`);
+            return;
+        }
+        startMission(player, parseInt(args[1]));
+    },
+    mathquiz: (player) => {
+        if (mathQuizActive.active) {
+            player.sendMessage('§cYa hay un quiz matemático activo.');
+            return;
+        }
+        const a = Math.floor(Math.random() * 20) + 1;
+        const b = Math.floor(Math.random() * 20) + 1;
+        const ops = ['+', '-', '*', '/'];
+        const op = ops[Math.floor(Math.random() * ops.length)];
+        let answer;
+        if (op === '+') answer = a + b;
+        else if (op === '-') answer = a - b;
+        else if (op === '*') answer = a * b;
+        else answer = Math.floor(a / b);
+        mathQuizActive.active = true;
+        mathQuizActive.answer = answer;
+        mathQuizActive.reward = 5;
+        world.sendMessage(`§b¡Quiz matemático del reino! Resuelve: ${a} ${op} ${b} = ?. Responde con !answer <número>`);
+        system.runTimeout(() => {
+            if (mathQuizActive.active) {
+                mathQuizActive.active = false;
+                world.sendMessage(`§c¡Vaya incultos! La respuesta era: ${answer}`);
+            }
+        }, 8 * 20);
+    },
+    answer: (player, args) => {
+        if (!mathQuizActive.active) {
+            player.sendMessage('§cNo hay un quiz activo.');
+            return;
+        }
+        if (args.length < 2) {
+            player.sendMessage('§cUso: !answer <número>');
+            return;
+        }
+        const answer = parseInt(args[1]);
+        if (answer === mathQuizActive.answer) {
+            mathQuizActive.active = false;
+            modificarDinero(player, mathQuizActive.reward);
+            addPlayerXp(player, 5, 'resolver un quiz matemático');
+            world.sendMessage(`§a¡${player.name} ha resuelto el quiz y gana ${mathQuizActive.reward} Ringcoins y 5 XP!`);
+        } else {
+            player.sendMessage('§cRespuesta incorrecta.');
+        }
+    },
+    clan: (player, args) => {
+        if (args.length < 2) {
+            player.sendMessage('§cUso: !clan <crear|invitar|info> [nombre|jugador]');
+            return;
+        }
+        const subcommand = args[1].toLowerCase();
+        if (subcommand === 'crear') {
+            if (args.length < 3) {
+                player.sendMessage('§cUso: !clan crear <nombre>');
+                return;
+            }
+            const clanName = args[2].toLowerCase();
+            if (clanData.has(clanName)) {
+                player.sendMessage('§cYa existe un clan con ese nombre.');
+                return;
+            }
+            const data = getPlayerData(player);
+            if (data.clan) {
+                player.sendMessage('§cYa estás en un clan.');
+                return;
+            }
+            clanData.set(clanName, { leader: player.name, members: new Set([player.name]) });
+            data.clan = clanName;
+            savePlayerData(player, data);
+            addPlayerXp(player, 50, 'fundar un clan');
+            player.sendMessage(`§aClan '${clanName}' creado exitosamente.`);
+        } else if (subcommand === 'invitar') {
+            if (args.length < 3) {
+                player.sendMessage('§cUso: !clan invitar <jugador>');
+                return;
+            }
+            const targetName = args[2];
+            const data = getPlayerData(player);
+            if (!data.clan) {
+                player.sendMessage('§cNo estás en un clan.');
+                return;
+            }
+            const clan = clanData.get(data.clan);
+            if (clan.leader !== player.name) {
+                player.sendMessage('§cSolo el líder puede invitar.');
+                return;
+            }
+            const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
+            if (!targetPlayer) {
+                player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
+                return;
+            }
+            const targetData = getPlayerData(targetPlayer);
+            if (targetData.clan) {
+                player.sendMessage(`§c${targetName} ya está en un clan.`);
+                return;
+            }
+            clan.members.add(targetPlayer.name);
+            targetData.clan = data.clan;
+            savePlayerData(targetPlayer, targetData);
+            addPlayerXp(targetPlayer, 20, 'unirse a un clan');
+            player.sendMessage(`§a${targetName} ha sido invitado al clan '${data.clan}'.`);
+            targetPlayer.sendMessage(`§aHas sido invitado al clan '${data.clan}' por ${player.name}.`);
+        } else if (subcommand === 'info') {
+            const data = getPlayerData(player);
+            if (!data.clan) {
+                player.sendMessage('§cNo estás en un clan.');
+                return;
+            }
+            const clan = clanData.get(data.clan);
+            player.sendMessage(`§6Clan: ${data.clan}\n§bLíder: ${clan.leader}\n§bMiembros: ${[...clan.members].join(', ')}`);
+        }
+    },
+    claim: (player) => {
+        const data = getPlayerData(player);
+        if (data.claims >= 2) {
+            player.sendMessage('§cHas alcanzado el límite de 2 terrenos reclamados.');
+            return;
+        }
+        const pos = player.location;
+        const dim = player.dimension.id;
+        const chunkX = Math.floor(pos.x / 30);
+        const chunkZ = Math.floor(pos.z / 30);
+        const key = `${dim}:${chunkX}:${chunkZ}`;
+        if (claims.has(key)) {
+            player.sendMessage('§cEsta área ya está reclamada.');
+            return;
+        }
+        claims.set(key, { owner: player.name, trusted: new Set(), dimension: dim, x: chunkX * 30, z: chunkZ * 30 });
+        data.claims += 1;
+        savePlayerData(player, data);
+        player.sendMessage(`§aTerreno reclamado en ${dim} (X:${chunkX * 30}, Z:${chunkZ * 30}, 30x30 bloques).`);
+    },
+    pay: (player, args) => {
+        if (args.length < 3) {
+            player.sendMessage('§cUso: !pay <jugador> <cantidad>');
+            return;
+        }
+        const targetName = args[1];
+        const amount = parseInt(args[2]);
+        if (isNaN(amount) || amount <= 0) {
+            player.sendMessage('§cCantidad inválida.');
+            return;
+        }
+        const data = getPlayerData(player);
+        if (data.balance < amount) {
+            player.sendMessage('§cNo tienes suficiente dinero.');
+            return;
+        }
+        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
+        if (!targetData.name) {
+            targetData.name = targetName;
+            targetData.balance = targetData.balance || 200;
+        }
+        modificarDinero(player, -amount);
+        targetData.balance = (targetData.balance || 0) + amount;
+        savePlayerData({ name: targetName }, targetData);
+        player.sendMessage(`§aHas pagado ${amount} Ringcoins a ${targetName}.`);
+        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
+        if (targetPlayer) targetPlayer.sendMessage(`§aHas recibido ${amount} Ringcoins de ${player.name}.`);
+        addPlayerXp(player, 5, 'realizar un pago');
+    },
+    adminstats: (player, args) => {
+        if (!hasPermission(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+        if (args.length < 2) {
+            player.sendMessage('§cUso: !adminstats <jugador>');
+            return;
+        }
+        const targetName = args[1];
+        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
+        if (!targetData.name) {
+            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
+            return;
+        }
+        const rank = RANKS.find(r => r.level <= getLevelFromXP(targetData.xp) && r.requirements(targetData)) || RANKS[0];
+        const rep = REPUTATION_LEVELS.find(r => r.level === Math.max(-3, Math.min(3, targetData.reputation))) || REPUTATION_LEVELS[3];
+        player.sendMessage(`§6Estadísticas de ${targetName}:
+§bRango: ${rank.color}${rank.name}
+§bReputación: ${rep.color}${rep.name}
+§bNivel: ${targetData.level}
+§bXP: ${targetData.xp}
+§bRingcoins: ${targetData.balance}
+§bMisiones completadas: ${targetData.misiones}
+§bTerrenos reclamados: ${targetData.claims}/2
+§bDistancia recorrida: ${targetData.distance} bloques
+§bAlimentos cocinados: ${targetData.cooked}
+§bClan: ${targetData.clan || 'Ninguno'}`);
+    },
+    setxp: (player, args) => {
+        if (!hasPermission(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+        if (args.length < 3) {
+            player.sendMessage('§cUso: !setxp <jugador> <cantidad>');
+            return;
+        }
+        const targetName = args[1];
+        const amount = parseInt(args[2]);
+        if (isNaN(amount) || amount < 0) {
+            player.sendMessage('§cCantidad inválida.');
+            return;
+        }
+        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
+        if (!targetData.name) {
+            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
+            return;
+        }
+        targetData.xp = amount;
+        targetData.level = getLevelFromXP(amount);
+        savePlayerData({ name: targetName }, targetData);
+        player.sendMessage(`§aXP de ${targetName} establecido a ${amount}.`);
+        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
+        if (targetPlayer) targetPlayer.sendMessage(`§aTu XP ha sido establecido a ${amount} por un administrador.`);
+    },
+    setmoney: (player, args) => {
+        if (!hasPermission(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+        if (args.length < 3) {
+            player.sendMessage('§cUso: !setmoney <jugador> <cantidad>');
+            return;
+        }
+        const targetName = args[1];
+        const amount = parseInt(args[2]);
+        if (isNaN(amount) || amount < 0) {
+            player.sendMessage('§cCantidad inválida.');
+            return;
+        }
+        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
+        if (!targetData.name) {
+            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
+            return;
+        }
+        targetData.balance = amount;
+        savePlayerData({ name: targetName }, targetData);
+        player.sendMessage(`§aRingcoins de ${targetName} establecidos a ${amount}.`);
+        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
+        if (targetPlayer) targetPlayer.sendMessage(`§aTus Ringcoins han sido establecidos a ${amount} por un administrador.`);
+    },
+    setrep: (player, args) => {
+        if (!hasPermission(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+        if (args.length < 3) {
+            player.sendMessage('§cUso: !setrep <jugador> <nivel>');
+            return;
+        }
+        const targetName = args[1];
+        const level = parseInt(args[2]);
+        if (isNaN(level) || level < -3 || level > 3) {
+            player.sendMessage('§cNivel de reputación inválido (-3 a 3).');
+            return;
+        }
+        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
+        if (!targetData.name) {
+            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
+            return;
+        }
+        targetData.reputation = level;
+        savePlayerData({ name: targetName }, targetData);
+        player.sendMessage(`§aReputación de ${targetName} establecida a ${level}.`);
+        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
+        if (targetPlayer) targetPlayer.sendMessage(`§aTu reputación ha sido establecida a ${level} por un administrador.`);
+    }
+};
+
+// Manejo de eventos
 world.beforeEvents.chatSend.subscribe(event => {
     const player = event.sender;
-    if (!event.message.startsWith("!")) {
-        // Actualizar XP al enviar mensaje (menos comandos)
-        addPlayerXp(player, 1);
-
-        event.cancel = true; // cancelar el mensaje normal
-        // Envia un mensaje formateado con el color del rango
-        sendRankedChat(player, event.message);
+    const message = event.message;
+    if (!message.startsWith('!')) {
+        event.cancel = true;
+        addPlayerXp(player, 1, 'hablar en el chat');
+        sendRankedChat(player, message);
+        return;
+    }
+    event.cancel = true;
+    const args = message.slice(1).split(' ');
+    const command = args[0].toLowerCase();
+    if (commands[command]) {
+        commands[command](player, args);
+    } else {
+        player.sendMessage('§cComando no reconocido. Usa !help para obtener el Libro de Comandos.');
     }
 });
 
-// let secondsPassed = 0;
+world.afterEvents.playerBreakBlock.subscribe(event => {
+    const player = event.player;
+    const block = event.brokenBlockPermutation.type.id;
+    updateMissionProgress(player, 'mine', 1);
+    if (block.includes('ore')) updateMissionProgress(player, 'mineOre', 1);
+    addPlayerXp(player, 2, 'minar un bloque');
+});
 
-// function mainTick() {
-//   if (system.currentTick % 200 === 0) {
-//     secondsPassed += 10;
-//     world.sendMessage("\nSeconds Passed: " + secondsPassed);
-//     world.sendMessage('Getting dynamic properties...');
-//     let propertyCount = world.getDynamicPropertyIds().length;
-//     world.sendMessage("> Actual current property count: " + propertyCount);
-//   }
-//   system.run(mainTick);
-// }
+world.afterEvents.entityHurt.subscribe(event => {
+    if (event.damageSource.damagingEntity?.typeId === 'minecraft:player' && event.hurtEntity.isDead) {
+        const player = event.damageSource.damagingEntity;
+        updateMissionProgress(player, 'killMob', 1);
+        if (event.hurtEntity.typeId === 'minecraft:wither' || event.hurtEntity.typeId === 'minecraft:ender_dragon') {
+            updateMissionProgress(player, 'killBoss', 1);
+        }
+        addPlayerXp(player, 5, 'derrotar un enemigo');
+    }
+});
 
+world.afterEvents.itemUse.subscribe(event => {
+    if (event.itemStack.typeId.includes('cooked_')) {
+        const player = event.source;
+        const data = getPlayerData(player);
+        data.cooked += 1;
+        savePlayerData(player, data);
+        addPlayerXp(player, 3, 'cocinar un alimento');
+        updateMissionProgress(player, 'cook', 1);
+    }
+});
 
+system.runInterval(() => {
+    for (const player of world.getAllPlayers()) {
+        const data = getPlayerData(player);
+        const newPos = player.location;
+        const oldPos = data.lastPos || newPos;
+        const distance = Math.sqrt((newPos.x - oldPos.x) ** 2 + (newPos.z - oldPos.z) ** 2);
+        data.distance = (data.distance || 0) + Math.floor(distance);
+        data.lastPos = newPos;
+        savePlayerData(player, data);
+        if (distance > 0) addPlayerXp(player, Math.floor(distance / 100), 'recorrer distancia');
+        updateMissionProgress(player, 'move', Math.floor(distance));
+    }
+}, 20 * 60); // Cada minuto
 
-// system.run(mainTick());
+system.runInterval(() => {
+    for (const [name, missionData] of playerMissions) {
+        if (Date.now() - missionData.assigned > 24 * 60 * 60 * 1000) {
+            playerMissions.delete(name);
+            const player = world.getAllPlayers().find(p => p.name === name);
+            if (player) player.sendMessage('§cTu misión diaria ha expirado.');
+        }
+    }
+}, 20 * 60 * 60); // Cada hora
+
+system.runInterval(() => {
+    if (!mathQuizActive.active) commands.mathquiz();
+}, 20 * 10 * 60); // Cada 10 minutos

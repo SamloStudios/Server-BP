@@ -1,0 +1,28 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "endupdate:golden_purpurite_pillar_recipe"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "ggg",
+            "g#g",
+            "ggg"
+        ],
+        "key": {
+            "#": {
+                "item": "endupdate:purpurite_pillar"
+            },
+            "g": {
+                "item": "minecraft:gold_nugget"
+            }
+        },
+        "result": {
+            "item": "endupdate:golden_purpurite_pillar",
+            "count": 1
+        }
+    }
+}

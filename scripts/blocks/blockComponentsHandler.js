@@ -9,6 +9,7 @@ import { brokenBaseSensor } from "./blockComponents/brokenBaseSensor";
 import { OnRandomTick } from "./blockComponents/behavior/on_random_tick";
 import { SetRandomizer } from "./blockComponents/placement/set_randomiser";
 import { UseInteraction } from "./blockComponents/behavior/use_interaction";
+import { BreakRestriction } from "./blockComponents/break/break_restriction";
 
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	// bloque de hongo infestado de snark
@@ -138,5 +139,20 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	blockComponentRegistry.registerCustomComponent(
 		"placement:set_randomizer",
 		SetRandomizer
+	);
+
+	/*
+	"break:restriction" : {
+		"item" : "endupdate:indigo_pickaxe", // can be "any"
+		"drop" : { // If not present drops itself
+			"item" : "minecraft:paper"
+			"count" : 2 // default 1
+		}
+	},
+	"minecraft:loot": "loot_tables/nothing.json",
+	*/
+	blockComponentRegistry.registerCustomComponent(
+		"break:restriction",
+		BreakRestriction
 	);
 });
