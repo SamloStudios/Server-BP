@@ -1,5 +1,4 @@
 import { world } from "@minecraft/server";
-import { formatPlayerName } from './botCommands.js';
 
 world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
     if (!initialSpawn) return;

@@ -1,6 +1,6 @@
 import { world, system } from "@minecraft/server";
-import { truncateFloat } from './botUtils.js';
-import { getRank } from './botCommands.js';
+import { truncateFloat } from "../botUtils.js";
+import { getRank } from '../botCommands.js';
 
 export function getPlayerWarpC(player) {
     const count = player.getDynamicProperty("warp:count");

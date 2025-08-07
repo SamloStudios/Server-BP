@@ -1,8 +1,8 @@
-import { system, world, ItemStack, MinecraftItemTypes } from '@minecraft/server';
-import { getTime, truncateFloat } from './botUtils.js';
+import { system, world, ItemStack} from '@minecraft/server';
+import { getTime } from './botUtils.js';
 import { setHome, home } from './commands/home.js';
 import { reqs, tpa, tpaccept } from './commands/tp.js';
-import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
+import { setWarp, delWarp, getWarps } from './commands/warp.js';
 
 // Definición de rangos y reputación
 const RANKS = [
@@ -71,7 +71,7 @@ function getLevelFromXP(xp) {
     return level;
 }
 
-function getRank(player) {
+export function getRank(player) {
     const data = getPlayerData(player);
     let currentRank = RANKS[0];
     for (const rank of RANKS) {
@@ -203,42 +203,45 @@ function completeMission(player, mission) {
 
 function giveHelpBook(player) {
     const inventory = player.getComponent('minecraft:inventory').container;
-    const book = new ItemStack(MinecraftItemTypes.writtenBook);
-    book.setLore([
-        '§lComandos del Reino:',
-        '!help - Muestra este libro',
-        '!hora - Ver la hora actual',
-        '!spawn - Teletransportarse al spawn',
-        '!set - Establecer tu hogar',
-        '!home - Teletransportarse a tu hogar',
-        '!tpa <jugador> - Solicitar teletransporte',
-        '!si - Aceptar solicitud de teletransporte',
-        '!reqs - Ver solicitudes de teletransporte',
-        '!warp - Ver warps disponibles',
-        '!setwarp <nombre> - Crear un warp',
-        '!delwarp <nombre> - Eliminar un warp',
-        '!rango - Ver tu rango y reputación',
-        '!stats - Ver tus estadísticas completas',
-        '!mission <id> - Iniciar una misión',
-        '!mathquiz - Iniciar un quiz matemático',
-        '!answer <número> - Responder al quiz',
-        '!clan crear <nombre> - Crear un clan',
-        '!clan invitar <jugador> - Invitar a un clan',
-        '!clan info - Ver información del clan',
-        '!claim - Reclamar un terreno (30x30)',
-        '!pay <jugador> <cantidad> - Pagar Ringcoins',
-        '!prestamo <jugador> <monto> <días> - Prestar Ringcoins',
-        '!mortgage <propiedad> <monto> - Hipotecar una propiedad',
-        '!trade <jugador> <monto> <item> - Proponer un intercambio',
-        '!accepttrade <id> - Aceptar un intercambio',
-        '!adminstats <jugador> - Ver estadísticas (admin)',
-        '!setxp <jugador> <cantidad> - Establecer XP (admin)',
-        '!setmoney <jugador> <cantidad> - Establecer Ringcoins (admin)',
-        '!setrep <jugador> <nivel> - Establecer reputación (admin)'
-    ]);
-    book.nameTag = 'Libro de Comandos del Reino';
-    inventory.addItem(book);
-    player.sendMessage('§aRecibiste el Libro de Comandos en tu inventario.');
+    const book = new ItemStack("minecraft:writable_book");
+    system.run(()=>{
+        
+        book.setLore([
+            '§lComandos del Reino:',
+            '!help - Muestra este libro',
+            '!hora - Ver la hora actual',
+            '!spawn - Teletransportarse al spawn',
+            '!set - Establecer tu hogar',
+            '!home - Teletransportarse a tu hogar',
+            '!tpa <jugador> - Solicitar teletransporte',
+            '!si - Aceptar solicitud de teletransporte',
+            '!reqs - Ver solicitudes de teletransporte',
+            '!warp - Ver warps disponibles',
+            '!setwarp <nombre> - Crear un warp',
+            '!delwarp <nombre> - Eliminar un warp',
+            '!rango - Ver tu rango y reputación',
+            '!stats - Ver tus estadísticas completas',
+            '!mission <id> - Iniciar una misión',
+            '!mathquiz - Iniciar un quiz matemático',
+            '!answer <número> - Responder al quiz',
+            '!clan crear <nombre> - Crear un clan',
+            '!clan invitar <jugador> - Invitar a un clan',
+            '!clan info - Ver información del clan',
+            '!claim - Reclamar un terreno (30x30)',
+            '!pay <jugador> <cantidad> - Pagar Ringcoins',
+            '!prestamo <jugador> <monto> <días> - Prestar Ringcoins',
+            '!mortgage <propiedad> <monto> - Hipotecar una propiedad',
+            '!trade <jugador> <monto> <item> - Proponer un intercambio',
+            '!accepttrade <id> - Aceptar un intercambio',
+            '!adminstats <jugador> - Ver estadísticas (admin)',
+            '!setxp <jugador> <cantidad> - Establecer XP (admin)',
+            '!setmoney <jugador> <cantidad> - Establecer Ringcoins (admin)',
+            '!setrep <jugador> <nivel> - Establecer reputación (admin)'
+        ]);
+        book.nameTag = 'Libro de Comandos del Reino';
+        inventory.addItem(book);
+        player.sendMessage('§aRecibiste el Libro de Comandos en tu inventario.');
+    })
 }
 
 const commands = {
@@ -273,7 +276,7 @@ const commands = {
         const data = getPlayerData(player);
         const rank = getRank(player);
         const rep = getReputation(player);
-        const warpCount = getPlayerWarpC(player);
+        const warpCount = data.claims;
         const home = player.getDynamicProperty('home') ? JSON.parse(player.getDynamicProperty('home')).location : 'No establecido';
         player.sendMessage(`§6Estadísticas de ${player.name}:
 §bRango: ${rank.color}${rank.name}
@@ -587,7 +590,7 @@ world.beforeEvents.chatSend.subscribe(event => {
     }
 });
 
-world.afterEvents.blockBreak.subscribe(event => {
+world.afterEvents.playerBreakBlock.subscribe(event => {
     const player = event.player;
     const block = event.brokenBlockPermutation.type.id;
     updateMissionProgress(player, 'mine', 1);

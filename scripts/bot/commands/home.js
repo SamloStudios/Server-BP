@@ -1,5 +1,5 @@
 import { system, world } from "@minecraft/server";
-import { truncateFloat } from './botUtils.js';
+import { truncateFloat } from '../botUtils.js';
 
 export function setHome(player) {
     const pos = player.location;
