@@ -1,40 +1,28 @@
-import { system, world } from "@minecraft/server";
-import { truncateFloat } from '../botUtils.js';
+import { system, world } from '@minecraft/server';
 
-export function setHome(player) {
-    const pos = player.location;
-    const dim = player.dimension.id;
-    if (dim !== 'minecraft:overworld') {
-        player.sendMessage(`§cSolo los grandes señores pueden establecer hogares fuera del Overworld.`);
+export function setHome(player, args) {
+    if (player.dimension.id !== 'minecraft:overworld') {
+        player.sendMessage('§cSolo puedes establecer tu hogar en el Overworld.');
         return;
     }
-    const newHomeData = {
-        dimension: dim,
-        location: {
-            x: truncateFloat(pos.x, 2),
-            y: truncateFloat(pos.y, 2),
-            z: truncateFloat(pos.z, 2)
-        }
+    const pos = player.location;
+    const homeData = {
+        location: { x: Math.floor(pos.x), y: Math.floor(pos.y), z: Math.floor(pos.z) },
+        dimension: player.dimension.id
     };
-    player.setDynamicProperty(`home`, JSON.stringify(newHomeData));
-    player.sendMessage(`§aTu hogar ha sido registrado en X:${newHomeData.location.x}, Y:${newHomeData.location.y}, Z:${newHomeData.location.z}.`);
+    player.setDynamicProperty('home', JSON.stringify(homeData));
+    player.sendMessage(`§aHogar establecido en: X:${Math.floor(pos.x)}, Y:${Math.floor(pos.y)}, Z:${Math.floor(pos.z)}`);
 }
 
-export function home(player) {
-    const home = player.getDynamicProperty(`home`);
-    if (!home) {
-        player.sendMessage('§cNo tienes un hogar registrado. Usa !set para establecer uno.');
+export function home(player, args) {
+    const homeDataRaw = player.getDynamicProperty('home');
+    if (!homeDataRaw) {
+        player.sendMessage('§cNo tienes un hogar establecido. Usa !set para crear uno.');
         return;
     }
-    const homeData = JSON.parse(home);
-    const { location, dimension } = homeData;
+    const homeData = JSON.parse(homeDataRaw);
     system.run(() => {
-        const dim = world.getDimension(dimension);
-        if (dim) {
-            player.teleport(location, { dimension: dim });
-            player.sendMessage(`§aTeletransportándote a tu hogar en el reino...`);
-        } else {
-            player.sendMessage('§cDimensión no encontrada.');
-        }
+        player.teleport(homeData.location, { dimension: world.getDimension(homeData.dimension) });
+        player.sendMessage(`§aTeletransportándote a tu hogar: X:${homeData.location.x}, Y:${homeData.location.y}, Z:${homeData.location.z}`);
     });
 }

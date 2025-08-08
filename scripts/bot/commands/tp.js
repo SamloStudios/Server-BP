@@ -1,77 +1,56 @@
-import { system, world } from "@minecraft/server";
+import { system, world } from '@minecraft/server';
 
-export const playerTpReqs = [];
-
-export function tpaccept(player) {
-    const req = playerTpReqs.find(r => r.target === player.name);
-    if (!req) {
-        player.sendMessage("§cNo tienes solicitudes de teletransporte pendientes.");
-        return;
-    }
-    const sender = world.getAllPlayers().find(p => p.name === req.sender);
-    if (!sender) {
-        player.sendMessage("§cEl solicitante ya no está en línea.");
-        removeTpReq(req.sender, req.target);
-        return;
-    }
-    system.run(() => {
-        sender.teleport(player.location, { dimension: player.dimension });
-        sender.sendMessage(`§aTeletransportado al viajero ${player.name}.`);
-        player.sendMessage(`§aSolicitud de §g${req.sender}§a aceptada.`);
-        removeTpReq(req.sender, req.target);
-    });
-}
+const teleportRequests = new Map();
 
 export function tpa(player, args) {
     if (args.length < 2) {
-        player.sendMessage("§cUso: !tpa <jugador>");
+        player.sendMessage('§cUso: !tpa <jugador>');
         return;
     }
-    const targetName = args[1].toLowerCase();
-    if (player.name.toLowerCase() === targetName) {
-        player.sendMessage("§cNo puedes teletransportarte a ti mismo.");
-        return;
-    }
-    const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName);
+    const targetName = args[1];
+    const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
     if (!targetPlayer) {
         player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
         return;
     }
-    if (playerTpReqs.some(r => r.sender === player.name && r.target === targetPlayer.name)) {
-        player.sendMessage(`§cYa tienes una solicitud pendiente para ${targetPlayer.name}.`);
+    if (targetPlayer.name === player.name) {
+        player.sendMessage('§cNo puedes teletransportarte a ti mismo.');
         return;
     }
-    addTpReq(player.name, targetPlayer.name);
-    targetPlayer.sendMessage(`§d§oSolicitud de teletransporte de ${player.name}. Escribe !si para aceptar.`);
-    player.sendMessage(`§a§oSolicitud enviada a ${targetPlayer.name}.`);
-}
-
-export function reqs(player) {
-    const reqs = playerTpReqs.filter(r => r.target === player.name);
-    if (reqs.length === 0) {
-        player.sendMessage("§cNo tienes solicitudes de teletransporte pendientes.");
-        return;
-    }
-    const list = reqs.map(r => `De: ${r.sender}, §9id: ${r.id}`).join("\n");
-    player.sendMessage(`§bSolicitudes pendientes:\n${list}`);
-}
-
-export function addTpReq(senderName, targetPlayerName) {
-    const id = Math.random();
-    playerTpReqs.push({ sender: senderName, target: targetPlayerName, id });
+    const requestId = Math.random().toString(36).substring(2);
+    teleportRequests.set(requestId, { from: player, to: targetPlayer, time: Date.now() });
+    player.sendMessage(`§aSolicitud de teletransporte enviada a ${targetPlayer.name}.`);
+    targetPlayer.sendMessage(`§a${player.name} quiere teletransportarse a ti. Usa !si para aceptar o espera 30 segundos para que expire.`);
     system.runTimeout(() => {
-        const index = playerTpReqs.findIndex(req => req.sender === senderName && req.target === targetPlayerName && req.id === id);
-        if (index !== -1) {
-            playerTpReqs.splice(index, 1);
-            const sender = world.getAllPlayers().find(p => p.name === senderName);
-            const target = world.getAllPlayers().find(p => p.name === targetPlayerName);
-            if (sender) sender.sendMessage(`§c§oLa solicitud de teletransporte a ${targetPlayerName} ha caducado.`);
-            if (target) target.sendMessage(`§e§oLa solicitud de teletransporte de ${senderName} ha caducado.`);
+        if (teleportRequests.has(requestId)) {
+            teleportRequests.delete(requestId);
+            player.sendMessage(`§cLa solicitud de teletransporte a ${targetPlayer.name} ha expirado.`);
+            targetPlayer.sendMessage(`§cLa solicitud de teletransporte de ${player.name} ha expirado.`);
         }
-    }, 40 * 20);
+    }, 30 * 20); // 30 segundos
 }
 
-export function removeTpReq(senderName, targetPlayerName) {
-    const index = playerTpReqs.findIndex(req => req.sender === senderName && req.target === targetPlayerName);
-    if (index !== -1) playerTpReqs.splice(index, 1);
+export function tpaccept(player, args) {
+    const requests = [...teleportRequests.entries()].filter(([_, req]) => req.to.name === player.name);
+    if (requests.length === 0) {
+        player.sendMessage('§cNo tienes solicitudes de teletransporte pendientes.');
+        return;
+    }
+    const [requestId, request] = requests[0];
+    system.run(() => {
+        request.from.teleport(player.location, { dimension: player.dimension });
+        request.from.sendMessage(`§aTeletransportado a ${player.name}.`);
+        player.sendMessage(`§aHas aceptado la solicitud de ${request.from.name}.`);
+        teleportRequests.delete(requestId);
+    });
+}
+
+export function reqs(player, args) {
+    const requests = [...teleportRequests.entries()].filter(([_, req]) => req.to.name === player.name);
+    if (requests.length === 0) {
+        player.sendMessage('§cNo tienes solicitudes de teletransporte pendientes.');
+        return;
+    }
+    const requestList = requests.map(([id, req]) => `ID: ${id}, de ${req.from.name}`);
+    player.sendMessage(`§6Solicitudes de teletransporte pendientes:\n${requestList.join('\n')}`);
 }
