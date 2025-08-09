@@ -1,10 +1,11 @@
 import { system, world } from '@minecraft/server';
 import { getRank } from '../data/playerDataUtils';
+import { getFilteredPropertyKeys } from '../botUtils';
 
 const WARP_LIMITS = {
-    Campesino: 0,
-    Aldeano: 1,
-    Escudero: 2,
+    Campesino: 1,
+    Aldeano: 2,
+    Escudero: 3,
     Caballero: 3,
     Barón: 4,
     Conde: 5,
@@ -13,6 +14,13 @@ const WARP_LIMITS = {
     Rey: 10,
     Emperador: 999
 };
+
+export function restToPlayerWarpC(player){
+    let wpc = player.getDynamicProperty('warp:count') || 0;
+    wpc--;
+    player.setDynamicProperty("warp:count", wpc);
+    return;
+}
 
 export function addToPlayerWarpC(player) {
     const currentCount = player.getDynamicProperty('warp:count') || 0;
@@ -48,57 +56,75 @@ export function setWarp(player, args) {
 
 export function delWarp(player, args) {
     if (args.length < 2) {
-        player.sendMessage('§cUso: !delwarp <nombre>');
+        player.sendMessage("§cUso: !delwarp <nombre_del_warp>");
         return;
-    }
+    };
     const warpName = args[1].toLowerCase();
-    const warpDataRaw = world.getDynamicProperty(`warp:${warpName}`);
-    if (!warpDataRaw) {
-        player.sendMessage(`§cNo existe un warp con el nombre '${warpName}'.`);
-        return;
+
+    // Intentar cargar el warp personalizado primero
+    const customWarpData = world.getDynamicProperty(`warp:${warpName}`);
+    if (customWarpData) {
+        const parsedWarp = JSON.parse(customWarpData);
+        if (parsedWarp.owner === player.name){
+            world.setDynamicProperty(`warp:${warpName}`, undefined);
+            restToPlayerWarpC(player);
+            player.sendMessage(`§dWarp ${warpName} ha sido eliminado`);
+        } else player.sendMessage("§cEse warp no es tuyo");
+    } else {
+        player.sendMessage("§cEse warp no existe (escribe el nombre exactamente)");
     }
-    const warpData = JSON.parse(warpDataRaw);
-    if (warpData.owner !== player.name && !player.hasTag('admin')) {
-        player.sendMessage('§cNo eres el propietario de este warp.');
-        return;
-    }
-    world.setDynamicProperty(`warp:${warpName}`, undefined);
-    if (warpData.owner === player.name) {
-        const currentCount = player.getDynamicProperty('warp:count') || 1;
-        player.setDynamicProperty('warp:count', Math.max(0, currentCount - 1));
-    }
-    player.sendMessage(`§aWarp '${warpName}' eliminado.`);
+    return;
 }
 
-export function getWarps(player, args) {
-    const warpIds = world.getDynamicPropertyIds().filter(id => id.startsWith('warp:'));
-    const warps = warpIds.map(id => {
-        const data = JSON.parse(world.getDynamicProperty(id));
-        return { name: id.substring(5), ...data };
+
+export function getWarps(player) {
+    let availableWarps = [];
+
+    // Obtener warps personalizados
+    const dynamicProperties = world.getDynamicPropertyIds();
+    dynamicProperties.forEach(propId => {
+        if (propId.startsWith('warp:')) {
+            const customWarpName = propId.substring(5); // Eliminar 'warp:' del inicio
+            availableWarps.push(customWarpName);
+        }
     });
-    return warps;
+
+    if (availableWarps.length > 0) {
+        player.sendMessage(`§l§6Warps disponibles:§r§e\n${availableWarps.map(w => `!warp ${w.name} (Creado por ${w.owner})`).join('\n')}`);
+    } else {
+        player.sendMessage('§cNo hay warps disponibles en el reino.');
+    }
+    return;
 }
 
 export function warpTo(player, args) {
-    if (args.length < 2) {
-        const warps = getWarps(player, args);
-        if (warps.length === 0) {
-            player.sendMessage('§cNo hay warps disponibles.');
-            return;
-        }
-        const warpList = warps.map(w => `${w.name} (X:${w.location.x}, Y:${w.location.y}, Z:${w.location.z}, Propietario: ${w.owner})`);
-        player.sendMessage(`§6Warps disponibles:\n${warpList.join('\n')}`);
-        return;
-    }
     const warpName = args[1].toLowerCase();
-    const warpDataRaw = world.getDynamicProperty(`warp:${warpName}`);
-    if (!warpDataRaw) {
-        player.sendMessage(`§cNo existe un warp con el nombre '${warpName}'.`);
+    let targetLocation;
+    let targetDimension;
+    let messageText;
+
+    // Busca todos los warps
+    const warpsSearchResult = getFilteredPropertyKeys('warp', warpName);
+
+    if (Array.isArray(warpsSearchResult)) {
+        player.sendMessage("§gHay varios warps que coinciden con ese nombre")
         return;
     }
-    const warpData = JSON.parse(warpDataRaw);
+
+    if (warpsSearchResult) {
+        const parsedWarp = JSON.parse(world.getDynamicProperty(warpsSearchResult));
+        targetLocation = parsedWarp.location;
+        targetDimension = world.getDimension(parsedWarp.dimension);
+        messageText = `¡Teletransportándote al warp '${warpName}'!`;
+    }
+
     system.run(() => {
-        player.teleport(warpData.location, { dimension: world.getDimension(warpData.dimension) });
-        player.sendMessage(`§aTeletransportado al warp '${warpName}': X:${warpData.location.x}, Y:${warpData.location.y}, Z:${warpData.location.z}`);
+        if (player && targetDimension) {
+            player.teleport(targetLocation, { dimension: targetDimension });
+            player.sendMessage(`§a${messageText}`);
+        } else if (player) {
+            player.sendMessage('§cError: Ese warp no existe o no está disponible.');
+        }
     });
+    return;
 }

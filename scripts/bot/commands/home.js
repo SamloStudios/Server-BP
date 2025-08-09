@@ -1,28 +1,54 @@
-import { system, world } from '@minecraft/server';
+import { system, world } from "@minecraft/server";
+import { truncateFloat } from '../botUtils.js';
 
-export function setHome(player, args) {
-    if (player.dimension.id !== 'minecraft:overworld') {
-        player.sendMessage('§cSolo puedes establecer tu hogar en el Overworld.');
+// Comando !set (casa)
+export function setHome(player) {
+    let pos = player.location;
+    let dim = player.dimension.id;
+
+    if (dim !== 'minecraft:overworld') {
+        player.sendMessage(`§c¡Por ahora solo puedes establecer tu casa en el Overworld!`);
         return;
     }
-    const pos = player.location;
-    const homeData = {
-        location: { x: Math.floor(pos.x), y: Math.floor(pos.y), z: Math.floor(pos.z) },
-        dimension: player.dimension.id
+
+    for (let key in pos) {
+        pos[key] = truncateFloat(pos[key], 2); // Truncate to 2 decimal places
+    }
+
+    const newHomeData = {
+        dimension: dim, 
+        location: { x: pos.x, y: pos.y, z: pos.z }
     };
-    player.setDynamicProperty('home', JSON.stringify(homeData));
-    player.sendMessage(`§aHogar establecido en: X:${Math.floor(pos.x)}, Y:${Math.floor(pos.y)}, Z:${Math.floor(pos.z)}`);
+
+    const newHome =  JSON.stringify(newHomeData); // homeData -> JSON homeData
+
+    player.setDynamicProperty(`home`, newHome); // Save the home
+    player.sendMessage(`§aTu casa ha sido registrada exitosamente. ${player.name}, ${pos.x}, ${pos.y}, ${pos.z}`);
+    console.log(`@$houseUpdate ${player.name} ${pos.x} ${pos.y} ${pos.z} ${dim}`);
+    return;
 }
 
-export function home(player, args) {
-    const homeDataRaw = player.getDynamicProperty('home');
-    if (!homeDataRaw) {
-        player.sendMessage('§cNo tienes un hogar establecido. Usa !set para crear uno.');
+
+export function home(player){
+    // Comando !home
+    const home = player.getDynamicProperty(`home`);
+    if (home == undefined) {
+        player.sendMessage('§cNo tienes una casa registrada. Usa !set para establecer una.');
         return;
     }
-    const homeData = JSON.parse(homeDataRaw);
+
+    const homeData = JSON.parse(home);
+    const pos = homeData.location;
+    const dim = homeData.dimension;
+
     system.run(() => {
-        player.teleport(homeData.location, { dimension: world.getDimension(homeData.dimension) });
-        player.sendMessage(`§aTeletransportándote a tu hogar: X:${homeData.location.x}, Y:${homeData.location.y}, Z:${homeData.location.z}`);
+        const dimension = world.getDimension(dim);
+        if (dimension) {
+            player.teleport({ x: pos.x, y: pos.y, z: pos.z }, { dimension: dimension });
+            player.sendMessage(`§aTeletransportándote a tu casa en el ${dim}...`);
+        } else {
+            player.sendMessage('§cDimensión no encontrada.');
+        }
     });
+    return;
 }

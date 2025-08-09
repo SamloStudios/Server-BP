@@ -3,6 +3,7 @@ import { getTime } from './botUtils.js';
 import { setHome, home } from './commands/home.js';
 import { reqs, tpa, tpaccept } from './commands/tp.js';
 import { setWarp, delWarp, getWarps, warpTo, addToPlayerWarpC } from './commands/warp.js';
+import { clan } from './commands/clan.js';
 
 // Definición de rangos y reputación
 const RANKS = [
@@ -154,10 +155,10 @@ const commands = {
             '!home - Teletransportarse a tu hogar',
             '!tpa <jugador> - Solicitar teletransporte',
             '!si - Aceptar solicitud de teletransporte',
-            '!reqs - Ver solicitudes de teletransporte',
-            '!warp - Ver warps disponibles',
+            '!reqs - Ver solicitudes de teletransporte',  // ---------
+            '!warp - Ver warps disponibles', // ---
             '!setwarp <nombre> - Crear un warp',
-            '!delwarp <nombre> - Eliminar un warp',
+            '!delwarp <nombre> - Eliminar un warp', // ---
             '!rango - Ver tu rango y reputación',
             '!stats - Ver tus estadísticas completas',
             '!mission <id> - Iniciar una misión manualmente',
@@ -203,7 +204,13 @@ const commands = {
     },
     si: tpaccept,
     reqs: reqs,
-    warp: warpTo,
+    warp: (player, args) => {
+        if (args.length === 1) {
+            getWarps(player);
+        } else {
+            warpTo(player, args)
+        }
+    },
     setwarp: setWarp,
     delwarp: delWarp,
     rango: (player) => {
@@ -269,94 +276,27 @@ const commands = {
             player.sendMessage('§cRespuesta incorrecta.');
         }
     },
-    clan: (player, args) => {
-        if (args.length < 2) {
-            player.sendMessage('§cUso: !clan <crear|invitar|info> [nombre|jugador]');
-            return;
-        }
-        const subcommand = args[1].toLowerCase();
-        if (subcommand === 'crear') {
-            if (args.length < 3) {
-                player.sendMessage('§cUso: !clan crear <nombre>');
-                return;
-            }
-            const clanName = args[2].toLowerCase();
-            if (clanData.has(clanName)) {
-                player.sendMessage('§cYa existe un clan con ese nombre.');
-                return;
-            }
-            const data = getPlayerData(player);
-            if (data.clan) {
-                player.sendMessage('§cYa estás en un clan.');
-                return;
-            }
-            clanData.set(clanName, { leader: player.name, members: new Set([player.name]) });
-            data.clan = clanName;
-            savePlayerData(player, data);
-            addPlayerXp(player, 50, 'fundar un clan');
-            player.sendMessage(`§aClan '${clanName}' creado exitosamente.`);
-        } else if (subcommand === 'invitar') {
-            if (args.length < 3) {
-                player.sendMessage('§cUso: !clan invitar <jugador>');
-                return;
-            }
-            const targetName = args[2];
-            const data = getPlayerData(player);
-            if (!data.clan) {
-                player.sendMessage('§cNo estás en un clan.');
-                return;
-            }
-            const clan = clanData.get(data.clan);
-            if (clan.leader !== player.name) {
-                player.sendMessage('§cSolo el líder puede invitar.');
-                return;
-            }
-            const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
-            if (!targetPlayer) {
-                player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
-                return;
-            }
-            const targetData = getPlayerData(targetPlayer);
-            if (targetData.clan) {
-                player.sendMessage(`§c${targetName} ya está en un clan.`);
-                return;
-            }
-            clan.members.add(targetPlayer.name);
-            targetData.clan = data.clan;
-            savePlayerData(targetPlayer, targetData);
-            addPlayerXp(targetPlayer, 20, 'unirse a un clan');
-            player.sendMessage(`§a${targetName} ha sido invitado al clan '${data.clan}'.`);
-            targetPlayer.sendMessage(`§aHas sido invitado al clan '${data.clan}' por ${player.name}.`);
-        } else if (subcommand === 'info') {
-            const data = getPlayerData(player);
-            if (!data.clan) {
-                player.sendMessage('§cNo estás en un clan.');
-                return;
-            }
-            const clan = clanData.get(data.clan);
-            player.sendMessage(`§6Clan: ${data.clan}\n§bLíder: ${clan.leader}\n§bMiembros: ${[...clan.members].join(', ')}`);
-        }
-    },
-    claim: (player) => {
-        const data = getPlayerData(player);
-        if (data.claims >= 2) {
-            player.sendMessage('§cHas alcanzado el límite de 2 terrenos reclamados.');
-            return;
-        }
-        const pos = player.location;
-        const dim = player.dimension.id;
-        const chunkX = Math.floor(pos.x / 30);
-        const chunkZ = Math.floor(pos.z / 30);
-        const key = `${dim}:${chunkX}:${chunkZ}`;
-        if (claims.has(key)) {
-            player.sendMessage('§cEsta área ya está reclamada.');
-            return;
-        }
-        claims.set(key, { owner: player.name, trusted: new Set(), dimension: dim, x: chunkX * 30, z: chunkZ * 30 });
-        data.claims += 1;
-        savePlayerData(player, data);
-        player.sendMessage(`§aTerreno reclamado en ${dim} (X:${chunkX * 30}, Z:${chunkZ * 30}, 30x30 bloques).`);
-    },
+    clan: clan,
+    // claim: (player) => {
+    //     const data = getPlayerData(player);
+    //     if (data.claims >= 2) {
+    //         player.sendMessage('§cHas alcanzado el límite de 2 terrenos reclamados.');
+    //         return;
+    //     }
+    //     const pos = player.location;
+    //     const dim = player.dimension.id;
+    //     const chunkX = Math.floor(pos.x / 30);
+    //     const chunkZ = Math.floor(pos.z / 30);
+    //     const key = `${dim}:${chunkX}:${chunkZ}`;
+    //     if (claims.has(key)) {
+    //         player.sendMessage('§cEsta área ya está reclamada.');
+    //         return;
+    //     }
+    //     claims.set(key, { owner: player.name, trusted: new Set(), dimension: dim, x: chunkX * 30, z: chunkZ * 30 });
+    //     data.claims += 1;
+    //     savePlayerData(player, data);
+    //     player.sendMessage(`§aTerreno reclamado en ${dim} (X:${chunkX * 30}, Z:${chunkZ * 30}, 30x30 bloques).`);
+    // },
     pay: (player, args) => {
         if (args.length < 3) {
             player.sendMessage('§cUso: !pay <jugador> <cantidad>');
@@ -373,11 +313,7 @@ const commands = {
             player.sendMessage('§cNo tienes suficiente dinero.');
             return;
         }
-        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData.name) {
-            targetData.name = targetName;
-            targetData.balance = targetData.balance || 200;
-        }
+        const targetData = getPlayerData(world.getAllPlayers().find((p) => p.name === targetName));
         modificarDinero(player, -amount);
         targetData.balance = (targetData.balance || 200) + amount;
         savePlayerData({ name: targetName }, targetData);

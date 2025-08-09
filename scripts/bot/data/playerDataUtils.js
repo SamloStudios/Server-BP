@@ -3,7 +3,7 @@ import { system, world } from "@minecraft/server";
 export const propertyCache = new Map();
 
 // Definición de rangos y reputación
-const RANKS = [
+export const RANKS = [
     { level: 0, name: "Campesino", color: "§7", requirements: () => true },
     { level: 5, name: "Aldeano", color: "§f", requirements: (data) => data.misiones >= 3 && data.balance >= 100 && data.reputation >= 0 },
     { level: 10, name: "Escudero", color: "§a", requirements: (data) => data.misiones >= 7 && data.balance >= 300 && data.reputation >= 1 },
@@ -16,7 +16,7 @@ const RANKS = [
     { level: 640, name: "Emperador", color: "§4", requirements: (data) => data.admin }
 ];
 
-const REPUTATION_LEVELS = [
+export const REPUTATION_LEVELS = [
     { level: -3, name: "Forajido", color: "§4" },
     { level: -2, name: "Rufián", color: "§c" },
     { level: -1, name: "Pícaro", color: "§e" },
@@ -26,7 +26,7 @@ const REPUTATION_LEVELS = [
     { level: 3, name: "Heroico", color: "§d" }
 ];
 
-function getPlayerData(player) {
+export function getPlayerData(player) {
     const key = `playerData:${player.name}`;
     if (!propertyCache.has(key)) {
         const dataStr = world.getDynamicProperty(key);
@@ -120,10 +120,11 @@ export function addPlayerXp(player, amount, reason) {
     const oldRank = getRank(player);
     data.xp += amount;
     const newLevel = getLevelFromXP(data.xp);
+    if (reason) player.sendMessage(`§aGanaste §d${amount}xp §apor ${reason}`)
     if (newLevel > data.level) {
         data.level = newLevel;
         data.balance += newLevel * 5;
-        player.sendMessage(`§a¡Has subido al nivel ${newLevel} por ${reason}! Ganaste ${newLevel * 5} Ringcoins.`);
+        player.sendMessage(`§a¡Has subido al nivel ${newLevel}! Ganaste ${newLevel * 5} Ringcoins.`);
         const newRank = getRank(player);
         if (newRank !== oldRank) {
             system.run(() => {
