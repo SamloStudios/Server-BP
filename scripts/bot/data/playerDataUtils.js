@@ -4,15 +4,15 @@ export const propertyCache = new Map();
 
 // Definición de rangos y reputación
 export const RANKS = [
-    { level: 0, name: "Campesino", color: "§7", requirements: () => true },
-    { level: 5, name: "Aldeano", color: "§f", requirements: (data) => data.misiones >= 3 && data.balance >= 100 && data.reputation >= 0 },
-    { level: 10, name: "Escudero", color: "§a", requirements: (data) => data.misiones >= 7 && data.balance >= 300 && data.reputation >= 1 },
-    { level: 15, name: "Caballero", color: "§b", requirements: (data) => data.misiones >= 15 && data.reputation >= 2 && data.balance >= 700 },
+    { level: 0, name: "Plebeyo", color: "§7", requirements: () => true },
+    { level: 5, name: "Burgués", color: "§a", requirements: (data) => data.balance >= 100 && data.reputation >= 0 },
+    { level: 10, name: "Noble", color: "§b", requirements: (data) => data.misiones >= 0 && data.balance >= 300 && data.reputation >= 0 },
+    { level: 15, name: "Caballero", color: "§3", requirements: (data) => data.misiones >= 15 && data.reputation >= 2 && data.balance >= 700 },
     { level: 25, name: "Barón", color: "§9", requirements: (data) => data.misiones >= 25 && data.claims >= 1 && data.balance >= 1500 && data.reputation >= 3 },
-    { level: 40, name: "Conde", color: "§6", requirements: (data) => data.misiones >= 40 && data.reputation >= 4 && data.balance >= 2500 },
-    { level: 60, name: "Duque", color: "§5", requirements: (data) => data.misiones >= 60 && data.clan && data.balance >= 5000 && data.reputation >= 5 },
-    { level: 90, name: "Príncipe", color: "§d", requirements: (data) => data.misiones >= 90 && data.events >= 1 && data.balance >= 8000 && data.reputation >= 6 },
-    { level: 120, name: "Rey", color: "§c", requirements: (data) => data.misiones >= 120 && data.balance >= 15000 && data.events >= 3 && data.reputation >= 6 },
+    { level: 40, name: "Conde", color: "§5", requirements: (data) => data.misiones >= 40 && data.reputation >= 4 && data.balance >= 2500 },
+    { level: 60, name: "Duque", color: "§6", requirements: (data) => data.misiones >= 60 && data.clan && data.balance >= 5000 && data.reputation >= 5 },
+    { level: 90, name: "Príncipe", color: "§c", requirements: (data) => data.misiones >= 90 && data.events >= 1 && data.balance >= 8000 && data.reputation >= 6 },
+    { level: 120, name: "Rey", color: "§4", requirements: (data) => data.misiones >= 120 && data.balance >= 15000 && data.events >= 3 && data.reputation >= 6 },
     { level: 640, name: "Emperador", color: "§4", requirements: (data) => data.admin }
 ];
 
@@ -77,13 +77,28 @@ export function savePlayerData(player, data) {
 }
 
 export function getLevelFromXP(xp) {
-    let level = 0, xpNeeded = 100, xpAcc = 0;
+    let level = 0;
+    let xpNeeded = 10;
+    let xpAcc = 0;
     while (xp >= xpAcc + xpNeeded) {
         xpAcc += xpNeeded;
-        xpNeeded = Math.floor(xpNeeded * 1.2);
+        xpNeeded += 10 + (15 * level); // <-- Linear increase
         level++;
     }
     return level;
+}
+
+export function getNextLevelXP(level) {
+    // Retorna la cantidad de XP necesaria para el siguiente nivel
+    let initlevel = 0;
+    let xpNeeded = 10;
+    let xpAcc = 0;
+    while (initlevel < level+1) {
+        xpAcc += xpNeeded;
+        xpNeeded += 10 + (15 * initlevel);
+        initlevel++;
+    }
+    return xpAcc;
 }
 
 export function getRank(player) {
@@ -97,6 +112,11 @@ export function getRank(player) {
         }
     }
     return currentRank;
+}
+
+export function getNextRank(rankName) {
+    const index = RANKS.findIndex(r => r.name === rankName);
+    return RANKS[index + 1];
 }
 
 export function getReputation(player) {
@@ -119,8 +139,11 @@ export function addPlayerXp(player, amount, reason) {
     const data = getPlayerData(player);
     const oldRank = getRank(player);
     data.xp += amount;
-    const newLevel = getLevelFromXP(data.xp);
+    // Mensaje de recompensa
     if (reason) player.sendMessage(`§aGanaste §d${amount}xp §apor ${reason}`)
+
+    // Si subio de nivel
+    const newLevel = getLevelFromXP(data.xp);
     if (newLevel > data.level) {
         data.level = newLevel;
         data.balance += newLevel * 5;
@@ -128,8 +151,8 @@ export function addPlayerXp(player, amount, reason) {
         const newRank = getRank(player);
         if (newRank !== oldRank) {
             system.run(() => {
-                player.runCommandAsync("summon fireworks_rocket").catch(() => {});
-                player.runCommandAsync("playsound random.levelup @s").catch(() => {});
+                player.runCommand("summon fireworks_rocket").catch(() => {});
+                player.runCommand("playsound random.levelup @s").catch(() => {});
             });
             world.sendMessage(`§b¡${player.name} ha ascendido al rango ${newRank.color}${newRank.name}§r!`);
         }

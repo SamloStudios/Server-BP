@@ -11,3 +11,4 @@ import "./items/endComponents.js"
 // BOT --------
 import "./bot/botCommands.js";
 import "./bot/botWelcome.js";
+import "./bot/missions/missions.js";

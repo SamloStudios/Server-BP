@@ -1,4 +1,4 @@
-import { system, world } from '@minecraft/server';
+import { system, WeatherType, world } from '@minecraft/server';
 import { getRank } from '../data/playerDataUtils';
 import { getFilteredPropertyKeys } from '../botUtils';
 
@@ -92,7 +92,7 @@ export function getWarps(player) {
     if (availableWarps.length > 0) {
         player.sendMessage(`§l§6Warps disponibles:§r§e\n${availableWarps.map(w => `!warp ${w.name} (Creado por ${w.owner})`).join('\n')}`);
     } else {
-        player.sendMessage('§cNo hay warps disponibles en el reino.');
+        player.sendMessage('§cNo hay warps disponibles en el mundo.');
     }
     return;
 }
@@ -106,13 +106,18 @@ export function warpTo(player, args) {
     // Busca todos los warps
     const warpsSearchResult = getFilteredPropertyKeys('warp', warpName);
 
-    if (Array.isArray(warpsSearchResult)) {
+    if (warpsSearchResult.length === 0) {
+        player.sendMessage("§cEse warp no existe");
+        return;
+    }
+
+    if (warpsSearchResult.length > 1) {
         player.sendMessage("§gHay varios warps que coinciden con ese nombre")
         return;
     }
 
     if (warpsSearchResult) {
-        const parsedWarp = JSON.parse(world.getDynamicProperty(warpsSearchResult));
+        const parsedWarp = JSON.parse(world.getDynamicProperty(warpsSearchResult[0]));
         targetLocation = parsedWarp.location;
         targetDimension = world.getDimension(parsedWarp.dimension);
         messageText = `¡Teletransportándote al warp '${warpName}'!`;

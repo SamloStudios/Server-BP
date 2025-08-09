@@ -1,3 +1,4 @@
+import { world } from "@minecraft/server";
 export function getTime() {
     const now = new Date();
     now.setHours(now.getHours() - 6);
