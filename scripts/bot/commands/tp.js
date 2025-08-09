@@ -33,11 +33,7 @@ export function tpa(player, args){
         return;
     }
     const targetName = args[1].toLowerCase();
-    if (player.name.toLowerCase() === targetName) {
-        player.sendMessage("§cNo puedes teletransportarte a ti mismo.");
-        return;
-    }
-
+    
     // Verifica si el jugador objetivo está en línea
     const targetPlayer = [...world.getPlayers()].find(p => p.name.toLowerCase().startsWith(targetName));
 
@@ -46,9 +42,14 @@ export function tpa(player, args){
         player.sendMessage(`§cJugador no encontrado que comience con '${targetName}'.`);
         return;
     }
-
+    
     if (playerTpReqs.some(r => r.sender === player.name && r.target === targetPlayer.name)) {
         player.sendMessage(`§cYa tienes una solicitud pendiente para ${targetPlayer.name}.`);
+        return;
+    }
+    
+    if (player.name === targetPlayer.name) {
+        player.sendMessage("§cNo puedes teletransportarte a ti mismo.");
         return;
     }
 
