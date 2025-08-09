@@ -73,7 +73,7 @@ function crearTrade(player, targetName, monto, item) {
     }
     const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
     if (!targetData.name) {
-        player.sendMessage(`§cJugador '${targetName}' no encontrado.');
+        player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
         return;
     }
     const tradeId = Math.random().toString(36).substring(2);

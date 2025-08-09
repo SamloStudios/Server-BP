@@ -1,4 +1,4 @@
-import { system, world } from '@minecraft/server';
+import { system, world, ItemStack, MinecraftItemTypes } from '@minecraft/server';
 import { getTime } from './botUtils.js';
 import { setHome, home } from './commands/home.js';
 import { reqs, tpa, tpaccept } from './commands/tp.js';
@@ -33,35 +33,6 @@ const playerMissions = new Map();
 const clanData = new Map();
 const claims = new Map();
 const mathQuizActive = { active: false, answer: null, reward: 0 };
-
-
-// Misiones de jugador - Se guardaran en player.setDynamicProperty(mission:)
-// Descripcion (txt)
-// Tipo (que debe hacer?)
-// Count (cuanto?)
-// Value (que cosa?)
-// Reward (recompensa)
-// Origin (nombre de quest que la origina)
-
-/* Reward system {
-    reward: {
-        item : [{v:minecraft:diamond_sword, n:'Espada del fin', l:Hecha de los materiales mas caros del mundo}],
-        money : -20,
-        xp : 50,
-        key : "EpicChestKey"
-    }
-}
-*/
-// Quest / mission system
-/* System that checks periodically {
-    Messages from: Other Players, Npcs, External // ej: You have 1 message unread! 
-    Mission of the day
-    Unfinished quests
-}
-*/
-// In join alerts
-// Array of random help messages of the system
-
 const missions = [
     { id: 1, description: "Minar 200 bloques", type: "mine", target: 200, rewardXP: 50, rewardGold: 25, minRank: "Campesino" },
     { id: 2, description: "Derrotar 25 mobs", type: "killMob", target: 25, rewardXP: 75, rewardGold: 40, minRank: "Campesino" },
@@ -78,12 +49,118 @@ const missions = [
 
 const propertyCache = new Map();
 
-//FIXED
+function getPlayerData(player) {
+    const key = `playerData:${player.name}`;
+    if (!propertyCache.has(key)) {
+        const dataStr = world.getDynamicProperty(key);
+        propertyCache.set(key, dataStr ? JSON.parse(dataStr) : {
+            xp: 0, level: 0, balance: 200, misiones: 0, reputation: 0, claims: 0, events: 0, clan: null, distance: 0, cooked: 0, admin: player.hasTag('admin'), placed: 0, kills: 0
+        });
+    }
+    return propertyCache.get(key);
+}
 
+function savePlayerData(player, data) {
+    const key = `playerData:${player.name}`;
+    propertyCache.set(key, data);
+    world.setDynamicProperty(key, JSON.stringify(data));
+}
 
+function getLevelFromXP(xp) {
+    let level = 0, xpNeeded = 100, xpAcc = 0;
+    while (xp >= xpAcc + xpNeeded) {
+        xpAcc += xpNeeded;
+        xpNeeded = Math.floor(xpNeeded * 1.2);
+        level++;
+    }
+    return level;
+}
+
+function getRank(player) {
+    const data = getPlayerData(player);
+    let currentRank = RANKS[0];
+    for (const rank of RANKS) {
+        if (data.level >= rank.level && rank.requirements(data)) {
+            currentRank = rank;
+        } else {
+            break;
+        }
+    }
+    return currentRank;
+}
+
+function getReputation(player) {
+    const data = getPlayerData(player);
+    return REPUTATION_LEVELS.find(r => r.level === Math.max(-3, Math.min(3, data.reputation))) || REPUTATION_LEVELS[3];
+}
+
+export function formatPlayerName(player) {
+    const rank = getRank(player);
+    const rep = getReputation(player);
+    const prefix = player.hasTag('admin') ? "§l§c[Emperador] " : `${rank.color}[${rank.name}] ${rep.color}[${rep.name}] `;
+    return prefix + player.name;
+}
+
+export function sendRankedChat(player, message) {
+    world.sendMessage(`${formatPlayerName(player)}: §f${message}`);
+}
 
 function hasPermission(player, permission) {
     return player.hasTag('admin') || player.hasTag(permission);
+}
+
+function addPlayerXp(player, amount, reason) {
+    const data = getPlayerData(player);
+    const oldRank = getRank(player);
+    data.xp += amount;
+    const newLevel = getLevelFromXP(data.xp);
+    if (newLevel > data.level) {
+        data.level = newLevel;
+        data.balance += newLevel * 5;
+        player.sendMessage(`§a¡Has subido al nivel ${newLevel} por ${reason}! Ganaste ${newLevel * 5} Ringcoins.`);
+        const newRank = getRank(player);
+        if (newRank !== oldRank) {
+            system.run(() => {
+                player.runCommandAsync("summon fireworks_rocket").catch(() => {});
+                player.runCommandAsync("playsound random.levelup @s").catch(() => {});
+            });
+            world.sendMessage(`§b¡${player.name} ha ascendido al rango ${newRank.color}${newRank.name}§r!`);
+        }
+    }
+    savePlayerData(player, data);
+}
+
+function modifyReputation(player, amount) {
+    const data = getPlayerData(player);
+    data.reputation = Math.max(-3, Math.min(3, data.reputation + amount));
+    savePlayerData(player, data);
+    const rep = getReputation(player);
+    player.sendMessage(`§6Tu reputación ahora es: ${rep.color}${rep.name}`);
+    const rank = getRank(player);
+    const expectedRank = RANKS.find(r => r.level <= data.level && r.requirements(data));
+    if (expectedRank !== rank) {
+        data.xp = Math.max(0, data.xp - 50);
+        player.sendMessage(`§cTu rango ha sido ajustado a ${expectedRank.color}${expectedRank.name} debido a tu reputación.`);
+    }
+}
+
+export function getDinero(player) {
+    return getPlayerData(player).balance || 200;
+}
+
+export function setDinero(player, cantidad) {
+    const data = getPlayerData(player);
+    data.balance = Math.max(0, cantidad);
+    savePlayerData(player, data);
+    player.sendMessage(`§6Tu saldo ahora es: §e${data.balance} Ringcoins`);
+}
+
+export function modificarDinero(player, cantidad) {
+    const data = getPlayerData(player);
+    data.balance = Math.max(0, (data.balance || 200) + cantidad);
+    savePlayerData(player, data);
+    player.sendMessage(`§6Tu saldo ha cambiado en ${cantidad}. Saldo actual: §e${data.balance} Ringcoins`);
+    if (cantidad > 0) updateMissionProgress(player, 'trade', cantidad);
 }
 
 function startMission(player, missionId) {
@@ -654,7 +731,6 @@ const commands = {
 world.beforeEvents.chatSend.subscribe(event => {
     const player = event.sender;
     const message = event.message;
-    console.error(JSON.stringify(getPlayerData(player)))
     if (!message.startsWith('!')) {
         event.cancel = true;
         addPlayerXp(player, 1, 'hablar en el chat');

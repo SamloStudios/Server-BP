@@ -1,5 +1,5 @@
 import { system, world } from '@minecraft/server';
-import { getRank } from './botCommands.js';
+import { getRank } from '../data/playerDataUtils';
 
 const WARP_LIMITS = {
     Campesino: 0,
