@@ -34,7 +34,7 @@ function findPlayerByPartialName(name) {
 // --- Funciones del Comando Clan ---
 export function clan(player, args) {
     if (args.length < 2) {
-        player.sendMessage('§cUso: !clan <crear|invitar|aceptar|info|desmantelar> [nombre|jugador]');
+        player.sendMessage('§cUso: !clan <crear/invitar/aceptar/info/desmantelar/salir> [nombre|jugador]');
         return;
     }
     const subcommand = args[1].toLowerCase();

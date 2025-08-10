@@ -147,7 +147,7 @@
         },
         {
           "type": "item",
-          "name": "endupdate:purpur_ore",
+          "name": "endupdate:raw_purpur",
           "weight": 3,
           "functions": [{ "function": "set_count", "count": { "min": 8, "max": 16 } }]
         },

@@ -44,7 +44,7 @@ world.afterEvents.playerBreakBlock.subscribe(event => {
     // if (block === 'minecraft:diamond_ore' || block === 'minecraft:deepslate_diamond_ore') {
     //     updateMissionProgress(player, 'mineDiamond', 1);
     // }
-    addPlayerXp(player, 2);
+    addPlayerXp(player, 1);
 });
 
 world.afterEvents.playerPlaceBlock.subscribe(event => {

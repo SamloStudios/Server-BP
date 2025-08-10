@@ -2,13 +2,14 @@ import { system, world } from '@minecraft/server';
 import { getTime } from './botUtils.js';
 import { setHome, home } from './commands/home.js';
 import { reqs, tpa, tpaccept } from './commands/tp.js';
-import { setWarp, delWarp, getWarps, warpTo, addToPlayerWarpC } from './commands/warp.js';
+import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
 import { clan } from './commands/clan.js';
 import { stats } from './commands/stats.js';
 import { addPlayerXp, savePlayerData, getPlayerData } from './data/playerDataUtils.js';
 import { sendRankedChat } from './data/playerDataUtils.js';
 import { rango } from './commands/rango.js';
-import { mission } from './missions/missions.js';
+import { mission, updateMissionProgress } from './missions/missions.js';
+import { worldDP } from './adminCommands/worldDP.js';
 
 
 // Estructuras de datos
@@ -76,12 +77,11 @@ const commands = {
             '!rango - Ver tu rango y reputación',
             '!stats - Ver tus estadísticas completas', // ---
             '!mission <id> - Iniciar una misión manualmente',
-            '!r <respuesta> - Responder al quiz matemático',
-            '!clan crear <nombre> - Crear un clan',
-            '!clan invitar <jugador> - Invitar a un clan',
-            '!clan info - Ver información del clan',
-            '!pay <jugador> <cantidad> - Pagar Ringcoins',
-            '!prestamo <jugador> <monto> <días> - Prestar Ringcoins',
+            '!r <respuesta> - Responder al quiz matemático', // ARREGLAR
+            '!clan - Todos los comandos sobre clan',
+            '!pay <jugador> <cantidad> - Pagar Ringcoins'
+        ];
+        /*'!prestamo <jugador> <monto> <días> - Prestar Ringcoins',
             '!trade <jugador> <monto> <item> - Proponer un intercambio',
             '!accepttrade <id> - Aceptar un intercambio',
             '!tradelist - Ver intercambios pendientes',
@@ -92,8 +92,7 @@ const commands = {
             '!setmoney <jugador> <cantidad> - Establecer Ringcoins (admin)',
             '!setrep <jugador> <nivel> - Establecer reputación (admin)',
             '!setclan <jugador> <nombre> - Asignar clan (admin)',
-            '!delclan <nombre> - Eliminar clan (admin)'
-        ];
+            '!delclan <nombre> - Eliminar clan (admin)'*/
         player.sendMessage(commandList.join('\n'));
     },
     hora: (player) => player.sendMessage(`§dLa hora actual es ${getTime()}`),
@@ -386,6 +385,7 @@ const commands = {
         clanData.delete(clanName);
         player.sendMessage(`§aClan '${clanName}' eliminado.`);
     },
+    worlddp: worldDP,
     setclaim: (player, args) => {
         if (!hasPermission(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
@@ -519,8 +519,8 @@ system.runInterval(() => {
         if (distance > 0) {
             // Nota: Aquí necesitarías implementar addPlayerXp y updateMissionProgress
             // con la lógica que uses en tu sistema.
-            addPlayerXp(player, Math.floor(distance / 100), 'recorrer distancia');
-            // updateMissionProgress(player, 'move', Math.floor(distance));
+            addPlayerXp(player, Math.floor(distance / 100));
+            updateMissionProgress(player, 'move', Math.floor(distance));
         }
     }
 }, 20 * 60); // Cada minuto

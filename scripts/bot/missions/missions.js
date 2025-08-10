@@ -1,5 +1,5 @@
 import { RANKS } from "../data/playerDataUtils";
-import { system, world } from "@minecraft/server";
+import { system, world, WorldAfterEvents } from "@minecraft/server";
 import { getRank, getPlayerData, savePlayerData } from "../data/playerDataUtils";
 
 const playerMissions = new Map();
@@ -71,7 +71,7 @@ function autoAssignMissions() {
     }
 }
 
-function updateMissionProgress(player, type, amount) {
+export function updateMissionProgress(player, type, amount) {
     const missionData = playerMissions.get(player.name);
     if (!missionData) return;
     const mission = missions.find(m => m.id === missionData.missionId);
@@ -162,3 +162,8 @@ world.afterEvents.playerBreakBlock.subscribe(event => {
         updateMissionProgress(player, 'mineDiamond', 1);
     }
 });
+
+world.afterEvents.chatSend.subscribe(event => {
+    
+
+})

@@ -39,10 +39,24 @@ export function setWarp(player, args) {
         player.sendMessage(`§cHas alcanzado el límite de warps para tu rango (${WARP_LIMITS[rank]}).`);
         return;
     }
-    if (player.dimension.id !== 'minecraft:overworld') {
-        player.sendMessage('§cSolo puedes crear warps en el Overworld.');
+
+    const dim = player.dimension.id;
+    if (dim === 'minecraft:nether') {
+        player.sendMessage('§c§oSolo el §k§jNether King§r §o§cpuede establecer un warp en el nether');
+        system.run(()=>{
+            player.playSound("ambient.cave", player.location); 
+        });
         return;
     }
+
+    if (dim === 'minecraft:the_end') {
+        player.sendMessage('§c§oSolo el §k§4Dragon Lord§r §o§cpuede establecer un warp en el end');
+        system.run(()=>{
+            player.playSound("entity.enderdragon.death", player.location);
+        });
+        return;
+    }
+
     const pos = player.location;
     const warpData = {
         location: { x: Math.floor(pos.x), y: Math.floor(pos.y), z: Math.floor(pos.z) },
@@ -90,7 +104,11 @@ export function getWarps(player) {
     });
 
     if (availableWarps.length > 0) {
-        player.sendMessage(`§l§6Warps disponibles:§r§e\n${availableWarps.map(w => `!warp ${w.name} (Creado por ${w.owner})`).join('\n')}`);
+        player.sendMessage(`§l§6Warps disponibles:§r§e`);
+        for (const w in availableWarps) {
+            const wdta = JSON.parse(world.getDynamicProperty(`warp:${availableWarps[w]}`))
+            player.sendMessage('§a' + availableWarps[w] + '§b - (Owner: ' + wdta.owner + ')')
+        }
     } else {
         player.sendMessage('§cNo hay warps disponibles en el mundo.');
     }
@@ -103,6 +121,7 @@ export function warpTo(player, args) {
     let targetDimension;
     let messageText;
 
+    
     // Busca todos los warps
     const warpsSearchResult = getFilteredPropertyKeys('warp', warpName);
 

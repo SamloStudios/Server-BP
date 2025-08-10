@@ -5,14 +5,14 @@ export const propertyCache = new Map();
 // Definición de rangos y reputación
 export const RANKS = [
     { level: 0, name: "Plebeyo", color: "§7", requirements: () => true },
-    { level: 5, name: "Burgués", color: "§a", requirements: (data) => data.balance >= 100 && data.reputation >= 0 },
-    { level: 10, name: "Noble", color: "§b", requirements: (data) => data.misiones >= 0 && data.balance >= 300 && data.reputation >= 0 },
-    { level: 15, name: "Caballero", color: "§3", requirements: (data) => data.misiones >= 15 && data.reputation >= 2 && data.balance >= 700 },
-    { level: 25, name: "Barón", color: "§9", requirements: (data) => data.misiones >= 25 && data.claims >= 1 && data.balance >= 1500 && data.reputation >= 3 },
-    { level: 40, name: "Conde", color: "§5", requirements: (data) => data.misiones >= 40 && data.reputation >= 4 && data.balance >= 2500 },
-    { level: 60, name: "Duque", color: "§6", requirements: (data) => data.misiones >= 60 && data.clan && data.balance >= 5000 && data.reputation >= 5 },
-    { level: 90, name: "Príncipe", color: "§c", requirements: (data) => data.misiones >= 90 && data.events >= 1 && data.balance >= 8000 && data.reputation >= 6 },
-    { level: 120, name: "Rey", color: "§4", requirements: (data) => data.misiones >= 120 && data.balance >= 15000 && data.events >= 3 && data.reputation >= 6 },
+    { level: 10, name: "Burgués", color: "§a", requirements: (data) => data.balance >= 100 && data.reputation >= 0 },
+    { level: 25, name: "Noble", color: "§b", requirements: (data) => data.misiones >= 0 && data.balance >= 300 && data.reputation >= 0 },
+    { level: 50, name: "Caballero", color: "§3", requirements: (data) => data.misiones >= 15 && data.reputation >= 2 && data.balance >= 700 },
+    { level: 90, name: "Barón", color: "§9", requirements: (data) => data.misiones >= 25 && data.claims >= 1 && data.balance >= 1500 && data.reputation >= 3 },
+    { level: 150, name: "Conde", color: "§5", requirements: (data) => data.misiones >= 40 && data.reputation >= 4 && data.balance >= 2500 },
+    { level: 220, name: "Duque", color: "§6", requirements: (data) => data.misiones >= 60 && data.clan && data.balance >= 5000 && data.reputation >= 5 },
+    { level: 300, name: "Príncipe", color: "§c", requirements: (data) => data.misiones >= 90 && data.events >= 1 && data.balance >= 8000 && data.reputation >= 6 },
+    { level: 500, name: "Rey", color: "§4", requirements: (data) => data.misiones >= 120 && data.balance >= 15000 && data.events >= 3 && data.reputation >= 6 },
     { level: 640, name: "Emperador", color: "§4", requirements: (data) => data.admin }
 ];
 
