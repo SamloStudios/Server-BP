@@ -147,15 +147,22 @@ export function addPlayerXp(player, amount, reason) {
     const newLevel = getLevelFromXP(data.xp);
     if (newLevel > data.level) {
         data.level = newLevel;
-        data.balance += newLevel * 5;
-        player.sendMessage(`§a¡Has subido al nivel ${newLevel}! Ganaste ${newLevel * 5} Ringcoins.`);
-        const newRank = getRank(player);
+        
+        for (let i = oldLevel; i < newLevel; i++) { // Aumentar monedas 
+            data.balance += (i+1) * 10; // Gana monedas al subir de nivel
+            player.sendMessage(`§a¡Has ganado ${(i+1) * 10} monedas por subir de nivel!`);
+            // player.sendMessage(`§a¡Has subido al nivel ${i+1}!`);
+            world.sendMessage(`§b¡${oldRank.color}${player.name}§b ha subido al nivel ${i+1}!`);
+        }
+
+        const newRank = getRank(newLevel);
         if (newRank !== oldRank) {
-            system.run(() => {
-                player.runCommand("summon fireworks_rocket").catch(() => {});
-                player.runCommand("playsound random.levelup @s").catch(() => {});
-            });
-            world.sendMessage(`§b¡${player.name} ha ascendido al rango ${newRank.color}${newRank.name}§r!`);
+            system.run(()=> {
+                player.runCommand("summon fireworks_rocket");
+                player.runCommand(`playsound random.levelup @s`);
+            })
+            world.sendMessage(`§b¡${oldRank.color}${player.name} ha alcanzado el rango ${newRank.color}${newRank.name}§r!`);
+            player.sendMessage(`§b¡Felicidades! Has alcanzado el rango ${newRank.color}${newRank.name}§r`);
         }
     }
     savePlayerData(player, data);

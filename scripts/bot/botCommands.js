@@ -5,7 +5,7 @@ import { reqs, tpa, tpaccept } from './commands/tp.js';
 import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
 import { clan } from './commands/clan.js';
 import { stats } from './commands/stats.js';
-import { addPlayerXp, savePlayerData, getPlayerData, modificarDinero, addDinero } from './data/playerDataUtils.js';
+import { addPlayerXp, savePlayerData, getPlayerData, modificarDinero, addDinero, getLevelFromXP } from './data/playerDataUtils.js';
 import { sendRankedChat } from './data/playerDataUtils.js';
 import { rango } from './commands/rango.js';
 import { mission, updateMissionProgress } from './missions/missions.js';
@@ -60,6 +60,20 @@ function hasPermission(player, permission) {
 
 
 const commands = {
+    update: (player) => {
+        if (!hasPermission(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+        world.sendMessage("§9§lINTENTANDO ACTUALIZAR EL MUNDO EN 10seg");
+        system.runTimeout(()=> {
+            player.runCommand("kick @a '§aEl server se esta actualizando...'");
+        }, 10*20);
+        system.runTimeout(()=> {
+            console.log("@$update36457");
+        }, 10*20 + 20);
+        return;
+    },
     help: (player) => {
         const commandList = [
             '§6Comandos del Reino:',
@@ -76,8 +90,7 @@ const commands = {
             '!delwarp <nombre> - Eliminar un warp', // ---
             '!rango - Ver tu rango y reputación',
             '!stats - Ver tus estadísticas completas', // ---
-            '!mission <id> - Iniciar una misión manualmente',
-            '!r <respuesta> - Responder al quiz matemático', // ARREGLAR
+            '!mission <id> - Iniciar una misión manualmente (si, con 2 s)',
             '!clan - Todos los comandos sobre clan',
             '!pay <jugador> <cantidad> - Pagar Ringcoins'
         ];
@@ -248,13 +261,13 @@ const commands = {
             return;
         }
         const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData.name) {
+        if (!targetData) {
             player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
             return;
         }
         targetData.xp = amount;
         targetData.level = getLevelFromXP(amount);
-        savePlayerData({ name: targetName }, targetData);
+        savePlayerData({ name: targetData.name }, targetData);
         player.sendMessage(`§aXP de ${targetName} establecido a ${amount}.`);
         const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
         if (targetPlayer) targetPlayer.sendMessage(`§aTu XP ha sido establecido a ${amount} por un administrador.`);

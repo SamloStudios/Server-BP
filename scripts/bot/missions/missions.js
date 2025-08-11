@@ -2,7 +2,7 @@ import { RANKS } from "../data/playerDataUtils";
 import { system, world } from "@minecraft/server";
 import { getRank, getPlayerData, savePlayerData } from "../data/playerDataUtils";
 
-const playerMissions = new Map();
+let playerMissions = new Map();
 const missions = [
     { id: 1, description: "Minar 200 bloques", type: "mine", target: 200, rewardXP: 50, rewardGold: 25, minRank: "Campesino" },
     { id: 2, description: "Derrotar 25 mobs", type: "killMob", target: 25, rewardXP: 75, rewardGold: 30, minRank: "Campesino" },
