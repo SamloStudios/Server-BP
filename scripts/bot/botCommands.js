@@ -210,41 +210,41 @@ const commands = {
         const message = args.slice(1).join(' ');
         world.sendMessage(`§c[Anuncio del Reino] ${player.name}: §f${message}`);
     },
-    adminstats: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
-            player.sendMessage('§cNo tienes permiso para este comando.');
-            return;
-        }
-        if (args.length < 2) {
-            player.sendMessage('§cUso: !adminstats <jugador>');
-            return;
-        }
-        const targetName = args[1];
-        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData) {
-            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
-            return;
-        }
-        const rank = RANKS.find(r => r.level <= getLevelFromXP(targetData.xp) && r.requirements(targetData)) || RANKS[0];
-        const rep = REPUTATION_LEVELS.find(r => r.level === Math.max(-3, Math.min(3, targetData.reputation))) || REPUTATION_LEVELS[3];
-        const properties = world.getDynamicPropertyIds()
-            .filter(id => id.startsWith('property:') && JSON.parse(world.getDynamicProperty(id)).owner === targetName)
-            .map(id => id.substring(9));
-        player.sendMessage(`§6Estadísticas de ${targetName}:
-§bRango: ${rank.color}${rank.name}
-§bReputación: ${rep.color}${rep.name}
-§bNivel: ${targetData.level}
-§bXP: ${targetData.xp}
-§bRingcoins: ${targetData.balance}
-§bMisiones completadas: ${targetData.misiones}
-§bTerrenos reclamados: ${targetData.claims}/2
-§bDistancia recorrida: ${targetData.distance} bloques
-§bAlimentos cocinados: ${targetData.cooked}
-§bBloques colocados: ${targetData.placed}
-§bJugadores eliminados: ${targetData.kills}
-§bClan: ${targetData.clan || 'Ninguno'}
-§bPropiedades: ${properties.length > 0 ? properties.join(', ') : 'Ninguna'}`);
-    },
+//     adminstats: (player, args) => {
+//         if (!hasPermission(player, 'admin')) {
+//             player.sendMessage('§cNo tienes permiso para este comando.');
+//             return;
+//         }
+//         if (args.length < 2) {
+//             player.sendMessage('§cUso: !adminstats <jugador>');
+//             return;
+//         }
+//         const targetName = args[1];
+//         const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
+//         if (!targetData) {
+//             player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
+//             return;
+//         }
+//         const rank = RANKS.find(r => r.level <= getLevelFromXP(targetData.xp) && r.requirements(targetData)) || RANKS[0];
+//         const rep = REPUTATION_LEVELS.find(r => r.level === Math.max(-3, Math.min(3, targetData.reputation))) || REPUTATION_LEVELS[3];
+//         const properties = world.getDynamicPropertyIds()
+//             .filter(id => id.startsWith('property:') && JSON.parse(world.getDynamicProperty(id)).owner === targetName)
+//             .map(id => id.substring(9));
+//         player.sendMessage(`§6Estadísticas de ${targetName}:
+// §bRango: ${rank.color}${rank.name}
+// §bReputación: ${rep.color}${rep.name}
+// §bNivel: ${targetData.level}
+// §bXP: ${targetData.xp}
+// §bRingcoins: ${targetData.balance}
+// §bMisiones completadas: ${targetData.misiones}
+// §bTerrenos reclamados: ${targetData.claims}/2
+// §bDistancia recorrida: ${targetData.distance} bloques
+// §bAlimentos cocinados: ${targetData.cooked}
+// §bBloques colocados: ${targetData.placed}
+// §bJugadores eliminados: ${targetData.kills}
+// §bClan: ${targetData.clan || 'Ninguno'}
+// §bPropiedades: ${properties.length > 0 ? properties.join(', ') : 'Ninguna'}`);
+//     },
     setxp: (player, args) => {
         if (!hasPermission(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
