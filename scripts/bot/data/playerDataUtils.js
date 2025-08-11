@@ -1,4 +1,5 @@
 import { system, world } from "@minecraft/server";
+import { updateMissionProgress } from "../missions/missions";
 
 export const propertyCache = new Map();
 
@@ -179,11 +180,10 @@ export function getDinero(player) {
     return getPlayerData(player).balance || 200;
 }
 
-export function setDinero(player, cantidad) {
+export function addDinero(player, cantidad) {
     const data = getPlayerData(player);
-    data.balance = Math.max(0, cantidad);
+    data.balance = data.balance ? data.balance + cantidad : cantidad;
     savePlayerData(player, data);
-    player.sendMessage(`§6Tu saldo ahora es: §e${data.balance} Ringcoins`);
 }
 
 export function modificarDinero(player, cantidad) {

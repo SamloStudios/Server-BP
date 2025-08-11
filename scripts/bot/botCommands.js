@@ -5,15 +5,15 @@ import { reqs, tpa, tpaccept } from './commands/tp.js';
 import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
 import { clan } from './commands/clan.js';
 import { stats } from './commands/stats.js';
-import { addPlayerXp, savePlayerData, getPlayerData } from './data/playerDataUtils.js';
+import { addPlayerXp, savePlayerData, getPlayerData, modificarDinero, addDinero } from './data/playerDataUtils.js';
 import { sendRankedChat } from './data/playerDataUtils.js';
 import { rango } from './commands/rango.js';
 import { mission, updateMissionProgress } from './missions/missions.js';
 import { worldDP } from './adminCommands/worldDP.js';
+import { modOwner } from './adminCommands/modOwner.js';
 
 
 // Estructuras de datos
-const playerMissions = new Map();
 const clanData = new Map();
 const claims = new Map();
 const mathQuizActive = { active: false, answer: null, reward: 0 };
@@ -132,25 +132,6 @@ const commands = {
         stats(player)
     },
     mission: mission,
-    r: (player, args) => {
-        if (!mathQuizActive.active) {
-            player.sendMessage('§cNo hay un quiz activo.');
-            return;
-        }
-        if (args.length < 2) {
-            player.sendMessage('§cUso: !r <respuesta>');
-            return;
-        }
-        const answer = parseInt(args[1]);
-        if (answer === mathQuizActive.answer) {
-            mathQuizActive.active = false;
-            modificarDinero(player, mathQuizActive.reward);
-            addPlayerXp(player, 5, 'resolver un quiz matemático');
-            world.sendMessage(`§a¡${player.name} ha resuelto el quiz y gana ${mathQuizActive.reward} Ringcoins y 5 XP!`);
-        } else {
-            player.sendMessage('§cRespuesta incorrecta.');
-        }
-    },
     clan: clan,
     // claim: (player) => {
     //     const data = getPlayerData(player);
@@ -188,13 +169,20 @@ const commands = {
             player.sendMessage('§cNo tienes suficiente dinero.');
             return;
         }
-        const targetData = getPlayerData(world.getAllPlayers().find((p) => p.name === targetName));
+
+        const targetPlayer = world.getAllPlayers().find((p) => p.name.toLowerCase() === targetName.toLowerCase())
+
+        if (targetPlayer === undefined) {
+            player.sendMessage('§cEse jugador no existe (debes escribir su nombre exacto)');
+            return;
+        }
+
+        const targetData = getPlayerData(targetPlayer);
         modificarDinero(player, -amount);
-        targetData.balance = (targetData.balance || 200) + amount;
-        savePlayerData({ name: targetName }, targetData);
-        player.sendMessage(`§aHas pagado ${amount} Ringcoins a ${targetName}.`);
-        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
-        if (targetPlayer) targetPlayer.sendMessage(`§aHas recibido ${amount} Ringcoins de ${player.name}.`);
+        targetData.balance = targetData.balance ? targetData.balance + amount : amount;
+        savePlayerData(targetPlayer, targetData);
+        player.sendMessage(`§aHas pagado ${amount} Ringcoins a ${targetPlayer.name}.`);
+        targetPlayer.sendMessage(`§aHas recibido ${amount} Ringcoins de ${player.name}.`);
         addPlayerXp(player, 5, 'realizar un pago');
     },
     todos: (player, args) => {
@@ -386,6 +374,7 @@ const commands = {
         player.sendMessage(`§aClan '${clanName}' eliminado.`);
     },
     worlddp: worldDP,
+    modowner: modOwner,
     setclaim: (player, args) => {
         if (!hasPermission(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
@@ -462,11 +451,25 @@ const commands = {
     }
 };
 
+
+
+function checkForAnswer(answer, player) {
+    if (answer === mathQuizActive.answer) {
+        mathQuizActive.active = false;
+        addDinero(player, mathQuizActive.reward);
+        addPlayerXp(player, 15, 'resolver un quiz matemático');
+        world.sendMessage(`§a¡${player.name} ha resuelto el quiz y gana ${mathQuizActive.reward} Ringcoins y 15 XP!`);
+    } else {
+        player.sendMessage('§7[Quiz] §oRespuesta incorrecta.');
+    }
+}
+
 // Manejo de eventos
 world.beforeEvents.chatSend.subscribe(event => {
     const player = event.sender;
     const message = event.message;
     if (!message.startsWith('!')) {
+        if (mathQuizActive.active) checkForAnswer(message, player)
         event.cancel = true;
         addPlayerXp(player, 1);
         sendRankedChat(player, message);
@@ -537,9 +540,10 @@ system.runInterval(() => {
         else if (op === '*') answer = a * b;
         else answer = Math.floor(a / b);
         mathQuizActive.active = true;
-        mathQuizActive.answer = answer;
-        mathQuizActive.reward = 5;
-        world.sendMessage(`§b¡Quiz matemático del reino! Resuelve: ${a} ${op} ${b} = ?. Responde con !r <respuesta>`);
+        mathQuizActive.answer = answer.toString();
+        print(mathQuizActive.answer)
+        mathQuizActive.reward = 10;
+        world.sendMessage(`§b¡Quiz matemático del reino! Resuelve: ${a} ${op} ${b} = ?. ¡Responde directamente!`);
         system.runTimeout(() => {
             if (mathQuizActive.active) {
                 mathQuizActive.active = false;

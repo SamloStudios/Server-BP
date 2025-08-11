@@ -1,11 +1,11 @@
 import { RANKS } from "../data/playerDataUtils";
-import { system, world, WorldAfterEvents } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { getRank, getPlayerData, savePlayerData } from "../data/playerDataUtils";
 
 const playerMissions = new Map();
 const missions = [
     { id: 1, description: "Minar 200 bloques", type: "mine", target: 200, rewardXP: 50, rewardGold: 25, minRank: "Campesino" },
-    { id: 2, description: "Derrotar 25 mobs", type: "killMob", target: 25, rewardXP: 75, rewardGold: 40, minRank: "Campesino" },
+    { id: 2, description: "Derrotar 25 mobs", type: "killMob", target: 25, rewardXP: 75, rewardGold: 30, minRank: "Campesino" },
     { id: 3, description: "Caminar 5000 bloques", type: "move", target: 5000, rewardXP: 60, rewardGold: 30, minRank: "Aldeano" },
     { id: 4, description: "Cocinar 50 alimentos", type: "cook", target: 50, rewardXP: 40, rewardGold: 20, minRank: "Aldeano" },
     { id: 5, description: "Minar 50 bloques de mineral (carbón, hierro, etc.)", type: "mineOre", target: 50, rewardXP: 100, rewardGold: 50, minRank: "Escudero" },
@@ -164,6 +164,6 @@ world.afterEvents.playerBreakBlock.subscribe(event => {
 });
 
 world.afterEvents.chatSend.subscribe(event => {
-    
+
 
 })

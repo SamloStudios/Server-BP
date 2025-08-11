@@ -52,7 +52,7 @@ export function setWarp(player, args) {
     if (dim === 'minecraft:the_end') {
         player.sendMessage('§c§oSolo el §k§4Dragon Lord§r §o§cpuede establecer un warp en el end');
         system.run(()=>{
-            player.playSound("entity.enderdragon.death", player.location);
+            player.playSound("ambient.cave", player.location);
         });
         return;
     }
