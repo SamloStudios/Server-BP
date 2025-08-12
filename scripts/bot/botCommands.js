@@ -13,7 +13,7 @@ import { worldDP } from './adminCommands/worldDP.js';
 import { modOwner } from './adminCommands/modOwner.js';
 import { owner } from './adminCommands/blockOwner.js';
 import { playerDP } from './adminCommands/playerDP.js';
-import { setMission, setMoney, setReputation, setxp } from './adminCommands/modifyPlayerValues.js';
+import { clearCache, setMission, setMoney, setReputation, setxp } from './adminCommands/modifyPlayerValues.js';
 
 
 // Estructuras de datos
@@ -252,6 +252,7 @@ const commands = {
     worlddp: worldDP,
     playerdp : playerDP,
     modowner: modOwner,
+    clearcache: clearCache,
     setclaim: (player, args) => {
         if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');

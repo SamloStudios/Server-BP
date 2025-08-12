@@ -1,6 +1,6 @@
 import { world } from "@minecraft/server";
 import { isAdmin } from "../botUtils";
-import { getPlayerData, getRank, savePlayerData, getLevelFromXP } from "../data/playerDataUtils";
+import { getPlayerData, getRank, savePlayerData, getLevelFromXP, propertyCache } from "../data/playerDataUtils";
 
 export function setxp(player, args) {
     if (!isAdmin(player, 'admin')) {
@@ -124,4 +124,8 @@ function getPlayerByName(name) {
         return undefined;
     }
     return targetPlayer;
+}
+
+export function clearCache () {
+    propertyCache = new Map();
 }
