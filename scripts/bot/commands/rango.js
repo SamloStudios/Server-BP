@@ -4,7 +4,6 @@ export function rango(player) {
     const data = getPlayerData(player);
     const rank = getRank(player);
     const next = getNextRank(rank.name);
-    print (data.name)
 
     player.sendMessage(`\n§6Tu rango actual: ${rank.color}${rank.name}`);
     if (next) {

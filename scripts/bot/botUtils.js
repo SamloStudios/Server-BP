@@ -34,3 +34,7 @@ export function getFilteredPropertyKeys(subject, verb) {
     // 3. Se devuelve el array de los IDs filtrados
     return filteredIds;
 }
+
+export function isAdmin(player, permission) {
+    return player.hasTag('admin') || player.hasTag(permission);
+}

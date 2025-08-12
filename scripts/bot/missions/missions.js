@@ -81,8 +81,8 @@ export function updateMissionProgress(player, type, amount) {
             completeMission(player, mission);
         } else {
             player.sendMessage(`§bProgreso de misión: §7${missionData.progress}/${mission.target}`);
+            playerMissions.set(player.name, missionData);
         }
-        playerMissions.set(player.name, missionData);
     }
 }
 

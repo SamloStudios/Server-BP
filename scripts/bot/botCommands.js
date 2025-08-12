@@ -1,16 +1,19 @@
 import { system, world } from '@minecraft/server';
-import { getTime } from './botUtils.js';
+import { getTime, isAdmin } from './botUtils.js';
 import { setHome, home } from './commands/home.js';
 import { reqs, tpa, tpaccept } from './commands/tp.js';
 import { setWarp, delWarp, getWarps, warpTo } from './commands/warp.js';
 import { clan } from './commands/clan.js';
 import { stats } from './commands/stats.js';
-import { addPlayerXp, savePlayerData, getPlayerData, modificarDinero, addDinero, getLevelFromXP } from './data/playerDataUtils.js';
+import { addPlayerXp, savePlayerData, getPlayerData, modificarDinero, addDinero } from './data/playerDataUtils.js';
 import { sendRankedChat } from './data/playerDataUtils.js';
 import { rango } from './commands/rango.js';
 import { mission, updateMissionProgress } from './missions/missions.js';
 import { worldDP } from './adminCommands/worldDP.js';
 import { modOwner } from './adminCommands/modOwner.js';
+import { owner } from './adminCommands/blockOwner.js';
+import { playerDP } from './adminCommands/playerDP.js';
+import { setMission, setMoney, setReputation, setxp } from './adminCommands/modifyPlayerValues.js';
 
 
 // Estructuras de datos
@@ -54,14 +57,10 @@ const propertyCache = new Map();
 
 
 
-function hasPermission(player, permission) {
-    return player.hasTag('admin') || player.hasTag(permission);
-}
-
 
 const commands = {
     update: (player) => {
-        if (!hasPermission(player, 'admin')) {
+        if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
             return;
         }
@@ -140,6 +139,7 @@ const commands = {
         delWarp(player, args);
     },
     rango: rango,
+    owner: owner,
     stats: (player) => {
         player.sendMessage("§6Tus Stats:")
         stats(player)
@@ -199,7 +199,7 @@ const commands = {
         addPlayerXp(player, 5, 'realizar un pago');
     },
     todos: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
+        if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
             return;
         }
@@ -245,151 +245,15 @@ const commands = {
 // §bClan: ${targetData.clan || 'Ninguno'}
 // §bPropiedades: ${properties.length > 0 ? properties.join(', ') : 'Ninguna'}`);
 //     },
-    setxp: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
-            player.sendMessage('§cNo tienes permiso para este comando.');
-            return;
-        }
-        if (args.length < 3) {
-            player.sendMessage('§cUso: !setxp <jugador> <cantidad>');
-            return;
-        }
-        const targetName = args[1];
-        const amount = parseInt(args[2]);
-        if (isNaN(amount) || amount < 0) {
-            player.sendMessage('§cCantidad inválida.');
-            return;
-        }
-        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData) {
-            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
-            return;
-        }
-        targetData.xp = amount;
-        targetData.level = getLevelFromXP(amount);
-        savePlayerData({ name: targetData.name }, targetData);
-        player.sendMessage(`§aXP de ${targetName} establecido a ${amount}.`);
-        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
-        if (targetPlayer) targetPlayer.sendMessage(`§aTu XP ha sido establecido a ${amount} por un administrador.`);
-    },
-    setmoney: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
-            player.sendMessage('§cNo tienes permiso para este comando.');
-            return;
-        }
-        if (args.length < 3) {
-            player.sendMessage('§cUso: !setmoney <jugador> <cantidad>');
-            return;
-        }
-        const targetName = args[1];
-        const amount = parseInt(args[2]);
-        if (isNaN(amount) || amount < 0) {
-            player.sendMessage('§cCantidad inválida.');
-            return;
-        }
-        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData) {
-            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
-            return;
-        }
-        targetData.balance = amount;
-        savePlayerData({ name: targetName }, targetData);
-        player.sendMessage(`§aRingcoins de ${targetName} establecidos a ${amount}.`);
-        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
-        if (targetPlayer) targetPlayer.sendMessage(`§aTus Ringcoins han sido establecidos a ${amount} por un administrador.`);
-    },
-    setrep: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
-            player.sendMessage('§cNo tienes permiso para este comando.');
-            return;
-        }
-        if (args.length < 3) {
-            player.sendMessage('§cUso: !setrep <jugador> <nivel>');
-            return;
-        }
-        const targetName = args[1];
-        const level = parseInt(args[2]);
-        if (isNaN(level) || level < -3 || level > 3) {
-            player.sendMessage('§cNivel de reputación inválido (-3 a 3).');
-            return;
-        }
-        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData.name) {
-            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
-            return;
-        }
-        targetData.reputation = level;
-        savePlayerData({ name: targetName }, targetData);
-        player.sendMessage(`§aReputación de ${targetName} establecida a ${level}.`);
-        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
-        if (targetPlayer) {
-            targetPlayer.sendMessage(`§aTu reputación ha sido establecida a ${level} por un administrador.`);
-            const rank = getRank(targetPlayer);
-            const expectedRank = RANKS.find(r => r.level <= targetData.level && r.requirements(targetData));
-            if (expectedRank !== rank) {
-                targetData.xp = Math.max(0, targetData.xp - 50);
-                savePlayerData(targetPlayer, targetData);
-                targetPlayer.sendMessage(`§cTu rango ha sido ajustado a ${expectedRank.color}${expectedRank.name} debido a tu reputación.`);
-            }
-        }
-    },
-    setclan: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
-            player.sendMessage('§cNo tienes permiso para este comando.');
-            return;
-        }
-        if (args.length < 3) {
-            player.sendMessage('§cUso: !setclan <jugador> <nombre>');
-            return;
-        }
-        const targetName = args[1];
-        const clanName = args[2].toLowerCase();
-        const targetData = propertyCache.get(`playerData:${targetName}`) || JSON.parse(world.getDynamicProperty(`playerData:${targetName}`) || '{}');
-        if (!targetData.name) {
-            player.sendMessage(`§cJugador '${targetName}' no encontrado.`);
-            return;
-        }
-        if (!clanData.has(clanName)) {
-            clanData.set(clanName, { leader: targetName, members: new Set([targetName]) });
-        } else {
-            const clan = clanData.get(clanName);
-            clan.members.add(targetName);
-        }
-        targetData.clan = clanName;
-        savePlayerData({ name: targetName }, targetData);
-        player.sendMessage(`§a${targetName} asignado al clan '${clanName}'.`);
-        const targetPlayer = world.getAllPlayers().find(p => p.name.toLowerCase() === targetName.toLowerCase());
-        if (targetPlayer) targetPlayer.sendMessage(`§aHas sido asignado al clan '${clanName}' por un administrador.`);
-    },
-    delclan: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
-            player.sendMessage('§cNo tienes permiso para este comando.');
-            return;
-        }
-        if (args.length < 2) {
-            player.sendMessage('§cUso: !delclan <nombre>');
-            return;
-        }
-        const clanName = args[1].toLowerCase();
-        if (!clanData.has(clanName)) {
-            player.sendMessage('§cClan no encontrado.');
-            return;
-        }
-        for (const p of world.getAllPlayers()) {
-            const data = getPlayerData(p);
-            if (data.clan === clanName) {
-                data.clan = null;
-                savePlayerData(p, data);
-                p.sendMessage(`§cEl clan '${clanName}' ha sido disuelto por un administrador.`);
-            }
-        }
-        clanData.delete(clanName);
-        player.sendMessage(`§aClan '${clanName}' eliminado.`);
-    },
+    setxp: setxp,
+    setmoney: setMoney,
+    setrep: setReputation,
+    setmissions: setMission,
     worlddp: worldDP,
+    playerdp : playerDP,
     modowner: modOwner,
     setclaim: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
+        if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
             return;
         }
@@ -429,7 +293,7 @@ const commands = {
         if (targetPlayer) targetPlayer.sendMessage(`§aTe han asignado un terreno en ${dim} (X:${chunkX * 30}, Z:${chunkZ * 30}) por un administrador.`);
     },
     delclaim: (player, args) => {
-        if (!hasPermission(player, 'admin')) {
+        if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
             return;
         }

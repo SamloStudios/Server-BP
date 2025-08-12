@@ -6,8 +6,8 @@ export const propertyCache = new Map();
 // Definición de rangos y reputación
 export const RANKS = [
     { level: 0, name: "Plebeyo", color: "§7", requirements: () => true },
-    { level: 10, name: "Burgués", color: "§a", requirements: (data) => data.balance >= 100 && data.reputation >= 0 },
-    { level: 25, name: "Noble", color: "§b", requirements: (data) => data.misiones >= 0 && data.balance >= 300 && data.reputation >= 0 },
+    { level: 10, name: "Burgués", color: "§a", requirements: (data) => data.misiones >= 2 && data.balance >= 100 && data.reputation >= 0 },
+    { level: 25, name: "Noble", color: "§b", requirements: (data) => data.misiones >= 5 && data.balance >= 300 && data.reputation >= 0 },
     { level: 50, name: "Caballero", color: "§3", requirements: (data) => data.misiones >= 15 && data.reputation >= 2 && data.balance >= 700 },
     { level: 90, name: "Barón", color: "§9", requirements: (data) => data.misiones >= 25 && data.claims >= 1 && data.balance >= 1500 && data.reputation >= 3 },
     { level: 150, name: "Conde", color: "§5", requirements: (data) => data.misiones >= 40 && data.reputation >= 4 && data.balance >= 2500 },
@@ -139,6 +139,7 @@ export function sendRankedChat(player, message) {
 export function addPlayerXp(player, amount, reason) {
     const data = getPlayerData(player);
     const oldRank = getRank(player);
+    const oldLevel = data.level;
     data.xp += amount;
     // Mensaje de recompensa
     if (reason) player.sendMessage(`§aGanaste §d${amount}xp §apor ${reason}`)
@@ -155,7 +156,7 @@ export function addPlayerXp(player, amount, reason) {
             world.sendMessage(`§b¡${oldRank.color}${player.name}§b ha subido al nivel ${i+1}!`);
         }
 
-        const newRank = getRank(newLevel);
+        const newRank = getRank(player);
         if (newRank !== oldRank) {
             system.run(()=> {
                 player.runCommand("summon fireworks_rocket");

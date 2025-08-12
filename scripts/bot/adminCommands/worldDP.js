@@ -1,13 +1,12 @@
 import { world } from "@minecraft/server";
 import { getFilteredPropertyKeys } from "../botUtils";
-
-
-function isAdmin(player) {
-    return player.hasTag('admin');
-}
+import { isAdmin } from "../botUtils";
 
 export function worldDP(player, args) {
-    if (!isAdmin(player)) return;
+    if (!isAdmin(player)) {
+        player.sendMessage("§cNo tienes permisos para usar este comando.");
+        return;
+    }
 
     const errorMsg = '§9Use: !worldDp <get/set/remove/getKeys/getAll/getByte> [value] (parameter)';
 
