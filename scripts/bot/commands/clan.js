@@ -290,15 +290,16 @@ function handleLeaveClan(player) {
 }
 
 function getClan(player) {
-    const clan = getPlayerData(player).clan ?? undefined;
-    return clan;
+    const data = getPlayerData(player);
+    return data.clan;
 }
 
 world.afterEvents.entityHurt.subscribe((event) => {
     if (!(event.hurtEntity instanceof Player) || !(event.damageSource instanceof Player)) return;
     
-    if (getClan(event.hurtEntity) === getClan(event.damageSource)) {
+    if (getClan(event.hurtEntity) === getClan(event.damageSource.damagingEntity)) {
         const hurt = event.hurtEntity.getComponent("health");
-        hurt.setCurrentValue(hurt.currentValue + event.damage)
+        hurt.setCurrentValue(hurt.currentValue + event.damage);
+        event.hurtEntity.extinguishFire(true);
     }
 });
