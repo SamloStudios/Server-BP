@@ -53,8 +53,6 @@ const mathQuizActive = { active: false, answer: null, reward: 0 };
 
 const propertyCache = new Map();
 
-//FIXED
-
 
 
 
@@ -197,6 +195,7 @@ const commands = {
         player.sendMessage(`§aHas pagado ${amount} Ringcoins a ${targetPlayer.name}.`);
         targetPlayer.sendMessage(`§aHas recibido ${amount} Ringcoins de ${player.name}.`);
         addPlayerXp(player, 5, 'realizar un pago');
+        updateMissionProgress(player, 'trade', amount)
     },
     todos: (player, args) => {
         if (!isAdmin(player, 'admin')) {

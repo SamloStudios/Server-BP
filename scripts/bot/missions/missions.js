@@ -4,13 +4,13 @@ import { getRank, getPlayerData, savePlayerData } from "../data/playerDataUtils"
 
 let playerMissions = new Map();
 const missions = [
-    { id: 1, description: "Minar 200 bloques", type: "mine", target: 200, rewardXP: 50, rewardGold: 25, minRank: "Campesino" },
-    { id: 2, description: "Derrotar 25 mobs", type: "killMob", target: 25, rewardXP: 75, rewardGold: 30, minRank: "Campesino" },
-    { id: 3, description: "Caminar 5000 bloques", type: "move", target: 5000, rewardXP: 60, rewardGold: 30, minRank: "Aldeano" },
-    { id: 4, description: "Cocinar 50 alimentos", type: "cook", target: 50, rewardXP: 40, rewardGold: 20, minRank: "Aldeano" },
-    { id: 5, description: "Minar 50 bloques de mineral (carbón, hierro, etc.)", type: "mineOre", target: 50, rewardXP: 100, rewardGold: 50, minRank: "Escudero" },
+    { id: 1, description: "Minar 200 bloques", type: "mine", target: 200, rewardXP: 50, rewardGold: 25, minRank: "Plebeyo" },
+    { id: 2, description: "Derrotar 25 mobs", type: "killMob", target: 25, rewardXP: 75, rewardGold: 30, minRank: "Plebeyo" },
+    { id: 3, description: "Caminar 5000 bloques", type: "move", target: 5000, rewardXP: 60, rewardGold: 30, minRank: "Burgués" },
+    { id: 4, description: "Cocinar 50 alimentos", type: "cook", target: 50, rewardXP: 40, rewardGold: 20, minRank: "Burgués" },
+    { id: 5, description: "Minar 50 bloques de mineral (carbón, hierro, etc.)", type: "mineOre", target: 50, rewardXP: 100, rewardGold: 50, minRank: "Noble" },
     { id: 6, description: "Derrotar un jefe (Wither o Ender Dragon)", type: "killBoss", target: 1, rewardXP: 300, rewardGold: 150, minRank: "Caballero" },
-    { id: 7, description: "Comerciar 1000 Ringcoins", type: "trade", target: 1000, rewardXP: 80, rewardGold: 50, minRank: "Escudero" },
+    { id: 7, description: "Comerciar 1000 Ringcoins", type: "trade", target: 1000, rewardXP: 80, rewardGold: 50, minRank: "Noble" },
     { id: 8, description: "Construir 500 bloques", type: "place", target: 500, rewardXP: 100, rewardGold: 60, minRank: "Caballero" },
     { id: 9, description: "Recolectar 20 diamantes", type: "mineDiamond", target: 20, rewardXP: 150, rewardGold: 100, minRank: "Barón" },
     { id: 10, description: "Matar 10 jugadores (PvP)", type: "killPlayer", target: 10, rewardXP: 200, rewardGold: 120, minRank: "Conde" },

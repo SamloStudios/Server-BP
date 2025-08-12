@@ -1,4 +1,4 @@
-import { world, system } from "@minecraft/server";
+import { world, system, Player } from "@minecraft/server";
 import { getPlayerData, savePlayerData } from "../data/playerDataUtils";
 import { getFilteredPropertyKeys } from "../botUtils";
 import { addPlayerXp } from "../data/playerDataUtils";
@@ -288,3 +288,17 @@ function handleLeaveClan(player) {
         player.sendMessage('§cTu estado de clan era inconsistente. Ha sido corregido.');
     }
 }
+
+function getClan(player) {
+    const clan = getPlayerData(player).clan ?? undefined;
+    return clan;
+}
+
+world.afterEvents.entityHurt.subscribe((event) => {
+    if (!(event.hurtEntity instanceof Player) || !(event.damageSource instanceof Player)) return;
+    
+    if (getClan(event.hurtEntity) === getClan(event.damageSource)) {
+        const hurt = event.hurtEntity.getComponent("health");
+        hurt.setCurrentValue(hurt.currentValue + event.damage)
+    }
+});

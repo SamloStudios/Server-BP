@@ -1,0 +1,20 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "endupdate:raw_purpur_recipe"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "ingredients": [
+            {
+                "item": "endupdate:raw_purpur_block"
+            }
+        ],
+        "result": {
+            "item": "endupdate:raw_purpur",
+            "count": 9
+        }
+    }
+}

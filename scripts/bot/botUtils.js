@@ -35,6 +35,6 @@ export function getFilteredPropertyKeys(subject, verb) {
     return filteredIds;
 }
 
-export function isAdmin(player, permission) {
-    return player.hasTag('admin') || player.hasTag(permission);
+export function isAdmin(player) {
+    return player.hasTag('admin');
 }
