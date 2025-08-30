@@ -79,8 +79,8 @@ export function addTpReq(senderName, targetPlayerName) {
             playerTpReqs.splice(index, 1);
             const sender = [...world.getPlayers()].find(p => p.name === senderName);
             if (sender) sender.sendMessage(`§c§oLa solicitud de teletransporte a ${targetPlayerName} ha caducado.`);
-            const targetPlayer = [...world.getPlayers()].find(p => p.name.toLowerCase().startsWith(targetName));
-            if (targetPlayer) targetPlayer.sendMessage(`§e§oLa solicitud de teletransporte de ${targetPlayerName} ha caducado.`);
+            const targetPlayer = [...world.getPlayers()].find(p => p.name.toLowerCase().startsWith(targetPlayerName));
+            if (targetPlayer) targetPlayer.sendMessage(`§e§oLa solicitud de teletransporte de ${sender.name} ha caducado.`);
         }
     }, 40 * 20); // 40 segundos
 }

@@ -8,6 +8,9 @@ export function beforePlayerPlaceBlock(event){
     const player = event.player;
     
     if (blockName === "minecraft:hopper") {
+        // --- TEMPORAL --- //
+        event.cancel = true; // TODO
+
         // Obtenemos el bloque directamente encima de la ubicación de la tolva.
         const blockAbove = event.block.above(1);
 

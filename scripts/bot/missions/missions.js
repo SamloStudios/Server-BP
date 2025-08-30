@@ -162,8 +162,3 @@ world.afterEvents.playerBreakBlock.subscribe(event => {
         updateMissionProgress(player, 'mineDiamond', 1);
     }
 });
-
-world.afterEvents.chatSend.subscribe(event => {
-
-
-})

@@ -10,8 +10,7 @@ export function stats (player){
     const rep = getReputation(player);
     const warpCount = player.getDynamicProperty('warp:count') || 0;
     const home = player.getDynamicProperty('home') ? JSON.parse(player.getDynamicProperty('home')).location : 'No establecido';
-    player.sendMessage(`
-    §6Nivel: §a${data.level}§6
+    player.sendMessage(`§6Nivel: §a${data.level}§6
     XP: §a${data.xp}§b
     Rango: ${rank.color}${rank.name}§r
     §3Monedas: §e${data.balance} Ringcoins

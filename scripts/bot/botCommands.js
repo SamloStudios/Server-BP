@@ -36,7 +36,7 @@ const mathQuizActive = { active: false, answer: null, reward: 0 };
         money : -20,
         xp : 50,
         key : "EpicChestKey",
-        give : true // Will it be given to the player automatically? Or will it be stored so the player can use !recompensas
+        immediate : true // Will it be given to the player automatically? Or will it be stored so the player can use !recompensas
     }
 }
 */
@@ -195,7 +195,7 @@ const commands = {
         player.sendMessage(`§aHas pagado ${amount} Ringcoins a ${targetPlayer.name}.`);
         targetPlayer.sendMessage(`§aHas recibido ${amount} Ringcoins de ${player.name}.`);
         addPlayerXp(player, 5, 'realizar un pago');
-        updateMissionProgress(player, 'trade', amount)
+        updateMissionProgress(player, 'trade', amount);
     },
     todos: (player, args) => {
         if (!isAdmin(player, 'admin')) {
@@ -418,7 +418,6 @@ system.runInterval(() => {
         else answer = Math.floor(a / b);
         mathQuizActive.active = true;
         mathQuizActive.answer = answer.toString();
-        print(mathQuizActive.answer)
         mathQuizActive.reward = 10;
         world.sendMessage(`§b¡Quiz matemático del reino! Resuelve: ${a} ${op} ${b} = ?. ¡Responde directamente!`);
         system.runTimeout(() => {

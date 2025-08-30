@@ -295,7 +295,7 @@ function getClan(player) {
 }
 
 world.afterEvents.entityHurt.subscribe((event) => {
-    if (!(event.hurtEntity instanceof Player) || !(event.damageSource instanceof Player)) return;
+    if (!(event.hurtEntity instanceof Player) || !(event.damageSource.damagingEntity instanceof Player)) return;
     
     if (getClan(event.hurtEntity) === getClan(event.damageSource.damagingEntity)) {
         const hurt = event.hurtEntity.getComponent("health");
