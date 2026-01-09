@@ -1,0 +1,189 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "kaboom_inicio",
+				"npc_name": "§c!!?",
+				"text": "Hola!\n\nSoy un simple dispensador de agua!\nAgua deliciosa de las montañas, dulce y fresca.\n\nBueno, tal vez no...\n\nMejor olvidalo aqui no hay nada",
+				"buttons": [
+					{
+						"name": "§k§cTNT!!!",
+						"commands": ["/give @initiator tnt 64"]
+					},
+					{
+						"name": "No te creo!",
+						"commands": ["/dialogue open @s @initiator kaboom_castigo"]
+					},
+					{
+						"name": "Un agua por favor!",
+						"commands": ["/dialogue open @s @initiator kaboom_suspenso"]
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_suspenso",
+				"npc_name": "§c!!?",
+				"text": "Ah.. Uhmm si!\n\nEl agua, aja...\n\nAaaa, bueno... Es un caso un poco...\n\n...",
+				"buttons": [
+					{
+						"name": "...",
+						"commands": ["/dialogue open @s @initiator kaboom_suspenso_2"]
+					},
+					{
+						"name": "Aja?",
+						"commands": ["/dialogue open @s @initiator kaboom_aja_desvio"]
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_aja_desvio",
+				"npc_name": "§c!!?",
+				"text": "Ah si!! AJA!!\n\nUna interjeccion coloquial para denotar satisfacción, aprobación o sorpresa!\n\nExactamente, oh si!\nEs español, idioma real!",
+				"buttons": [
+					{
+						"name": "No era eso!",
+						"commands": ["/dialogue open @s @initiator kaboom_aja_desvio_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_castigo",
+				"npc_name": ">:)",
+				"text": "AH SII??\n\nPues TOMA ESTO!\n\nCASTIGO KABOOOM!!!!",
+				"buttons": [
+					{
+						"name": "Queee!!??? O.o"
+					}
+				],
+				"on_open_commands": ["/summon creeper ~~~"]
+			},
+			{
+				"scene_tag": "kaboom_suspenso_2",
+				"npc_name": "§c!!?",
+				"text": ".....",
+				"buttons": [
+					{
+						"name": "...",
+						"commands": ["/dialogue open @s @initiator kaboom_suspenso_3"]
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_suspenso_3",
+				"npc_name": "§c!!?",
+				"text": ".........",
+				"buttons": [
+					{
+						"name": "....",
+						"commands": ["/dialogue open @s @initiator kaboom_suspenso_4"]
+					},
+					{
+						"name": "Ya me voy"
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_aja_desvio_2",
+				"npc_name": "§c!!?",
+				"text": "Entonces que?\n\nUhmm...\n\nJejejej, no me acuerdo que estuvieramos hablando de otra cosa!\n\n",
+				"buttons": [
+					{
+						"name": "Ya me voy"
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_suspenso_4",
+				"npc_name": "§c!!?",
+				"text": "Umm...\n\nDisculpa?\nPor que me estas mirando?\n\n....",
+				"buttons": [
+					{
+						"name": "Y mi agua?",
+						"commands": ["/dialogue open @s @initiator kaboom_suspenso_5"]
+					},
+					{
+						"name": "Ya me voy"
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_suspenso_5",
+				"npc_name": "§c!!?",
+				"text": "Aaaah, si, tu agua!\n\n...",
+				"buttons": [
+					{
+						"name": "Si, mi agua!!",
+						"commands": ["/dialogue open @s @initiator kaboom_suspenso_6"]
+					},
+					{
+						"name": "Ya me voy"
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_suspenso_6",
+				"npc_name": "§c!!?",
+				"text": "Ah, Bueno...\n\nEl problema es que creo que ya no me quedan vasos...\n\nSi, que lastima...",
+				"buttons": [
+					{
+						"name": "§1Ya tengo uno",
+						"commands": ["/dialogue open @s @initiator kaboom_revelacion"]
+					},
+					{
+						"name": "Ya me voy"
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_revelacion",
+				"npc_name": "§c§lKABOOM EL TEMIBLE!!!",
+				"text": "En serio? Aaaah! \nNi modo, ya no dejan esconderse ahora!\n\nMi nombre es §cKABOOM EL MAGNIFICO!!!\n\n§rSoy un mago muy poderoso con una magia explosiva LETAL!\nSoy el mas grande de todos los magos, admirame en mi grandeza!",
+				"buttons": [
+					{
+						"name": "§4Magia explosiva?",
+						"commands": ["/dialogue open @s @initiator kaboom_revelacion_2"]
+					},
+					{
+						"name": "No te creo ño ño!",
+						"commands": ["/dialogue open @s @initiator kaboom_castigo"]
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_revelacion_2",
+				"npc_name": "§c§lKABOOM EL TEMIBLE!!!",
+				"text": "Si!\n\nMi magia es la mas poderosa y magnifica!!\n\nHa llegado la hora de traer la destruccion a esta tierra, §cKABOOM!!!\n\nNo acepto aprendices, pero... hmm, te puedo dar un regalo poderoso!",
+				"buttons": [
+					{
+						"name": "Un regalo poderoso!",
+						"commands": ["/dialogue open @s @initiator kaboom_regalo"]
+					},
+					{
+						"name": "Vaya, me interesa!",
+						"commands": ["/dialogue open @s @initiator kaboom_regalo"]
+					}
+				]
+			},
+			{
+				"scene_tag": "kaboom_regalo",
+				"npc_name": "§c§lKABOOM EL TEMIBLE!!!",
+				"text": "JAjaja!!\n\nEs poderoso y destructivo!!\n\nDisfrutalo >:)",
+				"buttons": [
+					{
+						"name": "§3Explooosion!!",
+						"commands": ["/give @initiator kaboom:stick"]
+					},
+					{
+						"name": "§1Yeeet!!",
+						"commands": ["/give @initiator kaboom:launcher_stick"]
+					},
+					{
+						"name": "§gFUEGOOOO!!",
+						"commands": ["/give @initiator kaboom:fire_stick"]
+					}
+				]
+			}
+		]
+	}
+}

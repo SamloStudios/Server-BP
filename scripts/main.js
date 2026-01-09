@@ -7,8 +7,12 @@ import "./blocks/blockEvents/explosion/beforeExplosion.js"
 import "./items/securityComponents.js";
 import "./items/drinksComponents.js"
 import "./items/endComponents.js"
+import "./items/holidayItemComponents.js"
 
 // BOT --------
 import "./bot/botCommands.js";
-import "./bot/botWelcome.js";
+// import "./bot/botWelcome.js";
 import "./bot/missions/missions.js";
+
+// Evento
+import "./kaboom.js"

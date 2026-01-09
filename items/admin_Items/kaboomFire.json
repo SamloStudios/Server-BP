@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.80", 
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaboom:fire_stick",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "stick",
+      "minecraft:damage": {
+        "value": 15
+      },
+      "minecraft:glint": true,
+      "minecraft:display_name": {
+        "value": "§gStick O-o"
+      },
+      "minecraft:custom_components": [
+        "holidays:kaboom_fire"
+      ]
+    }
+  }
+}

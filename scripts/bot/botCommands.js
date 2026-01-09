@@ -363,68 +363,68 @@ world.beforeEvents.chatSend.subscribe(event => {
 });
 
 
-const playerMovementData = new Map();
+// const playerMovementData = new Map();
 
-system.runInterval(() => {
-    for (const player of world.getAllPlayers()) {
-        const playerId = player.id;
-        const newPos = player.location;
+// system.runInterval(() => {
+//     for (const player of world.getAllPlayers()) {
+//         const playerId = player.id;
+//         const newPos = player.location;
         
-        // Obtenemos los datos del jugador del Map. Si no existen, los inicializamos.
-        let data = playerMovementData.get(playerId);
+//         // Obtenemos los datos del jugador del Map. Si no existen, los inicializamos.
+//         let data = playerMovementData.get(playerId);
         
-        if (!data) {
-            // Si es la primera vez que el jugador es procesado, creamos su entrada.
-            // Para el `lastPos`, usamos su posición actual para evitar un cálculo erróneo.
-            data = {
-                lastPos: newPos,
-                totalDistance: 0
-            };
-            playerMovementData.set(playerId, data);
-        }
+//         if (!data) {
+//             // Si es la primera vez que el jugador es procesado, creamos su entrada.
+//             // Para el `lastPos`, usamos su posición actual para evitar un cálculo erróneo.
+//             data = {
+//                 lastPos: newPos,
+//                 totalDistance: 0
+//             };
+//             playerMovementData.set(playerId, data);
+//         }
 
-        // Calculamos la distancia recorrida desde el último intervalo
-        const oldPos = data.lastPos;
-        const distance = Math.sqrt((newPos.x - oldPos.x) ** 2 + (newPos.z - oldPos.z) ** 2);
+//         // Calculamos la distancia recorrida desde el último intervalo
+//         const oldPos = data.lastPos;
+//         const distance = Math.sqrt((newPos.x - oldPos.x) ** 2 + (newPos.z - oldPos.z) ** 2);
         
-        // Actualizamos los datos en el Map
-        data.totalDistance += Math.floor(distance);
-        data.lastPos = newPos;
+//         // Actualizamos los datos en el Map
+//         data.totalDistance += Math.floor(distance);
+//         data.lastPos = newPos;
 
-        let playerdata = getPlayerData(player)
-        playerdata.distance += Math.floor(distance);
-        savePlayerData(playerdata);
+//         let playerdata = getPlayerData(player)
+//         playerdata.distance += Math.floor(distance);
+//         savePlayerData(playerdata);
 
-        // Solo otorgamos XP y actualizamos misiones si el jugador se ha movido
-        if (distance > 0) {
-            // Nota: Aquí necesitarías implementar addPlayerXp y updateMissionProgress
-            // con la lógica que uses en tu sistema.
-            addPlayerXp(player, Math.floor(distance / 100));
-            updateMissionProgress(player, 'move', Math.floor(distance));
-        }
-    }
-}, 20 * 60); // Cada minuto
+//         // Solo otorgamos XP y actualizamos misiones si el jugador se ha movido
+//         if (distance > 0) {
+//             // Nota: Aquí necesitarías implementar addPlayerXp y updateMissionProgress
+//             // con la lógica que uses en tu sistema.
+//             addPlayerXp(player, Math.floor(distance / 100));
+//             updateMissionProgress(player, 'move', Math.floor(distance));
+//         }
+//     }
+// }, 20 * 60); // Cada minuto
 
-system.runInterval(() => {
-    if (!mathQuizActive.active) {
-        const a = Math.floor(Math.random() * 20) + 1;
-        const b = Math.floor(Math.random() * 20) + 1;
-        const ops = ['+', '-', '*', '/'];
-        const op = ops[Math.floor(Math.random() * ops.length)];
-        let answer;
-        if (op === '+') answer = a + b;
-        else if (op === '-') answer = a - b;
-        else if (op === '*') answer = a * b;
-        else answer = Math.floor(a / b);
-        mathQuizActive.active = true;
-        mathQuizActive.answer = answer.toString();
-        mathQuizActive.reward = 10;
-        world.sendMessage(`§b¡Quiz matemático del reino! Resuelve: ${a} ${op} ${b} = ?. ¡Responde directamente!`);
-        system.runTimeout(() => {
-            if (mathQuizActive.active) {
-                mathQuizActive.active = false;
-                world.sendMessage(`§c¡Vaya incultos! La respuesta era: ${answer}`);
-            }
-        }, 90 * 20); // 90 segundos
-    }
-}, 20 * 10 * 60); // Cada 10 minutos
+// system.runInterval(() => {
+//     if (!mathQuizActive.active) {
+//         const a = Math.floor(Math.random() * 20) + 1;
+//         const b = Math.floor(Math.random() * 20) + 1;
+//         const ops = ['+', '-', '*', '/'];
+//         const op = ops[Math.floor(Math.random() * ops.length)];
+//         let answer;
+//         if (op === '+') answer = a + b;
+//         else if (op === '-') answer = a - b;
+//         else if (op === '*') answer = a * b;
+//         else answer = Math.floor(a / b);
+//         mathQuizActive.active = true;
+//         mathQuizActive.answer = answer.toString();
+//         mathQuizActive.reward = 10;
+//         world.sendMessage(`§b¡Quiz matemático del reino! Resuelve: ${a} ${op} ${b} = ?. ¡Responde directamente!`);
+//         system.runTimeout(() => {
+//             if (mathQuizActive.active) {
+//                 mathQuizActive.active = false;
+//                 world.sendMessage(`§c¡Vaya incultos! La respuesta era: ${answer}`);
+//             }
+//         }, 90 * 20); // 90 segundos
+//     }
+// }, 20 * 10 * 60); // Cada 10 minutos
