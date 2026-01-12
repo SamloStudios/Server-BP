@@ -28,7 +28,7 @@ export const LauncherStick = {
         // Ejecutar la acción
         displayActionBar(player, "§a¡Yeeet!");
         explodeWhereLooking(player, { breaksBlocks: false, causesFire: false, source: player});
-        applyKnockback(player, 3)
+        applyKnockback(player, 5)
     }
 };
 
@@ -79,7 +79,7 @@ export function shootFire(player) {
                 // Partículas densas de fuego
                 dimension.spawnParticle("minecraft:basic_flame_particle", loc);
                 dimension.spawnParticle("minecraft:mobflame_single_particle", loc);
-                dimension.createExplosion(loc, 1, {
+                dimension.createExplosion(loc, 2, {
 
                     breaksBlocks: true,
 
@@ -93,7 +93,7 @@ export function shootFire(player) {
                 const block = dimension.getBlock(loc);
                 if (block && block.isAir) {
                     // Opcional: poner fuego en el suelo de forma controlada
-                    player.runCommand(`setblock ${Math.floor(loc.x)} ${Math.floor(loc.y)} ${Math.floor(loc.z)} fire 0 keep`);
+                    // player.runCommand(`setblock ${Math.floor(loc.x)} ${Math.floor(loc.y)} ${Math.floor(loc.z)} fire 0 keep`);
                 }
 
                 // Sonido de llamarada
@@ -106,19 +106,19 @@ export function shootFire(player) {
     }
 }
 
-export function explodeWhereLooking(player, configuration = { breaksBlocks: true, causesFire: true, source: player}) {
+export function explodeWhereLooking(player, configuration = { breaksBlocks: true, causesFire: false, source: player}) {
     const dimension = player.dimension;
     const location = player.getHeadLocation(); // Mejor usar la cabeza para precisión
 
     const dir = player.getViewDirection();
-    const distance = 5;
+    const distance = 7;
     const targetLocation = {
         x: location.x + dir.x * distance,
         y: location.y + dir.y * distance,
         z: location.z + dir.z * distance
     };
 
-    dimension.createExplosion(targetLocation, 3, configuration);
+    dimension.createExplosion(targetLocation, 6, configuration);
 
     // Partículas (Usando el método de dimensión en lugar de runCommand para mejor rendimiento)
     dimension.spawnParticle("minecraft:huge_explosion_emitter", targetLocation);
@@ -129,7 +129,7 @@ export function explodeWhereLooking(player, configuration = { breaksBlocks: true
 
 export function applyKnockback(player, knockback = 1) {
     const dir = player.getViewDirection();
-    player.applyKnockback({x: -dir.x*knockback*2, z: -dir.z*knockback*2}, -dir.y*knockback);
+    player.applyKnockback({x: -dir.x*knockback*2, z: -dir.z*knockback*2}, -dir.y*knockback/2);
 }
 
 // Función interna para manejar el cooldown y evitar repetir código

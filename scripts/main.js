@@ -11,8 +11,8 @@ import "./items/holidayItemComponents.js"
 
 // BOT --------
 import "./bot/botCommands.js";
-// import "./bot/botWelcome.js";
+import "./bot/botWelcome.js";
 import "./bot/missions/missions.js";
 
 // Evento
-import "./kaboom.js"
+// import "./kaboom.js"
