@@ -25,11 +25,6 @@
                   "value": "river"
                 },
                 {
-                  "test": "has_biome",
-                  "operator": "!=",
-                  "value": "frozen_river"
-                },
-                {
                   "test": "has_biome_tag",
                   "operator": "!=",
                   "value": "ocean"
