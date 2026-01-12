@@ -10,6 +10,7 @@ import { OnRandomTick } from "./blockComponents/behavior/on_random_tick";
 import { SetRandomizer } from "./blockComponents/placement/set_randomiser";
 import { UseInteraction } from "./blockComponents/behavior/use_interaction";
 import { BreakRestriction } from "./blockComponents/break/break_restriction";
+import { OnBlockBreak } from "./blockComponents/behavior/on_break";
 
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	// bloque de hongo infestado de snark
@@ -93,7 +94,7 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	);
 
 	// Comportamiento del bloque en un tick random
-	/* SOLO FUNCIONA ACTUALMENTE "transform"
+	/* SOLO FUNCIONA ACTUALMENTE "transform", "growth"
 	"behavior:on_random_tick" : {
 				"probability" : 1,
 				"disabler" : {
@@ -131,11 +132,35 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 		OnRandomTick
 	);
 
+	/* Componente para que el bloque interactue al usar click derecho
+	"behavior:use_interaction" : {
+				"probability" : 1,
+				"disabler" : {
+					"state": "custom:variant",
+					"value": 0
+				},
+				"set_state" : {
+					"state" : "custom:variant",
+					"value" : 0
+				},
+				"particles" : {
+					"id" : "particle:magic_poof"
+				},
+				"sound" : {
+					"id" : "magic.poof"
+				}
+			},
+	*/
 	blockComponentRegistry.registerCustomComponent(
 		"behavior:use_interaction",
 		UseInteraction
 	);
 
+	blockComponentRegistry.registerCustomComponent(
+		"behavior:on_break",
+		OnBlockBreak
+	);
+	
 	blockComponentRegistry.registerCustomComponent(
 		"placement:set_randomizer",
 		SetRandomizer
@@ -149,7 +174,7 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 			"count" : 2 // default 1
 		}
 	},
-	"minecraft:loot": "loot_tables/nothing.json",
+	"minecraft:loot": "loot_tables/nothing.json", // required (kinda)
 	*/
 	blockComponentRegistry.registerCustomComponent(
 		"break:restriction",

@@ -1,0 +1,87 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "christmas:trap_gift_block",
+			"menu_category": {
+				"category": "construction"
+			},
+			"traits": {
+				"minecraft:placement_direction": {
+					"enabled_states": ["minecraft:cardinal_direction"]
+				}
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Regalo Trampa",
+			"behavior:on_break" : {
+				"onPlayerBreak" : {
+					"spawn" : "christmas:grinchinion"
+				} 
+			},
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+
+			"emitter:particles": {
+				"id" : "minecraft:crop_growth_emitter",
+				"probability" : 0.5
+			},
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 3
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:geometry": "geometry.gift_block",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "bloody_gift_block",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:map_color": "#757575",
+			"minecraft:loot": "loot_tables/nothing.json"
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'north' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 180, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'east' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 90, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 270, 0]
+					}
+				}
+			}
+		]
+	}
+}

@@ -30,7 +30,7 @@
                   "value": "river"
                 },
                 {
-                  "test": "has_biome_tag",
+                  "test": "has_biome",
                   "operator": "!=",
                   "value": "frozen_river"
                 },
