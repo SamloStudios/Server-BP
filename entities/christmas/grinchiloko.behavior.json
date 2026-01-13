@@ -1,5 +1,5 @@
 {
-	"format_version": "1.19.30",
+	"format_version": "1.21.5",
 	"minecraft:entity": {
 		"description": {
 			"identifier": "christmas:grinchiloko",
@@ -31,7 +31,45 @@
 				"minecraft:behavior.melee_attack": {
 					"priority": 4,
 					"track_target": true,
-					"can_spread_on_fire": true
+					"can_spread_on_fire": true,
+					"cooldown_time": 0.5,
+					"speed_multiplier": 1.2
+				},
+				"minecraft:behavior.summon_entity": {
+					"summon_choices": [
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 8,
+							"cooldown_time": 3,
+							"weight": 3,
+							"cast_duration": 2,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "block.furnace.lit",
+							"sequence": [
+								{
+								"shape": "circle",
+								"target": "self",
+								"base_delay": 1,
+								"delay_per_summon": 0,
+								"num_entities_spawned": 3,
+								"entity_type": "christmas:grinchiloko_doll",
+								"size": 1.5,
+								"entity_lifespan": -1.0,
+								"sound_event": "block.furnace.lit"
+								},
+								{
+								"shape": "circle",
+								"target": "self",
+								"base_delay": 0.15,
+								"delay_per_summon": 0,
+								"num_entities_spawned": 2,
+								"entity_type": "christmas:grinchinion",
+								"size": 2.5,
+								"entity_lifespan": -1.0
+								}
+							]
+						}
+					]
 				}
 			}
 		},
@@ -50,7 +88,10 @@
 				"total_supply": 15,
 				"suffocate_time": 0
 			},
-			"minecraft:nameable": {},
+			"minecraft:nameable": {
+				"always_show": true,
+				"allow_name_tag_renaming": true
+			},
 			"minecraft:loot": {
 				"table": "loot_tables/nothing.json"
 			},
@@ -73,7 +114,7 @@
 				]
 			},
 			"minecraft:movement": {
-				"value": 0.3
+				"value": 0.25
 			},
 			"minecraft:behavior.delayed_attack": {
 				"attack_duration": 0.5,
@@ -86,7 +127,7 @@
 				"track_target": true
 			},
 			"minecraft:attack": {
-				"damage": 20
+				"damage": 25
 			},
 			"minecraft:navigation.walk": {
 				"can_path_over_water": true
@@ -103,7 +144,7 @@
 			},
 			"minecraft:behavior.nearest_attackable_target": {
 				"priority": 2,
-				"attack_interval": 5,
+				"attack_interval": 1,
 				"must_see": true,
 				"entity_types": [
 					{
@@ -136,7 +177,7 @@
 								}
 							]
 						},
-						"max_dist": 14
+						"max_dist": 25
 					}
 				]
 			},

@@ -1,0 +1,51 @@
+{
+	"format_version": "1.20.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "stuff:handheld_wagon",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"components": {
+			"minecraft:physics": {
+				"has_gravity": true,
+				"has_collision": true
+			},
+			"minecraft:pushable": {
+				"is_pushable": false
+			},
+			"minecraft:push_through": {
+				"value": 1
+			},
+			"minecraft:movement": {
+				"value": 0.4
+			},
+			"minecraft:collision_box": {
+				"height": 1,
+				"width": 1.2
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:navigation.generic": {},
+			"minecraft:input_ground_controlled": {},
+			"minecraft:rideable": {
+				"seat_count": 2,
+				"interact_text": "Subir al vagon",
+				"controlling_seat": 0,
+				"seats": [
+					{
+						"third_person_camera_radius": 5,
+						"position": [0, 0.8, 0.7]
+					},
+					{
+						"position": [0, 0.8, -0.5]
+					}
+				]
+			},
+			"minecraft:variable_max_auto_step": {
+				"base_value": 1.2,
+				"controlled_value": 1.2
+			}
+		}
+	}
+}
