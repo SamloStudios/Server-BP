@@ -1,0 +1,44 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "papa_noel_1",
+				"npc_name": "§0Papa Noel",
+				"text": "Jojojo, bienvenido, hacia mucho que no recibia visitas \n\ninesperadas.\n",
+				"buttons": [
+					{
+						"name": "§0¡Hola! Jaja",
+						"commands": ["/dialogue open @s @initiator papa_noel_2"]
+					},
+					{
+						"name": "§0Ni esperadas"
+					}
+				]
+			},
+			{
+				"scene_tag": "papa_noel_2",
+				"npc_name": "§0Papa Noel",
+				"text": "PAPA NOEL: Hola hola, bien... Jojojo.\n Y ¿a que habeis venido?\n\nYO: Me han encomendado buscarte aqui para \npreguntarte que paso, osea, porque changos no hay regalos.\n\nPAPA NOEL: ¡AAAAAAAAAAAAAAAAH! ¡NO! ¿Como es eso? \n Les encarge a los elfos que distribuyeran los regalos.\n ¿Y usted dice que nada se entrego?\n\nYO: Asi es, al parecer nadie recibio regalos.\n\nPAPA NOEL: Bien, algo raro esta pasando, tendre que \n comunicarselo a los elfos, pero...\n\nYO: ¿Pero que?\n\nPAPA NOEL: Pues que no estoy en condiciones\n para caminar largas distancias, hijo. \nNo obstante, se puede hacer una cosa.\n\nYO: ¿Que cosa?\n\nPAPA NOEL: Pues que vaya usted, hijo, claro esta.\n\nYO: Baya baya, si tuve que habermelo imaginado.\n Pero... \n  ¿Como voy a saber el camino?\n\nPAPA NOEL: Ah, hijo, la verdad es que ni yo se.\n Pero hay un mapa, si lo encuentro te lo doy \n  en cuanto lo encuentre.",
+				"buttons": [
+					{
+						"name": "    §0    (NEXT)"
+					}
+				]
+			},
+			{
+				"scene_tag": "papa_noel_3",
+				"npc_name": "§0Papa Noel",
+				"text": "¡Bien! Lo he encontrado, es esta direccion.\n\n¡Que te vaya bien y buena suerte!",
+				"buttons": [
+					{
+						"name": "  §0¡Gracias! ¡Igualmente!"
+					},
+					{
+						"name": "§0No pienso ir, adios."
+					}
+				]
+			}
+		]
+	}
+}

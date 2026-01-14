@@ -1,0 +1,73 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "viajero_1",
+				"npc_name": "Eustaquio",
+				"text": "Hola soy Eustaquio!!\n\nSoy un viajero que viene de otro pais, de muy muy lejos...\n\nOh bueno jaja, asi me parecio a mi.",
+				"buttons": [
+					{
+						"name": "§0Y ¿por que viniste?",
+						"commands": ["/dialogue open @s @initiator viajero_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "viajero_2",
+				"npc_name": "Eustaquio",
+				"text": "Si bueno... Porque...\n\nEs que estoy buscando a Papa Noel.",
+				"buttons": [
+					{
+						"name": "§0¿A Papa Noel?",
+						"commands": ["/dialogue open @s @initiator viajero_3"]
+					},
+					{
+						"name": "§0Que tonteria, adios."
+					}
+				]
+			},
+			{
+				"scene_tag": "viajero_3",
+				"npc_name": "Eustaquio",
+				"text": "Si, en nuestro pueblo no hubo regalos...\n\nDe hecho, ¿A ustedes tampoco les dieron?",
+				"buttons": [
+					{
+						"name": "§0No... ¿Como supiste?",
+						"commands": ["/dialogue open @s @initiator viajero_4"]
+					}
+				]
+			},
+			{
+				"scene_tag": "viajero_4",
+				"npc_name": "Eustaquio",
+				"text": "Jaja. Estoy investigando por que no hubo regalos.\n\nHe pasado por muchas aldeas y todos dicen\nque tampoco les dieron regalos...\n\nPor eso estoy investigando, aunque, soy muy malo en esto.",
+				"buttons": [
+					{
+						"name": "§0¡Buena suerte!"
+					},
+					{
+						"name": "§0Si... Me doy cuenta"
+					},
+					{
+						"name": "§0¿Nececitas ayuda?",
+						"commands": ["/dialogue open @s @initiator viajero_5"]
+					}
+				]
+			},
+			{
+				"scene_tag": "viajero_5",
+				"npc_name": "Eustaquio",
+				"text": "Si, veras, en el polo norte se dice que esta Papa Noel, si \n\nlo encuentras sabras por que no hubo regalos...\n\n¿Me podrias ayudar a buscarlo?",
+				"buttons": [
+					{
+						"name": "§2         Si"
+					},
+					{
+						"name": "§4         No"
+					}
+				]
+			}
+		]
+	}
+}
