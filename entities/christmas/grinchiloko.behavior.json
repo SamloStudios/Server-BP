@@ -15,6 +15,9 @@
 				}
 			},
 			"custom:snark_angry": {
+				"minecraft:movement": {
+					"value": 0.55
+				},
 				"minecraft:angry": {
 					"duration": 15,
 					"broadcast_anger": true,
@@ -33,7 +36,7 @@
 					"track_target": true,
 					"can_spread_on_fire": true,
 					"cooldown_time": 0.5,
-					"speed_multiplier": 1.2
+					"speed_multiplier": 2
 				},
 				"minecraft:behavior.summon_entity": {
 					"summon_choices": [
@@ -114,13 +117,14 @@
 				]
 			},
 			"minecraft:movement": {
-				"value": 0.25
+				"value": 0.4
 			},
 			"minecraft:behavior.delayed_attack": {
 				"attack_duration": 0.5,
 				"attack_once": false,
 				"attack_types": "",
 				"hit_delay_pct": 1,
+				"cooldown_time": 0.5,
 				"random_stop_interval": 0,
 				"reach_multiplier": 2.5,
 				"require_complete_path": true,

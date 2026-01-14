@@ -11,6 +11,7 @@ import { SetRandomizer } from "./blockComponents/placement/set_randomiser";
 import { UseInteraction } from "./blockComponents/behavior/use_interaction";
 import { BreakRestriction } from "./blockComponents/break/break_restriction";
 import { OnBlockBreak } from "./blockComponents/behavior/on_break";
+import { GrinchLokoDollComponent } from "./blockComponents/custom/grinchloko_doll";
 
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	// bloque de hongo infestado de snark
@@ -29,6 +30,11 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	blockComponentRegistry.registerCustomComponent(
 		"custom:lightvine_fruit_lantern_block",
 		LightvineFruitLantern
+	);
+
+	blockComponentRegistry.registerCustomComponent(
+		"custom:grinchloko_doll",
+		GrinchLokoDollComponent
 	);
 
 	// Hace que el bloque emita particulas al centro (requiere minecraft:tick)

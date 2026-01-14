@@ -1,0 +1,88 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "christmas:grinchloko_doll_dormant",
+			"menu_category": {
+				"category": "nature"
+			},
+			"traits": {
+				"minecraft:placement_direction": {
+					"enabled_states": ["minecraft:cardinal_direction"]
+				}
+			},
+			"states": {
+				"custom:active" : [ false, true ]
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Muñeco de Grinchiloko",
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+			"custom:grinchloko_doll" : {},
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"minecraft:collision_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 4, 16]
+			},
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:destructible_by_mining": false,
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:geometry": "geometry.grinchiloko_doll_block",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "grinchiloko_doll",
+					"render_method": "double_sided",
+					"face_dimming": false,
+					"ambient_occlusion" : false
+				}
+			},
+			"minecraft:light_emission": 4,
+			"minecraft:map_color": "#757575",
+			"minecraft:loot": "loot_tables/nothing.json"
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'north' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 180, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'east' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 90, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 270, 0]
+					}
+				}
+			}
+		]
+	}
+}
