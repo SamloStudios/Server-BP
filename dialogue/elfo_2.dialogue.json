@@ -3,7 +3,7 @@
 	"minecraft:npc_dialogue": {
 		"scenes": [
 			{
-				"scene_tag": "elfo_21",
+				"scene_tag": "elfo_2",
 				"npc_name": "§0Elfo Silvan",
 				"text": "¡Hola! Si, escuche la platica suya con Cidran.\n Vamos a grano, veras, una noche muy tranquila\n  un tal Stilly Brick se rebelo, exploto TNT\n   que llego hasta aqui, cayo en la boveda donde\n   teniamos los regalos y la abrio, entonces llego\n  el Grinchiloko y se llevo los regalos.",
 				"buttons": [

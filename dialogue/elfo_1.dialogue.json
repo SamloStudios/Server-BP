@@ -3,7 +3,7 @@
 	"minecraft:npc_dialogue": {
 		"scenes": [
 			{
-				"scene_tag": "elfo_11",
+				"scene_tag": "elfo_1",
 				"npc_name": "§0Elfo Cidran",
 				"text": "¡Hey! ¡Hola! Me llamo Cidran, hacia mucho que nadie \n  nuevo venia aqui.\n\n  Pero la ultima vez todo era feliz, ahora todo se ha \n  echado a perder.\n",
 				"buttons": [

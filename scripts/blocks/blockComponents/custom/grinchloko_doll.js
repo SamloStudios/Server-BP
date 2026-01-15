@@ -10,9 +10,13 @@ export const GrinchLokoDollComponent = {
         if (active) return; // Already active, do nothing
 
         if (players.length > 0) {
-            // Transform the block into its active state
-            transformSequence(block, dimension);
-            block.setPermutation(block.permutation.withState("custom:active", true));
+            const hasSurvivalPlayer = players.some(player => player.getGameMode() !== "Creative");
+            
+            if (hasSurvivalPlayer) {
+                // Transform the block into its active state
+                transformSequence(block, dimension);
+                block.setPermutation(block.permutation.withState("custom:active", true));
+            }
         } else {
             if (Math.random() < 0.1) {
                 // Play ambient sound effect occasionally

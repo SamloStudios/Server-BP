@@ -34,7 +34,7 @@
 			"minecraft:material_instances": {
 				"*": {
 					"texture": "gift_block",
-					"render_method": "double_sided"
+					"render_method": "alpha_test"
 				}
 			},
 			"minecraft:map_color": "#757575",

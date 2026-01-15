@@ -1,10 +1,11 @@
 import { world } from "@minecraft/server";
-export function getTime() {
+export function getTime(type) {
     const now = new Date();
     now.setHours(now.getHours() - 6);
     const hours = now.getHours() % 12 || 12;
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+    if (type) return now;
     return `${hours}:${minutes} ${ampm}`;
 }
 

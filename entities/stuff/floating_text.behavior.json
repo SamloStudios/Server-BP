@@ -49,7 +49,7 @@
 				"table": "loot_tables/empty.json"
 			},
 			"minecraft:persistent": {},
-			"minecraft:fire_immune": true,
+			"minecraft:fire_immune": {},
 			"minecraft:pushable": {
 				"is_pushable": false
 			},
