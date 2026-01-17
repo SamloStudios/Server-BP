@@ -3,6 +3,7 @@ import { getChestOwner, setChestOwner } from 'utils/ownershipUtils.js'
 import { displayActionBar } from 'utils/displayUtils.js'
 import { ActionFormData } from '@minecraft/server-ui'; // Importar ActionForm para la GUI
 import { DebugStick } from './admin/debugStick';
+import { ClaimsAdminGavel, ClaimsGavel } from './admin/claimGavel';
 
 system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
     itemComponentRegistry.registerCustomComponent(
@@ -16,6 +17,14 @@ system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
     itemComponentRegistry.registerCustomComponent(
         "utils:stick",
         DebugStick
+    );
+    itemComponentRegistry.registerCustomComponent(
+        "claims:gavel",
+        ClaimsGavel
+    );
+    itemComponentRegistry.registerCustomComponent(
+        "claims:admin_gavel",
+        ClaimsAdminGavel
     );
 });
 

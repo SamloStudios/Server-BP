@@ -17,6 +17,11 @@
 		},
 		"components": {
 			"minecraft:display_name": "Regalo",
+			"behavior:on_break" : {
+				"onPlayerBreak" : {
+					"sound" : "random.orb"
+				}
+			},
 			"minecraft:tick": {
 				"interval_range": [30, 30],
 				"looping": true

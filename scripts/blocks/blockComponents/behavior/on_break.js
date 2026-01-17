@@ -2,11 +2,12 @@
 export const OnBlockBreak = {
     onPlayerBreak({player, brokenBlockPermutation, block, dimension}, {params}) {
         const creature_to_spawn = params.onPlayerBreak.spawn;
-        const location_to_spawn = block.location;
+        const location = block.location;
+        const sound_to_play = params.onPlayerBreak.sound;
         
-        if (creature_to_spawn) dimension.spawnEntity(creature_to_spawn, location_to_spawn);
+        if (creature_to_spawn) dimension.spawnEntity(creature_to_spawn, location);
         
-        
+        if (sound_to_play) dimension.playSound(sound_to_play, location);
         /* const equippable = player?.getComponent("minecraft:equippable");
         if (!equippable) return;
     

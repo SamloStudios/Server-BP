@@ -31,19 +31,24 @@
 						"target": "self"
 					}
 				},
-				"minecraft:behavior.melee_attack": {
-					"priority": 4,
-					"track_target": true,
-					"can_spread_on_fire": true,
+				"minecraft:behavior.delayed_attack": {
+					"attack_duration": 1,
+					"attack_once": false,
+					"attack_types": "",
+					"hit_delay_pct": 1,
 					"cooldown_time": 0.5,
-					"speed_multiplier": 2
+					"random_stop_interval": 0,
+					"reach_multiplier": 2.5,
+					"require_complete_path": true,
+					"track_target": true,
+					"speed_multiplier": 1.5
 				},
 				"minecraft:behavior.summon_entity": {
 					"summon_choices": [
 						{
 							"min_activation_range": 0,
 							"max_activation_range": 8,
-							"cooldown_time": 3,
+							"cooldown_time": 15,
 							"weight": 3,
 							"cast_duration": 2,
 							"particle_color": "#FF664D59",
@@ -118,17 +123,6 @@
 			},
 			"minecraft:movement": {
 				"value": 0.35
-			},
-			"minecraft:behavior.delayed_attack": {
-				"attack_duration": 0.5,
-				"attack_once": false,
-				"attack_types": "",
-				"hit_delay_pct": 1,
-				"cooldown_time": 0.5,
-				"random_stop_interval": 0,
-				"reach_multiplier": 2.5,
-				"require_complete_path": true,
-				"track_target": true
 			},
 			"minecraft:attack": {
 				"damage": 25

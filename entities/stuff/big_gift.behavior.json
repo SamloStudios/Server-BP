@@ -19,6 +19,16 @@
 					"deals_damage": false
 				}
 			},
+			"minecraft:spell_effects": {
+				"add_effects": [
+					{
+						"visible": false,
+						"effect": "slow_falling",
+						"amplifier": 1,
+						"duration": "infinite"
+					}
+				]
+			},
 			"minecraft:persistent": {},
 			"minecraft:fire_immune": {},
 			"minecraft:knockback_resistance": {

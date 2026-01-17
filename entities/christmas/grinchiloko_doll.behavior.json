@@ -39,8 +39,8 @@
 					"summon_choices": [
 						{
 							"min_activation_range": 0,
-							"max_activation_range": 10,
-							"cooldown_time": 3,
+							"max_activation_range": 5,
+							"cooldown_time": 5,
 							"weight": 3,
 							"cast_duration": 2,
 							"particle_color": "#4dff5359",
@@ -54,7 +54,7 @@
 								"num_entities_spawned": 3,
 								"entity_type": "christmas:grinchinion",
 								"size": 1.5,
-								"entity_lifespan": -1.0,
+								"entity_lifespan": 40,
 								"sound_event": "block.furnace.lit"
 								},
 								{
@@ -65,7 +65,7 @@
 								"num_entities_spawned": 5,
 								"entity_type": "christmas:grinchinion",
 								"size": 2.5,
-								"entity_lifespan": -1.0
+								"entity_lifespan": 15
 								}
 							]
 						}

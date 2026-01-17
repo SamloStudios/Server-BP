@@ -19,18 +19,16 @@ world.afterEvents.worldLoad.subscribe(() => {
 });
 
 function loadStoredVariables() {
-    // system.run(()=>{
-        const missionEnd = world.getDynamicProperty("christmas_mission_end");
-        print(missionEnd);
-        if (missionEnd != undefined) MISSION_END = missionEnd;
-        const giftCount = world.getDynamicProperty("christmas_gift_count");
-        if (giftCount != undefined) GIFT_COUNT = giftCount;
-        const foundGiftCount = world.getDynamicProperty("christmas_found_gift_count");
-        if (foundGiftCount != undefined) FOUND_GIFT_COUNT = foundGiftCount;
-    // })
+    const missionEnd = world.getDynamicProperty("christmas_mission_end");
+    if (missionEnd != undefined) MISSION_END = missionEnd;
+    const giftCount = world.getDynamicProperty("christmas_gift_count");
+    if (giftCount != undefined) GIFT_COUNT = giftCount;
+    const foundGiftCount = world.getDynamicProperty("christmas_found_gift_count");
+    if (foundGiftCount != undefined) FOUND_GIFT_COUNT = foundGiftCount;
 
     console.log(`§a[Loader] Christmas mission status loaded: MISSION_END=${MISSION_END}, GIFT_COUNT=${GIFT_COUNT}, FOUND_GIFT_COUNT=${FOUND_GIFT_COUNT}`);
     countdownToGifts();
+    world.sendMessage(`§eScript cargado!!`);
 };
 
 
@@ -44,7 +42,7 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
     };
 
     // Handle reset mission
-    if (event.id == "event:reset_mission" ) {
+    if (event.id == "event:reset" ) {
         MISSION_END = false;
         GIFT_COUNT = 0;
         FOUND_GIFT_COUNT = 0;
@@ -57,15 +55,23 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
     }
 
     // Handle display time
-    if (event.id == "event:display_time") {
+    if (event.id == "event:display") {
         const source = event.sourceEntity;
         const location = source.getHeadLocation();
+        const message = event.message;
 
-        // Spawn entity that will display countdown
-        const countdownEntity = source.dimension.spawnEntity("stuff:floating_text", {x: location.x, y: location.y, z: location.z});
-        world.setDynamicProperty("christmas_countdown_entity_id", countdownEntity.id);
+        if (message == "counter" || message == '') {
+            // Spawn entity that will display countdown
+            const countdownEntity = source.dimension.spawnEntity("stuff:floating_text", {x: location.x, y: location.y, z: location.z});
+            world.setDynamicProperty("christmas_countdown_entity_id", countdownEntity.id);
+        }
+        
+        if (message == "info" || message == '') {
+            const informationEntity = source.dimension.spawnEntity("stuff:floating_text", {x: location.x, y: location.y - ((message == '') ? 2 : 0), z: location.z});
+            world.setDynamicProperty("christmas_information_entity_id", informationEntity.id);
+        }
 
-        source.sendMessage(`§aSpawned entity that will display time`);
+        source.sendMessage(`§aSpawned entity that will display time and/or info`);
     }
 
     // Handle big gift location set
@@ -86,6 +92,10 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
             world.setDynamicProperty("christmas_mission_end", false);
             MISSION_END = false;
         }
+    }
+
+    if (event.id == "system:reload") {
+        // TODO
     }
 })
 
@@ -109,6 +119,7 @@ world.beforeEvents.playerBreakBlock.subscribe((event) => {
 
     // Add to gift found count
     FOUND_GIFT_COUNT += 1;
+    event.player.setDynamicProperty("gifts_found", FOUND_GIFT_COUNT);
     world.setDynamicProperty("christmas_found_gift_count", FOUND_GIFT_COUNT);
     displayActionBar(event.player, `§a[✔] Regalo: §7( ${FOUND_GIFT_COUNT} / ${GIFT_COUNT} )`);
 
@@ -175,32 +186,42 @@ function win() {
             const gift_block = overworld.spawnEntity("stuff:big_gift", {x: bigGiftLocation.x, y: bigGiftLocation.y + 10, z: bigGiftLocation.z });
             world.setDynamicProperty("christmas_gift_entity_id", gift_block.id);
         }
-        
-        // Activate counter
-        countdownToGifts();
     })
 }
 
 function countdownToGifts() {
     // Get floating text entity id
     const id = world.getDynamicProperty("christmas_countdown_entity_id");
-    if (!id) return;
-    
+    const displayId = world.getDynamicProperty("christmas_information_entity_id");
+    if (!id || !displayId) {
+        console.log(`§c[Error] ${displayId ? "Countdown entity" : "information entity" } id not found... Retrying next tick!`);
+        system.runTimeout(() => countdownToGifts(), 20);
+        return;
+    }
+
     // Get the entity
-    const entity = world.getEntity(id)
-
-    // 19 de enero de 2026 a las 09:00 AM
-    const FECHA_FIN = new Date(2026, 0, 19, 9, 0, 0);
-
-    system.runInterval(() => {
-        // Validamos que la entidad aún exista para evitar errores en el log
-        if (!entity || !entity.isValid) return;
+    const counterEntity = world.getEntity(id)
+    const displayEntity = world.getEntity(displayId);
+    
+    // 20 de enero de 2026 a las 09:00 AM
+    const FECHA_FIN = new Date(2026, 0, 20, 9, 0, 0);
+    
+    const countdown = system.runInterval(() => {
+        // Validamos que la entidad exista
+        if (!counterEntity || !counterEntity.isValid || !displayEntity || !displayEntity.isValid) {
+            // Timeout required for proper world loading 
+            console.log(`§c[Error] Countdown entity with id ${id} not found or invalid... Retrying next second!`);
+            
+            system.clearRun(countdown);
+            countdownToGifts();
+            return;
+        };
 
         const currentTime = getTime(true);
         const timeDiff = FECHA_FIN - currentTime;
 
         if (timeDiff <= 0) {
-            entity.nameTag = "§e¡Los regalos han llegado! \n§a¡Feliz §bN§aa§cv§di§gd§aa§6d§a!";
+            counterEntity.nameTag = "§e¡Los regalos han llegado! \n§a¡Feliz §bN§aa§cv§di§gd§aa§6d§a!";
             // TODO: Trigger explosion effect & gift spawn
             return;
         }
@@ -219,10 +240,60 @@ function countdownToGifts() {
         }
 
         if (MISSION_END) {
-            entity.nameTag = `§l§6[MISION CUMPLIDA]\n§l§bLOGRARON RECUPERAR LOS REGALOS!!\n§eEl regalo se abre en:\n${colorReloj}${timeString}`;
+            // Actualizar banners si ya se termino la mision
+            counterEntity.nameTag = `§l§g[MISION CUMPLIDA]\n§l§bLOGRARON RECUPERAR LOS REGALOS!!\n§f§oEl regalo se abre en:\n§r${colorReloj}${timeString}\n`;
         } else {
-            entity.nameTag = `§l§6MISION EN PROGRESO!!\n§eTiempo restante:\n${colorReloj}${timeString}`;
+            // Actualizar banners si no se ha terminado la mision
+            counterEntity.nameTag = `§l§9MISION EN PROGRESO!!\n§rTiempo restante:\n${colorReloj}${timeString}\n`;
+            counterEntity.nameTag += getMissionStatus();
         }
+        displayEntity.nameTag = getMissionDescription();
 
     }, 20);
-} 
+}
+
+export function getMissionStatus() {
+    // Returns string with info about current recovered gifts count and total gifts count
+    // Porcentaje de la mision completado: XX%, tambien muestra el conteo de regalos encontrados y totales
+    let status = "";
+    const percentage = GIFT_COUNT > 0 ? Math.floor((FOUND_GIFT_COUNT / GIFT_COUNT) * 100) : 0;
+    status += `§fPorcentaje de la misión completado: §d${percentage}%\n`;
+    
+    if (FOUND_GIFT_COUNT > 0) {
+        status += `§fRegalos recuperados [§a${FOUND_GIFT_COUNT} §f/ §a${GIFT_COUNT}§f]\n`;
+    }
+
+    return status; 
+}
+
+function getMissionDescription() {
+    // Returns string with info about what the mission is about
+    let description = "--------------------------------\n";
+    if (MISSION_END) {
+        description += "§fLograste salvar la navidad!!\n";
+        description += "§bEs hora de celebrar!!\n";
+        description += "§fLa fiesta de los regalos comenzará pronto\n";
+        
+    } else if (FOUND_GIFT_COUNT > 0) {
+        description += "§f[ INFORMACION DEL EVENTO ]\n";
+        description += "§7El grinch ha robado todos los regalos\n";
+        description += "§7¡¡Debes recuperarlos antes de que el evento termine!!\n";
+        description += "§7Para ello aventurate en las profundidades de su guarida\n";
+        description += "§7para recuperar los regalos\n";
+        description += "§7¡Sé el primero en encontrarlos, al final hay §apremios§7!\n";
+        description += "§e¡Pero ten cuidado!§7\n";
+        description += "§7¡El §4grinchiloko§7 ha dejado a sus grinchi-minions y\n";
+        description += "§7pequeños robots para guardar su botin!\n";
+        description += "§eInfiltrate con cuidado! §sSalva la navidad!\n";
+    } else {
+        description += "§f[ INFORMACION DEL EVENTO ]\n";
+        description += "§e¡Algo raro esta pasando aqui!\n";
+        description += "§7Los regalos han faltado este año, y el culpable aun no\n";
+        description += "§7ha sido identificado.\n";
+        description += "§7La falta se ha hecho sentir y alguien está a la casa del culpable\n";
+        description += "§7Dirígete al §sviajero§7 que ha llegado de tierras perdidas para\n";
+        description += "§7obtener mas información\n";
+    }
+    description += "--------------------------------\n";
+    return description;
+}

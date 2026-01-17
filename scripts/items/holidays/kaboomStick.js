@@ -38,7 +38,7 @@ export const FireStick = {
         if (!checkCooldown(player)) return;
 
         displayActionBar(player, "§6¡FUEGO!");
-        shootFire(event.source);
+        shootTunnel(event.source);
     }
 };
 
@@ -46,7 +46,7 @@ export function shootFire(player) {
     const dimension = player.dimension;
     const headLoc = player.getHeadLocation();
     let dir = player.getViewDirection();
-    const maxDistance = 40; // 50 es demasiado, 20 es un rango muy bueno para un lanzallamas
+    const maxDistance = 20; // 50 es demasiado, 20 es un rango muy bueno para un lanzallamas
 
     // 1. Lógica de DAÑO (Rayo inmediato)
     // Buscamos entidades en el camino del fuego
@@ -55,14 +55,14 @@ export function shootFire(player) {
         includePassableBlocks: true
     });
 
-    for (const raycastHit of targets) {
-        const entity = raycastHit.entity;
-        if (entity.id !== player.id) {
-            // Aplicar daño de fuego y quemar
-            entity.applyDamage(8, { cause: "fire" }); 
-            entity.setOnFire(5, true); // Quema por 5 segundos
-        }
-    }
+    // for (const raycastHit of targets) {
+    //     const entity = raycastHit.entity;
+    //     if (entity.id !== player.id) {
+    //         // Aplicar daño de fuego y quemar
+    //         entity.applyDamage(8, { cause: "fire" }); 
+    //         entity.setOnFire(5, true); // Quema por 5 segundos
+    //     }
+    // }
 
     // 2. Lógica VISUAL (Chorro de partículas y fuego en suelo)
     for (let i = 1; i <= maxDistance; i++) {
@@ -83,7 +83,7 @@ export function shootFire(player) {
 
                     breaksBlocks: true,
 
-                    causesFire: true,
+                    causesFire: false,
 
                     source: player
 
@@ -91,10 +91,9 @@ export function shootFire(player) {
 
                 // Solo ponemos fuego real en el bloque si es aire y hay suelo debajo
                 const block = dimension.getBlock(loc);
-                if (block && block.isAir) {
-                    // Opcional: poner fuego en el suelo de forma controlada
-                    // player.runCommand(`setblock ${Math.floor(loc.x)} ${Math.floor(loc.y)} ${Math.floor(loc.z)} fire 0 keep`);
-                }
+                // Limpiar un espacio de 3x3 en la direccion de la cabeza, cambiar por aire
+                
+
 
                 // Sonido de llamarada
                 if (i % 5 === 0) {
@@ -103,6 +102,63 @@ export function shootFire(player) {
 
             } catch (e) { /* Evitar errores si el área no está cargada */ }
         }, i); // El delay de 'i' hace que el chorro avance
+    }
+}
+
+export function shootTunnel(player) {
+    const dimension = player.dimension;
+    const headLoc = player.getHeadLocation();
+    const dir = player.getViewDirection(); // Simplificado
+    const maxDistance = 10;
+
+    // Lógica de "proyectil" que avanza
+    for (let i = 1; i <= maxDistance; i++) {
+        system.runTimeout(() => {
+            const centerLoc = {
+                x: Math.floor(headLoc.x + dir.x * i),
+                y: Math.floor(headLoc.y + dir.y * i),
+                z: Math.floor(headLoc.z + dir.z * i)
+            };
+
+            try {
+                // --- LÓGICA DE EXCAVACIÓN 3x3 ---
+                // Iteramos en un área de 3x3x3 alrededor del punto actual
+                for (let offsetX = -1; offsetX <= 1; offsetX++) {
+                    for (let offsetY = -1; offsetY <= 1; offsetY++) {
+                        for (let offsetZ = -1; offsetZ <= 1; offsetZ++) {
+                            
+                            const targetLoc = {
+                                x: centerLoc.x + offsetX,
+                                y: centerLoc.y + offsetY,
+                                z: centerLoc.z + offsetZ
+                            };
+
+                            const block = dimension.getBlock(targetLoc);
+                            
+                            // Solo reemplazamos si no es aire y no es irrompible (bedrock)
+                            if (block && !block.isAir && block.typeId !== "minecraft:bedrock") {
+                                dimension.runCommand(`setblock ${targetLoc.x} ${targetLoc.y} ${targetLoc.z} air`);
+                                
+                                // Opcional: Partícula de "escombro" o polvo
+                                if (Math.random() > 0.8) {
+                                    dimension.spawnParticle("minecraft:large_explosion", targetLoc);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // --- EFECTOS VISUALES DEL RAYO ---
+                dimension.spawnParticle("minecraft:basic_flame_particle", centerLoc);
+                dimension.spawnParticle("minecraft:sonic_explosion", centerLoc);
+
+                // Sonido de excavación cada ciertos bloques
+                if (i % 3 === 0) {
+                    dimension.playSound("random.break", centerLoc, { volume: 0.4, pitch: 0.8 });
+                }
+
+            } catch (e) { /* Evitar errores en bordes de chunk */ }
+        }, i); // El delay genera el efecto de "perforación" progresiva
     }
 }
 

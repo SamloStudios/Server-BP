@@ -17,3 +17,4 @@ import "./bot/missions/missions.js";
 // Evento
 // import "./kaboom.js"
 import "./npc/scriptEvents.js"
+import "./welcome.js"
