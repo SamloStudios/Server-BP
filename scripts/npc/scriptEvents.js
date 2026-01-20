@@ -28,7 +28,6 @@ function loadStoredVariables() {
 
     console.log(`§a[Loader] Christmas mission status loaded: MISSION_END=${MISSION_END}, GIFT_COUNT=${GIFT_COUNT}, FOUND_GIFT_COUNT=${FOUND_GIFT_COUNT}`);
     countdownToGifts();
-    world.sendMessage(`§eScript cargado!!`);
 };
 
 
