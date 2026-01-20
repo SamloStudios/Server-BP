@@ -7,7 +7,7 @@ export class ClaimManager {
     data = [];
     
     constructor () {
-        this.hasFetchClaimData = false;
+        this.fetchClaimData();
     }
 
     createClaim(owner, data) {
@@ -15,10 +15,10 @@ export class ClaimManager {
 
     }
 
-    getClaim(name) {
-        if (!this.hasFetchClaimData) return console.error('Claim Manager ERR');
+    getClaimsAtLocation(Vector3) {
+        if (!this.hasFetchClaimData) return undefined;
+        const {x, y, z} = Vector3;
 
-        return Claim(data).init(this)
     }
 
     saveClaim() {
@@ -32,21 +32,22 @@ export class ClaimManager {
     }
     
     fetchClaimData() {
-        const keys = world.getDynamicPropertyIds();
-        const filteredKeys = keys.filter(key => key.startsWith('claimData:'))
+        // const keys = world.getDynamicPropertyIds();
+        // const filteredKeys = keys.filter(key => key.startsWith('claimData:'))
         let index = 0;
 
         while (true) {
-            const claimsRaw = world.getDynamicProperty(`claimData:${index}`);
-            if (claimsRaw === undefined) break;
+            const claimsRaw = world.getDynamicProperty(`claimData:${index}`); // tomar toda la claim data
+            if (claimsRaw === undefined) break; // si no hay nada detenerse
             
-            const claimData = JSON.parse(claimsRaw); 
+            const claimData = JSON.parse(claimsRaw); // Hacer un objeto del JSON
             
             for (const clause of claimData) {
-                const claim = {
-                    data_block = ;
-                }
+                // Añadimos el numero del bloque de datos en el que esta guardado
+                clause.data_block = this.current_data_block;
+                this.data.push(clause); // Guardamos en data
             } 
+            index++;
         }
     
         this.hasFetchClaimData = true;
@@ -54,9 +55,13 @@ export class ClaimManager {
     }
 }
 
+export class ClaimManagerError extends Error {
+
+}
+
 
 /*::Claim
-// Is the datablock of claimData it is saved in
+// Is the datablock of claimData it is saved in (temporal data)
 data_block : integer
 id: integer
 
