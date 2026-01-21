@@ -1,8 +1,10 @@
 import { world, system } from "@minecraft/server";
 import { displayActionBar } from "../../utils/displayUtils";
 import { ActionFormData } from "@minecraft/server-ui";
+import { ClaimManager } from "../../claims/claimManager";
 
 // All variables outside are shared and persistent while server on
+const Manager = new ClaimManager();
 
 // { playername : [location1, location2] }
 let playerClaimAttempt = {}
@@ -13,25 +15,14 @@ const SPACING = 0.5;    // Distancia entre partículas (0.5 = 2 partículas por 
 const COST = 1; // Costo por bloque de claim
 
 export const ClaimsAdminGavel = {
-    // When the item is used on a block
-    // onUseOn(event) {
-    //     /* 3 states: 
-    //     1. Clear state, nothing on the shovel 
-    //     2. One point in the list (location1)
-    //     3. 2 points in the list, show line of particles using dimension.spawnParticle()
-    //     // If the player is close to the border of the square, show a portion of the square at player's height
-
-    //     // Gemini ignore this next part, i know how to do this
-    //     // While player is holding the Gavel, make it display the distance and volume between him and the 1st point 
-    //     // -- IF the volume is longer than the maximum permitted ammount, tell him 
-    //     */ 
-    // }
-
     onUseOn(event) {
         const { source: player, block } = event;
         const location = block.location;
         /// TODO: Manage claim function
-        // if (const claim = getClaim(location)) {manageClaim(claim)}
+        const claims = Manager.getClaimsAtLocation(location)
+        if (claims.length !== 0) { 
+            player.sendMessage("There is a claim there!")
+        }
         
         /// Create claim logic
         if (!playerClaimAttempt[player.name]) {
@@ -170,8 +161,8 @@ function dialogoConfirmacionAdmin(player, data) {
             switch(res) {
                 case 0:
                     // Create claim
+                    const newClaim = Manager.createClaim(player.name, data.p1, data.p2, player.dimension.id);
                     player.sendMessage("§aNuevo claim creado!!")
-                    saveClaim(player, data)
                     delete playerClaimAttempt[player.name];
                     break;
                 case 1:
@@ -183,8 +174,3 @@ function dialogoConfirmacionAdmin(player, data) {
         return;
     });
 }
-
-
-// 3 kinds of claims
-"claim"
-saveClaim()
