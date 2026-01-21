@@ -15,6 +15,14 @@
 			"minecraft:pushable": {
 				"is_pushable": false
 			},
+			"minecraft:inventory": {
+				"additional_slots_per_strength": 0,
+				"can_be_siphoned_from": false,
+				"container_type": "hopper",
+				"inventory_size": 5,
+				"private": false,
+				"restrict_to_owner": false
+			},
 			"minecraft:push_through": {
 				"value": 1
 			},

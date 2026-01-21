@@ -4,7 +4,7 @@ import { Claim } from "./claim";
 export class ClaimManager {
     hasFetchClaimData = false;
     current_data_block = 0;
-    data = [];
+    claim_data = [];
     
     constructor () {
         this.fetchClaimData();
@@ -15,10 +15,15 @@ export class ClaimManager {
 
     }
 
-    getClaimsAtLocation(Vector3) {
+    getClaimsAtLocation(location, dimension) {
         if (!this.hasFetchClaimData) return undefined;
-        const {x, y, z} = Vector3;
+        const {x, y, z} = location;
 
+        const claimsAtLocation = this.claim_data.filter(claim => {
+            
+        })
+
+        return claimsAtLocation;
     }
 
     saveClaim() {
@@ -45,7 +50,7 @@ export class ClaimManager {
             for (const clause of claimData) {
                 // Añadimos el numero del bloque de datos en el que esta guardado
                 clause.data_block = this.current_data_block;
-                this.data.push(clause); // Guardamos en data
+                this.claim_data.push(clause); // Guardamos en data
             } 
             index++;
         }
@@ -64,6 +69,7 @@ export class ClaimManagerError extends Error {
 // Is the datablock of claimData it is saved in (temporal data)
 data_block : integer
 id: integer
+position_data: {xMin xMax yMin yMax}
 
 // Types of claims there can be
 // marker - it is just a marker for something, like a zone, city, place to be (multiple can overlap)
