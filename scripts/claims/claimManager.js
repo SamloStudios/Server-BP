@@ -20,8 +20,8 @@ export class ClaimManager {
         const {x, y, z} = location;
 
         const claimsAtLocation = this.claim_data.filter(claim => {
-            
-        })
+            const inX = location.x >= claim.xMin 
+        });
 
         return claimsAtLocation;
     }
