@@ -3,7 +3,7 @@
 	"minecraft:npc_dialogue": {
 		"scenes": [
 			{
-				"scene_tag": "papa_noel_1",
+				"scene_tag": "papa_noel",
 				"npc_name": "§0Papa Noel",
 				"text": "Jojojo, bienvenido, hacia mucho que no recibia visitas \n\ninesperadas.\n",
 				"buttons": [

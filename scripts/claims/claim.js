@@ -42,16 +42,27 @@ export class Claim {
     getData() {
         return this.data;
     }
+    setData(data) {
+        this.data = data;
+    }
 
+    getDataBlock() {
+        return this.data.data_block;
+    }
+    setDataBlock(number) {
+        this.data.data_block = number;
+    }
+    
     save() {
         if (!this.claimManager) throw new ClaimManagerError('Manager no definido');
         this.claimManager.saveClaim(this);
     }
-
+    
     delete() {
         if (!this.claimManager) throw new ClaimManagerError('Manager no definido');
         this.claimManager.deleteClaim(this.data.id);
     }
+    
 
     // --- Getters y Setters Básicos ---
 
@@ -59,7 +70,7 @@ export class Claim {
     setId(id) { this.data.id = id; }
 
     getOwner() { return this.data.owner; }
-    setOwner(name) { this.data.owner = name; }
+    setOwner(ownerName) { this.data.owner = ownerName; }
 
     getBounds() { return this.data.bounds; }
     setBounds({ xMin, xMax, zMin, zMax }) {
@@ -145,7 +156,7 @@ whitelist_permissions {}
 subclaims : Integer[]
 */
 
-class ClaimManagerError extends Error {
+export class ClaimManagerError extends Error {
     constructor (message) {
         super(message)
     }

@@ -3,7 +3,7 @@
 	"minecraft:npc_dialogue": {
 		"scenes": [
 			{
-				"scene_tag": "viajero_1",
+				"scene_tag": "viajero",
 				"npc_name": "Eustaquio",
 				"text": "Hola soy Eustaquio!!\n\nSoy un viajero que viene de otro pais, de muy muy lejos...\n\nOh bueno jaja, asi me parecio a mi.",
 				"buttons": [

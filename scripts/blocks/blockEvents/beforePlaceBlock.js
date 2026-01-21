@@ -2,10 +2,15 @@
 // If a player places a block
 import {getChestOwner} from 'utils/ownershipUtils.js';
 import {displayActionBar} from 'utils/displayUtils.js';
+import { ClaimManager } from 'claims/claimManager.js'
+
+const Manager = new ClaimManager();
 
 export function beforePlayerPlaceBlock(event){
     const blockName = event.permutationToPlace.type.id;
-    const player = event.player;
+    const {player, block} = event;
+
+    if ( Manager.getClaimsAtLocation(block.location, block.dimension.id).length !== 0 ) event.cancel = true; // TODO: Add owner property and permissions recognition
     
     if (blockName === "minecraft:hopper") {
         // --- TEMPORAL --- //

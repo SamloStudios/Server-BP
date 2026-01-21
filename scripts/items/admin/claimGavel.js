@@ -18,22 +18,42 @@ export const ClaimsAdminGavel = {
     onUseOn(event) {
         const { source: player, block } = event;
         const location = block.location;
+        const dimensionId = block.dimension.id;
         /// TODO: Manage claim function
-        const claims = Manager.getClaimsAtLocation(location)
+        const claims = Manager.getClaimsAtLocation(location, dimensionId)
         if (claims.length !== 0) { 
-            player.sendMessage("There is a claim there!")
+            player.sendMessage("Ya hay claims en ese sitio!")
+            return;
         }
         
         /// Create claim logic
-        if (!playerClaimAttempt[player.name]) {
-            playerClaimAttempt[player.name] = { p1: location, p2: null, area: null};
+        if (!playerClaimAttempt[player.name]) { // 1st point
+            playerClaimAttempt[player.name] = { 
+                p1: location,
+                p2: null,
+                area: null,
+                dimension: dimensionId
+            };
+
             displayActionBar(player, "§aPrimer punto seleccionado.");
-        } else if (!playerClaimAttempt[player.name].p2) {
+
+        } else if (!playerClaimAttempt[player.name].p2) { // 2nd point
             const data = playerClaimAttempt[player.name];
-            data.p2 = location;
+            
+            // Verificar que los puntos esten en la misma dimension 
+            if (dimensionId !== data.dimension) return;
+            
+            // Verificar si no hay claims que intersecten con nuestra area
+            const intersecting_claims = Manager.getClaimsInArea(data.p1, location, dimensionId);
+            if (intersecting_claims.length !== 0) {
+                player.sendMessage("Ya hay claims en ese sitio!")
+                return;
+            }
+            
             const distX = Math.abs(location.x - data.p1.x) + 1;
             const distZ = Math.abs(location.z - data.p1.z) + 1;
             data.area = Math.floor(distX * distZ); // Guardar area
+            data.p2 = location; // Guardar punto 2
             player.sendMessage("§bSegundo punto seleccionado. Visualizando claim...");
         } else {
             // Cuadro de diálogo para confirmar

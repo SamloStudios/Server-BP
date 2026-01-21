@@ -3,6 +3,7 @@
 import { EquipmentSlot } from "@minecraft/server";
 import {setChestOwner, getChestOwner} from 'utils/ownershipUtils.js'
 import {displayActionBar} from 'utils/displayUtils.js'
+import { ClaimManager } from "../../claims/claimManager.js";
 
 const PurpuriteTierBlocks = [
     "endupdate:cut_purpurite_block",
@@ -12,14 +13,14 @@ const PurpuriteTierBlocks = [
     "endupdate:purpurite_block",
     "endupdate:purpurite_bricks",
     "purpurite_chiseled_block",
-    "endupdate:purpurite_cracked_bricks", //Not implemented yet
-    "endupdate:purpurite_encased_glass", //Not implemented yet
+    "endupdate:purpurite_cracked_bricks", // TODO: Not implemented yet
+    "endupdate:purpurite_encased_glass", // TODO: Not implemented yet
     "endupdate:purpurite_pillar_join",
     "endupdate:purpurite_pillar",
     "endupdate:purpurite_polished_block"
 ];
 
-
+const Manager = new ClaimManager();
 
 export function beforePlayerBreakBlock(event) {
     const block = event.block;
@@ -27,6 +28,8 @@ export function beforePlayerBreakBlock(event) {
     const player = event.player;
 
     if (player.getGameMode() == 'Creative') return;
+
+    if ( Manager.getClaimsAtLocation(block.location, block.dimension.id).length !== 0 ) event.cancel = true; // TODO: Add owner property and permissions recognition
 
     if (blockName === 'minecraft:chest') {
         const owner = getChestOwner(block);
@@ -42,17 +45,19 @@ export function beforePlayerBreakBlock(event) {
         displayActionBar(player, `§gTu cofre ha sido destruido`);
 
     } else if (PurpuriteTierBlocks.includes(blockName)) {
-        event.cancel = true; // Cancel the block break event
         const equippable = player?.getComponent("minecraft:equippable");
-        if (!equippable) return;
-    
-
-        const mainhand = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);
-        if (mainhand.hasItem() && mainhand.typeId.startsWith('endupdate:purpurite_')) {
-            event.cancel = false; // Allow the block break event
+        if (!equippable) {
+            event.cancel = true;
             return;
         }
-
+        
+        const mainhand = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);
+        if (mainhand.hasItem() && mainhand.typeId.startsWith('endupdate:purpurite_')) {
+            return; // Allow the block break event
+        }
+        
+        
+        event.cancel = true; // Cancel the block break event
         displayActionBar(player, `§cNo puedes destruir este bloque con ese pico.`);
         return;
     }

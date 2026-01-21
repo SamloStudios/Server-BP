@@ -10,7 +10,10 @@ export let FOUND_GIFT_COUNT = 0;
 export let Events = {
     "elfo_1" : "elfo_1_win",
     "elfo_2" : "elfo_2_win",
-
+    "papa_noel" : "papa_noel_win",
+    "viajero" : "viajero_win",
+    
+    "kaboom_inicio" : "kaboom_win"
 }
 
 // Get info from stored variables

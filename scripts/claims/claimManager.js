@@ -1,20 +1,23 @@
 import { system, world } from "@minecraft/server";
-import { Claim } from "./claim";
+import { Claim, ClaimManagerError } from "./claim";
+
+let claim_data = []; // Caché global para consultas rápidas (lectura)
+let hasFetchClaimData = false;
 
 export class ClaimManager {
-    hasFetchClaimData = false;
     current_data_block = 0; // block of data to write
     claims_on_block = 0; // number of claims on this block
 
-    claim_data = []; // Caché local para consultas rápidas (lectura)
     
     constructor () {
-        this.fetchClaimData();
+        system.run(()=>{
+            if (!hasFetchClaimData)
+                this.fetchClaimData();
+        }) 
     }
 
     // Function to create new claims
     createClaim(ownerName, p1, p2, dimensionId) {
-        if (!this.hasFetchClaimData) return console.error('Claim Manager ERR');
         // Create claim and set owner
         const claim = new Claim(this);
         claim.setOwner(ownerName);
@@ -34,7 +37,7 @@ export class ClaimManager {
 
     // Function to save claims
     saveClaim(claim) {
-        if (!this.hasFetchClaimData) return console.error('Claim Manager ERROR on saveClaim()');
+        if (!hasFetchClaimData) return;
         
         // Create an id if it is new
         if (!claim.getId()) {
@@ -58,33 +61,35 @@ export class ClaimManager {
         const claim_block = rawBlock ? JSON.parse(rawBlock) : [];
         
         // Search for the claim with the id
-        const indexInBlock = claim_block.findIndex(item => item.data.id === claim.getId());
+        const indexInBlock = claim_block.findIndex(item => item.id === claim.getId());
+
+        const claimData = claim.getData();
 
         // If there is a saved slot, modify it
         if (indexInBlock !== -1) {
-            claim_block[indexInBlock] = claim.getData();
+            claim_block[indexInBlock] = claimData;
         } else {
             // Else save at the end of the data_block
-            claim_block.push(claim.getData());
-        }
-
-        // UPDATE local cache
-        const localIndex = this.claim_data.findIndex(item => item.id === claim.getId());
-        if (localIndex !== -1) {
-            this.claim_data[localIndex] = claimData;
-        } else {
-            this.claim_data.push(claimData);
+            claim_block.push(claimData);
         }
 
         // Guardar en la base de datos de Minecraft
         world.setDynamicProperty(blockId, JSON.stringify(claim_block));
+        
+        // UPDATE local cache
+        const localIndex = claim_data.findIndex(item => item.id === claim.getId());
+        if (localIndex !== -1) {
+            claim_data[localIndex] = claimData;
+        } else {
+            claim_data.push(claimData);
+        }
     }
 
     deleteClaim(claimId) {
-        if (!this.hasFetchClaimData) return;
+        if (!hasFetchClaimData) return;
 
         // 1. Buscar el índice en la caché local
-        const index = this.claim_data.findIndex(c => (c.id === claimId));
+        const index = claim_data.findIndex(c => (c.id === claimId));
         
         if (index === -1) {
             console.warn(`§cNo se encontró el claim con ID: ${claimId}`);
@@ -92,7 +97,7 @@ export class ClaimManager {
         }
 
         // 2. Eliminar de la caché
-        this.claim_data.splice(index, 1);
+        claim_data.splice(index, 1);
 
         // 3. Reconstruir la base de datos para eliminar huecos
         this.rebuildDatabase();
@@ -101,13 +106,13 @@ export class ClaimManager {
     }
 
     getClaimsAtLocation(location, dimensionId) {
-        if (!this.hasFetchClaimData) return undefined;
+        if (!dimensionId) throw new ClaimManagerError("You must specify the dimensionId");
         
         const claimsAtLocation = []
         // Get all claims in that area
-        const claimsAtLocationRaw = this.claim_data.filter(claim => {
-            const inX = location.x >= claim.xMin && location.x <= claim.xMax;
-            const inZ = location.z >= claim.zMin && location.z <= claim.zMax;
+        const claimsAtLocationRaw = claim_data.filter(claim => {
+            const inX = location.x >= claim.bounds.xMin && location.x <= claim.bounds.xMax;
+            const inZ = location.z >= claim.bounds.zMin && location.z <= claim.bounds.zMax;
             const same_dimension = claim.dimension === dimensionId;
             const not_marker = claim.type !== 'marker';
             
@@ -118,17 +123,51 @@ export class ClaimManager {
         claimsAtLocationRaw.forEach(claimData => {
             claimsAtLocation.push(new Claim(this).init(claimData));
         });
-
+    
         return claimsAtLocation;
+    }
+
+    getClaimsInArea(p1, p2, dimensionId) {
+        if (!p1 || !p2 || !dimensionId)
+            throw new ClaimManagerError("Unable to pinpoint claims");
+        
+        // 1. Normalizar el área nueva (el área que el jugador INTENTA reclamar)
+        const newArea = {
+            xMin: Math.floor(Math.min(p1.x, p2.x)),
+            xMax: Math.floor(Math.max(p1.x, p2.x)),
+            zMin: Math.floor(Math.min(p1.z, p2.z)),
+            zMax: Math.floor(Math.max(p1.z, p2.z))
+        };
+
+        // 2. Filtrar los claims existentes
+        const collisions = claim_data.filter(claim => {
+            // Misma dimensión
+            if (claim.dimension !== dimensionId) return false;
+            
+            // No contar marcadores
+            if (claim.type === 'marker') return false;
+
+            const b = claim.bounds;
+
+            // Lógica de colisión AABB:
+            // Se solapan si NO ocurre que uno está totalmente fuera del otro
+            const collisionX = newArea.xMin <= b.xMax && newArea.xMax >= b.xMin;
+            const collisionZ = newArea.zMin <= b.zMax && newArea.zMax >= b.zMin;
+
+            return collisionX && collisionZ;
+        });
+
+        // 3. Convertir a objetos Claim para que tengan sus métodos
+        return collisions.map(data => new Claim(this).init(data));
     }
 
     // TODO: Add Markers later
     // getMarkerAtLocation(location, dimensionId) {
-    //     if (!this.hasFetchClaimData) return undefined;
+    //     if (!hasFetchClaimData) return undefined;
         
     //     const markersAtLocation = []
     //     // Get all claims in that area
-    //     const markersAtLocationRaw = this.claim_data.filter(claim => {
+    //     const markersAtLocationRaw = claim_data.filter(claim => {
     //         const inX = location.x >= claim.xMin && location.x <= claim.xMax;
     //         const inZ = location.z >= claim.zMin && location.z <= claim.zMax;
     //         const same_dimension = claim.dimension === dimensionId;
@@ -149,13 +188,13 @@ export class ClaimManager {
 
     }
     
-    modifyClaim() {
-        if (!this.hasFetchClaimData) return console.error('Claim Manager ERR');
+    modifyClaim() { // TODO
     
     }
     
     fetchClaimData() {
         let index = 0;
+        claim_data = [];
 
         while (true) {
             const claimsRaw = world.getDynamicProperty(`claimData:${index}`); // tomar toda la claim data
@@ -170,7 +209,7 @@ export class ClaimManager {
 
                 // Añadimos el numero del bloque de datos en el que esta guardado
                 clause.data_block = index;
-                this.claim_data.push(clause); // Guardamos en data
+                claim_data.push(clause); // Guardamos en data
             } 
             
             
@@ -179,7 +218,7 @@ export class ClaimManager {
 
         // Corregir el índice para mundos nuevos o existentes
         this.current_data_block = Math.max(0, index - 1);
-        this.hasFetchClaimData = true;
+        hasFetchClaimData = true;
     }
 
     rebuildDatabase() {
@@ -196,26 +235,26 @@ export class ClaimManager {
         this.claims_on_block = 0;
 
         // 3. Si no hay claims, terminamos aquí (ya borramos todo)
-        if (this.claim_data.length === 0) return;
+        if (claim_data.length === 0) return;
 
         // 4. Repartir los claims de la caché en nuevos bloques de 10
         let tempBlock = [];
         
-        this.claim_data.forEach((claimData, index) => {
+        claim_data.forEach((claimData, index) => {
             // Actualizar el puntero del bloque en el dato del claim
             claimData.data_block = this.current_data_block;
             tempBlock.push(claimData);
             this.claims_on_block++;
 
             // Si llenamos el bloque o es el último claim
-            if (this.claims_on_block >= 10 || index === this.claim_data.length - 1) {
+            if (this.claims_on_block >= 10 || index === claim_data.length - 1) {
                 world.setDynamicProperty(
                     `claimData:${this.current_data_block}`, 
                     JSON.stringify(tempBlock)
                 );
 
                 // Si aún quedan claims, pasamos al siguiente bloque
-                if (index < this.claim_data.length - 1) {
+                if (index < claim_data.length - 1) {
                     this.current_data_block++;
                     this.claims_on_block = 0;
                     tempBlock = [];
