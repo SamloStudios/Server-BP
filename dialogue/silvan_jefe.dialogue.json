@@ -1,0 +1,128 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "silvan_jefe_inicio",
+				"npc_name": "§eElfo Silvan",
+				"text": "Hola... forastero! \n\nComo entraste? Este lugar es muy secreto!\n\nHasta deje a Cidran a guardar la puerta... ¡Sabia que no era una buena idea!\n\n¡Seguido se distrae y se olvida de su trabajo!",
+				"buttons": [
+					{
+						"name": "§0Soy un ninja!",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_inicio_2"]
+					},
+					{
+						"name": "§0Por el baño!",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_inicio_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_inicio_2",
+				"npc_name": "§eElfo Silvan",
+				"text": "Si, claro, por supuesto...\n\nY bien, que te trae aqui?\n\nEstamos muy ocupados en un asunto, como puedes ver. No tengo tiempo para charlas de ocio.",
+				"buttons": [
+					{
+						"name": "§0Sobre los regalos",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_asunto"]
+					},
+					{
+						"name": "§0Resulta que...",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_asunto"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_asunto",
+				"npc_name": "§eElfo Silvan",
+				"text": "Ah, si!\n\nEs sobre ese asunto... ejem... bueno, la verdad es que todo son puras suposiciones sin fundamento, jamas hemos perdido un solo regalo en toda la historia del polo norte.\n\nNo es como si eso pudiera pasar jeje, puedes volver a tu aldea. Los regalos se entregaran a su tiempo, espero...",
+				"buttons": [
+					{
+						"name": "Necesitas ayuda?",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_asunto_2"]
+					},
+					{
+						"name": "§0Lo se todo...",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_asunto_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_asunto_2",
+				"npc_name": "§eElfo Silvan",
+				"text": "§7§oSuspiro...\n\n§rAghh, tienes razón, perdimos los regalos y no hemos realizado ninguna entrega.\n\nNo se como pudo pasar esto, y justo ahora que me ascendieron a jefe de los elfos!!",
+				"buttons": [
+					{
+						"name": "§0Como sucedio?",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_explicacion"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_explicacion",
+				"npc_name": "§eElfo Silvan",
+				"text": "La verdad es que no lo podia creer cuando me lo contaron. Guardamos los regalos que nos envia el jefe en una boveda con caja fuerte, muy cerrada.\n\nNosotros dormimos durante casi todo el año, y siempre nos despertamos para repartir los regalos en navidad.\n\nPero esta vez, cuando despertamos, algo inesperado habia sucedido!",
+				"buttons": [
+					{
+						"name": "§0Que sucedio??",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_explicacion_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_explicacion_2",
+				"npc_name": "§eElfo Silvan",
+				"text": "Habia un agujero gigantesco en el techo de la boveda!!\n\nLa caja fuerte habia sido vulnerada, y cuando revisamos el interior, casi todos los regalos habian desaparecido!!\n\nEs realmente una lastima, contacté a la policia local, pero me dijeron que no se podia hacer nada. Ellos creían que fue un tal stilly bricks. Asi que envie a preguntar...",
+				"buttons": [
+					{
+						"name": "§0Y que respondio?",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_explicacion_3"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_explicacion_3",
+				"npc_name": "§eElfo Silvan",
+				"text": "Resulta que no los robo él, o al menos eso es lo que decia. Se disculpó (a medias) y dijo que esta en su derecho de jugar con TNT, y que se habia portado tan mal que de todos modos no le tocaba regalo.\n\nAsi que envie a mis mejores exploradores a revisar, y resulta que... Habia una gran brecha en la pared detras de la caja fuerte!!",
+				"buttons": [
+					{
+						"name": "§0O_O",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_revelacion"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_revelacion",
+				"npc_name": "§eElfo Silvan",
+				"text": "Creo que los regalos han sido robados!!\n\nLos exploradores avanzaron hacia el interior de la brecha. Encontraron un tunel y evidencia del robo de los regalos desaparecidos. Mas adelante encontraron una guarida temible!!\n\nCreemos que los regalos fueron robados por el §cgrinchloko",
+				"buttons": [
+					{
+						"name": "§0Quiero ayudar!!",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_revelacion_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_revelacion_2",
+				"npc_name": "§eElfo Silvan",
+				"text": "No puedes!!\n\nEs muy peligroso, ya desaparecieron 3 de mis mejores exploradores en la guarida!!\n\nAdemas, se sabe que no es posible derrotar al §cgrinchloko. §rEs un ser malvado y frio, busca venganza porque no le dieron regalos cuando era niño!!",
+				"buttons": [
+					{
+						"name": "§0Yo aun ayudaré!",
+						"commands": ["/dialogue open @s @initiator silvan_jefe_despido"]
+					}
+				]
+			},
+			{
+				"scene_tag": "silvan_jefe_despido",
+				"npc_name": "§eElfo Silvan",
+				"text": "Si estas tan determinado, no te detendre. Pero si lo encuentras, huye inmediatamente!!\n\nEscuche que el malvado §cgrinchloko§r dejo muñecos robots y muchos de sus §fgrinchinions§r (monos de nieve malotes)\n\nBusca a Holly y Ivy, ellos te diran donde ir!!\nSolo te pido que tengas cuidado. ¡Que te vaya bien!",
+				"buttons": [
+					{
+						"name": "§0Gracias!"
+					}
+				]
+			}
+		]
+	}
+}
