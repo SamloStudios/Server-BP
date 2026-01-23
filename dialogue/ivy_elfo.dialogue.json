@@ -1,0 +1,48 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "ivy_elfo_inicio",
+				"npc_name": "§bIvy",
+				"text": "Hola! Me llamo Ivy.\n\nMe dijeron que estas buscando la brecha por la que el grinchloko entro para robar los regalos.\nEres muy valiente!!\n\nYo quiero ser valiente y explorar el mundo tambien!! Algun día...",
+				"buttons": [
+					{
+						"name": "Seguro lo seras!!",
+						"commands": ["/dialogue open @s @initiator ivy_elfo_inicio_2"]
+					},
+					{
+						"name": "Pero donde esta?!",
+						"commands": ["/dialogue open @s @initiator ivy_elfo_inicio_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "ivy_elfo_inicio_2",
+				"npc_name": "§bIvy",
+				"text": "Gracias! Me animas!!\n\nLa brecha esta en la boveda de los regalos, subiendo estas escaleras al fondo.\nHay un pasillo y muchas velas navideñas!!\n\nAhí esta mi hermano Holly, me preocupa un poco, ya desaparecieron varios exploradores...",
+				"buttons": [
+					{
+						"name": "Yo lo rescato!"
+					},
+					{
+						"name": "Alla voy!!"
+					}
+				]
+			},
+			{
+				"scene_tag": "ivy_elfo_win",
+				"npc_name": "§bIvy",
+				"text": "Sabia que eras un valiente explorador!!\n\nGracias por salvar los regalos. Y tal vez tambien a mi hermano, que ya no tiene que ir alla abajo!\n\nCuando crezca, voy a ser una exploradora como tu!!",
+				"buttons": [
+					{
+						"name": "Eres mujer? O-o"
+					},
+					{
+						"name": "Por supuesto!!"
+					}
+				]
+			}
+		]
+	}
+}

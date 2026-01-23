@@ -1,0 +1,75 @@
+{
+	"format_version": "1.14.0",
+	"minecraft:npc_dialogue": {
+		"scenes": [
+			{
+				"scene_tag": "holly_elfo_inicio",
+				"npc_name": "§1Holly",
+				"text": "Hola! \n\nEres el explorador valiente que busca encontrar los regalos perdidos??",
+				"buttons": [
+					{
+						"name": "Ivy??",
+						"commands": ["/dialogue open @s @initiator holly_elfo_nosoyivy"]
+					},
+					{
+						"name": "Si, en la carne!",
+						"commands": ["/dialogue open @s @initiator holly_elfo_info"]
+					}
+				]
+			},
+			{
+				"scene_tag": "holly_elfo_nosoyivy",
+				"npc_name": "§1Holly",
+				"text": "No, yo soy Holly...\n\nIvy es mi pariente, especificamente somos gemelos",
+				"buttons": [
+					{
+						"name": "Ah, ya veo...",
+						"commands": ["/dialogue open @s @initiator holly_elfo_info"]
+					}
+				]
+			},
+			{
+				"scene_tag": "holly_elfo_info",
+				"npc_name": "§1Holly",
+				"text": "Bien, tengo informacion util para ti!!\n\nSegun mis investigaciones, la boveda fue rota por la TNT de un tal Stilly Brick.\n\nDespues de eso, un enemigo antiguo llamado el §cgrinchloko§r robó los regalos a través de un hueco en la pared mientras dormiamos...",
+				"buttons": [
+					{
+						"name": "Todo eso claro!",
+						"commands": ["/dialogue open @s @initiator holly_elfo_info_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "holly_elfo_info_2",
+				"npc_name": "§1Holly",
+				"text": "Por los reportes que recibimos de los exploradores antes que desaparecieran. El enemigo tiene una guarida alla abajo atravesando la brecha, es muy peligroso, parece un laberinto.\n\nAdemas, al parecer, el enemigo tiene unos artefactos o muñecas verdes con los que puede atacar a control remoto. Se activan con un sensor de proximidad...",
+				"buttons": [
+					{
+						"name": "Todo anotado.",
+						"commands": ["/dialogue open @s @initiator holly_elfo_info_3"]
+					}
+				]
+			},
+			{
+				"scene_tag": "holly_elfo_info_3",
+				"npc_name": "§1Holly",
+				"text": "Ademas, tengo entendido que puede invocar a sus minions a distancia, y hacer un monton de cosas mas!!\n\nTienes que tener cuidado, si lo ves, huye inmediatamente!!\n\nLleva comida abundante, rescata los regalos, no te pierdas en el laberinto, coloca un spawnpoint al inicio. Buena suerte!!",
+				"buttons": [
+					{
+						"name": "Gracias!!"
+					}
+				]
+			},
+			{
+				"scene_tag": "holly_elfo_win",
+				"npc_name": "§1Holly",
+				"text": "Eres verdaderamente resistente eh!!\n\nQue suerte que estabas aqui, porque despues de Luis seguia yo de viajar abajo...\n\nNos vemos, yo tengo que reconstruir la boveda de regalos, esta vez, no se rompera!!",
+				"buttons": [
+					{
+						"name": "Bien!!"
+					}
+				]
+			}
+		]
+	}
+}
