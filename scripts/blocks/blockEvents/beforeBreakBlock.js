@@ -29,6 +29,8 @@ export function beforePlayerBreakBlock(event) {
 
     if (player.getGameMode() == 'Creative') return;
 
+    if (blockName === "christmas:gift_block" || blockName === "christmas:trap_gift_block") return; // TODO: remove after event
+
     if ( Manager.getClaimsAtLocation(block.location, block.dimension.id).length !== 0 ) event.cancel = true; // TODO: Add owner property and permissions recognition
 
     if (blockName === 'minecraft:chest') {

@@ -10,6 +10,8 @@ export function beforePlayerPlaceBlock(event){
     const blockName = event.permutationToPlace.type.id;
     const {player, block} = event;
 
+    if (player.getGameMode() == 'Creative') return;
+
     if ( Manager.getClaimsAtLocation(block.location, block.dimension.id).length !== 0 ) event.cancel = true; // TODO: Add owner property and permissions recognition
     
     if (blockName === "minecraft:hopper") {

@@ -8,32 +8,32 @@
 				"text": "Hola soy Eustaquio!!\n\nSoy un viajero que viene de otro pais, de muy muy lejos...\n\nOh bueno jaja, asi me parecio a mi.",
 				"buttons": [
 					{
-						"name": "§0Y ¿por que viniste?",
-						"commands": ["/dialogue open @s @initiator viajero_2"]
+						"name": "Por que viniste?",
+						"commands": ["/dialogue open @s @initiator viajeroaccidente"]
 					}
 				]
 			},
 			{
 				"scene_tag": "viajero_2",
 				"npc_name": "Eustaquio",
-				"text": "Si bueno... Porque...\n\nEs que estoy buscando a Papa Noel.",
+				"text": "¿Que a donde voy?\n\nTe lo dire, pero no te rias eh?\n\nTienes que creerme!\n",
 				"buttons": [
 					{
-						"name": "§0¿A Papa Noel?",
-						"commands": ["/dialogue open @s @initiator viajero_3"]
+						"name": "§0Te escucho!",
+						"commands": ["/dialogue open @s @initiator viajero_6"]
 					},
 					{
-						"name": "§0Que tonteria, adios."
+						"name": "No confio en tí"
 					}
 				]
 			},
 			{
 				"scene_tag": "viajero_3",
 				"npc_name": "Eustaquio",
-				"text": "Si, en nuestro pueblo no hubo regalos...\n\nDe hecho, ¿A ustedes tampoco les dieron?",
+				"text": "Si, bueno, la situacion es esta...\n\nEn nuestro pueblo no hubo regalos, y viajé alrededor de toda la provincia, y encontre lo mismo.\n\nArboles llenos de luces y vacios de regalos, caras tristes y llorosas...",
 				"buttons": [
 					{
-						"name": "§0No... ¿Como supiste?",
+						"name": "Vaya ¿Porque?",
 						"commands": ["/dialogue open @s @initiator viajero_4"]
 					}
 				]
@@ -41,16 +41,16 @@
 			{
 				"scene_tag": "viajero_4",
 				"npc_name": "Eustaquio",
-				"text": "Jaja. Estoy investigando por que no hubo regalos.\n\nHe pasado por muchas aldeas y todos dicen\nque tampoco les dieron regalos...\n\nPor eso estoy investigando, aunque, soy muy malo en esto.",
+				"text": "Exacto! Como pudo pasar esto?\n\nHe pasado por muchas aldeas y todos dicen\nque tampoco les dieron regalos...\n\nPor eso estoy investigando, aunque, soy muy malo en esto.",
 				"buttons": [
 					{
-						"name": "§0¡Buena suerte!"
+						"name": "§4¡Buena suerte!"
 					},
 					{
-						"name": "§0Si... Me doy cuenta"
+						"name": "§4Me doy cuenta"
 					},
 					{
-						"name": "§0¿Nececitas ayuda?",
+						"name": "§2¿Nececitas ayuda?",
 						"commands": ["/dialogue open @s @initiator viajero_5"]
 					}
 				]
@@ -58,13 +58,38 @@
 			{
 				"scene_tag": "viajero_5",
 				"npc_name": "Eustaquio",
-				"text": "Si, veras, en el polo norte se dice que esta Papa Noel, si \n\nlo encuentras sabras por que no hubo regalos...\n\n¿Me podrias ayudar a buscarlo?",
+				"text": "Sí, me pudieras ayudar por favor?!\n\nSe dice que en el polo norte se encuentra un anciano muy sabio, yo creo que este nos puede decir donde está Papa Noel. Si lo encontramos sabremos por que no hubo regalos...\n \n¿Me podrias ayudar a buscarlo?",
 				"buttons": [
 					{
-						"name": "§2         Si"
+						"name": "§2Si"
 					},
 					{
-						"name": "§4         No"
+						"name": "§4No"
+					}
+				]
+			},
+			{
+				"scene_tag": "viajeroaccidente",
+				"npc_name": "Eustaquio",
+				"text": "La verdad no intentaba pasar por aqui ni es este mi destino. Simplemente me perdí...\n\nJaja!\n\nNo tenia idea de que existia un pueblito tan lindo por aqui. ¡Tan lejos de toda civilización!",
+				"buttons": [
+					{
+						"name": "Y tu destino es?",
+						"commands": ["/dialogue open @s @initiator viajero_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "viajero_6",
+				"npc_name": "Eustaquio",
+				"text": "Bien, te dire entonces.\n\nLa verdad es que... yo...\n\nEs que estoy buscando a Papa Noel.",
+				"buttons": [
+					{
+						"name": "§0¿A Papa Noel?",
+						"commands": ["/dialogue open @s @initiator viajero_3"]
+					},
+					{
+						"name": "Que tonteria."
 					}
 				]
 			}

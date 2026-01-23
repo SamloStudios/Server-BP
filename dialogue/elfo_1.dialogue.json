@@ -5,27 +5,66 @@
 			{
 				"scene_tag": "elfo_1",
 				"npc_name": "§0Elfo Cidran",
-				"text": "¡Hey! ¡Hola! Me llamo Cidran, hacia mucho que nadie \n  nuevo venia aqui.\n\n  Pero la ultima vez todo era feliz, ahora todo se ha \n  echado a perder.\n",
+				"text": "¡Hey! Viajero no identificado!\n\nDetente, no puedes pasar sin permiso, estamos muy ocupados...\n\nDe hecho, como entraste aqui?\n\nEste lugar es §osupersecreto!",
 				"buttons": [
 					{
-						"name": "    §0 ¿Por que?",
-						"commands": ["/dialogue open @s @initiator elfo_12"]
+						"name": "§0¿Por que?",
+						"commands": ["/dialogue open @s @initiator elfo_lugar_secreto"]
 					},
 					{
-						"name": "    §0   Camara"
+						"name": "§0Vengo a ayudar!",
+						"commands": ["/dialogue open @s @initiator elfo_ayuda"]
 					}
 				]
 			},
 			{
-				"scene_tag": "elfo_12",
+				"scene_tag": "elfo_lugar_secreto",
 				"npc_name": "§0Elfo Cidran",
-				"text": "Veras, todos los regalos que Papa Noel \n nos trajo para que repartieramos, fueron robados.\n\n  ¡Espantoso! Todo sucedio una noche tranquila, \ncayo TNT del cielo que se dice que exploto un tal Stilly Bri -noseque, entonces llego una carreta y... \n¡desaparecieron los regalos!\n\nPero claro, son mitos, para saber la verdad \n tendrias que preguntarle a mi amigo Silvan.\n¡Buena suerte!",
+				"text": "Hmff... no se supone que lo sepas, pero ya que preguntas educadamente, te lo dire!\n\nAqui guardamos y distribuimos los §4regalos de navidad §rde todo el mundo!\n\nSi! Esta es la guarida supersecreta de los elfos navideños! Y yo soy el elfo portero, como lo ves?",
 				"buttons": [
 					{
-						"name": "§0 Le preguntare a el."
+						"name": "§0Que genial!!",
+						"commands": ["/dialogue open @s @initiator elfo_lugar_secreto_2"]
 					},
 					{
-						"name": "  §0  Okey ¡Gracias!"
+						"name": "§0Eso es secreto?",
+						"commands": ["/dialogue open @s @initiator elfo_lugar_secreto_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "elfo_lugar_secreto_2",
+				"npc_name": "§0Elfo Cidran",
+				"text": "Oh caramelos!!\n\nSiempre olvido que es un supersecreto, no deberia decirle a nadie.\n\nEspero que no me despidan jeje, pero con los recientes acontecimientos, a cualquiera se le hubiera olvidado...",
+				"buttons": [
+					{
+						"name": "§0Respecto a eso...",
+						"commands": ["/dialogue open @s @initiator elfo_ayuda"]
+					}
+				]
+			},
+			{
+				"scene_tag": "elfo_ayuda",
+				"npc_name": "§0Elfo Cidran",
+				"text": "Entonces vienes a ayudar!?\n\nQue bueno! Estamos metidos en un gran problema. La verdad necesitamos toda la ayuda posible!\n\nMe llamo Cidran, mucho gusto conocerte.\n",
+				"buttons": [
+					{
+						"name": "§0Igualmente!",
+						"commands": ["/dialogue open @s @initiator elfo_ayuda_2"]
+					},
+					{
+						"name": "§0Pero que paso?",
+						"commands": ["/dialogue open @s @initiator elfo_ayuda_2"]
+					}
+				]
+			},
+			{
+				"scene_tag": "elfo_ayuda_2",
+				"npc_name": "§0Elfo Cidran",
+				"text": "Bueno, resulta que los regalos desaparecieron!! Es una gran caratastrofe!\n\nO algo asi, no estoy del todo seguro.\n\nEl que sabe bien es el jefe Silvan, preguntale a él!!",
+				"buttons": [
+					{
+						"name": "§0Yo le pregunto!"
 					}
 				]
 			}

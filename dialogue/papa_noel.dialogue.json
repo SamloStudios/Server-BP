@@ -4,38 +4,81 @@
 		"scenes": [
 			{
 				"scene_tag": "papa_noel",
-				"npc_name": "§0Papa Noel",
-				"text": "Jojojo, bienvenido, hacia mucho que no recibia visitas inesperadas.\n",
+				"npc_name": "§c§kPapa Noel",
+				"text": "§7§o Haaaooummm!\nBosteza...\n\n§rQue temprano me levante hoy!!\n\n§7§oEmpieza a cantar...§r\nJingle bells, Jingle bells, Jingle all the way!!",
 				"buttons": [
 					{
-						"name": "§0¡Hola! Jaja",
-						"commands": ["/dialogue open @s @initiator papa_noel_2"]
-					},
-					{
-						"name": "§0Ni esperadas"
+						"name": "Pero tu eres?!",
+						"commands": ["/dialogue open @s @initiator papa_noel_6"]
 					}
 				]
 			},
 			{
 				"scene_tag": "papa_noel_2",
-				"npc_name": "§0Papa Noel",
-				"text": "PAPA NOEL: Hola hola, bien... Jojojo.\n Y ¿a que habeis venido?\n\nYO: Me han encomendado buscarte aqui para \npreguntarte que paso, osea, porque changos no hay regalos.\n\nPAPA NOEL: ¡AAAAAAAAAAAAAAAAH! ¡NO! ¿Como es eso? \n Les encarge a los elfos que distribuyeran los regalos.\n ¿Y usted dice que nada se entrego?\n\nYO: Asi es, al parecer nadie recibio regalos.\n\nPAPA NOEL: Bien, algo raro esta pasando, tendre que \n comunicarselo a los elfos, pero...\n\nYO: ¿Pero que?\n\nPAPA NOEL: Pues que no estoy en condiciones\n para caminar largas distancias, hijo. \nNo obstante, se puede hacer una cosa.\n\nYO: ¿Que cosa?\n\nPAPA NOEL: Pues que vaya usted, hijo, claro esta.\n\nYO: Baya baya, si tuve que habermelo imaginado.\n Pero... \n  ¿Como voy a saber el camino?\n\nPAPA NOEL: Ah, hijo, la verdad es que ni yo se.\n Pero hay un mapa, si lo encuentro te lo doy \n  en cuanto lo encuentre.",
+				"npc_name": "§cPapa Noel",
+				"text": "¡AAAAAAAAAH! ¡NO! ¿Como es eso? \n\nComo todos los años, le encarge a los elfos que distribuyeran los regalos.\n¿Y usted dice que nada se entrego?\n\nBien, algo raro esta pasando, tendre que comunicarselo a los elfos, pero...",
 				"buttons": [
 					{
-						"name": "    §0    (NEXT)"
+						"name": "¿Pero que?",
+						"commands": ["/dialogue open @s @initiator papa_noel_5"]
+					},
+					{
+						"name": "Comunicarlo...",
+						"commands": ["/dialogue open @s @initiator papa_noel_5"]
 					}
 				]
 			},
 			{
 				"scene_tag": "papa_noel_3",
-				"npc_name": "§0Papa Noel",
-				"text": "¡Bien! Lo he encontrado, es esta direccion.\n\n¡Que te vaya bien y buena suerte!",
+				"npc_name": "§cPapa Noel",
+				"text": "¡Bien! Lo unico que tienes que hacer, es seguir la direccion del río hacia la izquierda saliendo de mi casa.\n\nHay banderines en esa direccion, siguelos y llegaras a un poblado. Puedes preguntar ahi!\n\n¡Que te vaya bien y buena suerte!",
 				"buttons": [
 					{
-						"name": "  §0¡Gracias! ¡Igualmente!"
+						"name": "§0¡Igualmente!"
 					},
 					{
-						"name": "§0No pienso ir, adios."
+						"name": "§0Gracias! adiós."
+					}
+				]
+			},
+			{
+				"scene_tag": "papa_noel_4",
+				"npc_name": "§cPapa Noel",
+				"text": "Pues que vaya usted, hijo, claro esta.\n\nEl camino no es complicado, solo tienes que seguir mis instrucciones!!\n\n§7§oAsiente energicamente!",
+				"buttons": [
+					{
+						"name": "Instrucciones",
+						"commands": ["/dialogue open @s @initiator papa_noel_3"]
+					}
+				]
+			},
+			{
+				"scene_tag": "papa_noel_5",
+				"npc_name": "§cPapa Noel",
+				"text": "Pues que no estoy en condiciones para caminar largas distancias, hijo.\n\nYa no soy como era antes jojojo!! Antes repartia yo los regalos con los elfos, ahora me cuesta subir al trineo.\n\nNo obstante, se puede hacer una cosa...",
+				"buttons": [
+					{
+						"name": "¿Que cosa?",
+						"commands": ["/dialogue open @s @initiator papa_noel_4"]
+					},
+					{
+						"name": "Ya me imagino...",
+						"commands": ["/dialogue open @s @initiator papa_noel_4"]
+					}
+				]
+			},
+			{
+				"scene_tag": "papa_noel_6",
+				"npc_name": "§cPapa Noel",
+				"text": "Jojojo!! Merry christmas!!\n\nEspero que hayan disfrutado sus regalos navideños!!\n\nY bienvenido! Hacia mucho que no recibia visitas inesperadas...\n",
+				"buttons": [
+					{
+						"name": "No hubo regalos",
+						"commands": ["/dialogue open @s @initiator papa_noel_2"]
+					},
+					{
+						"name": "Hay un problema!",
+						"commands": ["/dialogue open @s @initiator papa_noel_2"]
 					}
 				]
 			}

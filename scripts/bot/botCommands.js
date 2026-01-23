@@ -57,6 +57,20 @@ const propertyCache = new Map();
 
 
 const commands = {
+    updateAll: (player) => {
+        if (!isAdmin(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+        world.sendMessage("§a§lINTENTANDO ACTUALIZAR EL SERVIDOR EN 10seg");
+        system.runTimeout(()=> {
+            player.runCommand("kick @a '§aEl server se esta actualizando...'");
+        }, 10*20);
+        system.runTimeout(()=> {
+            console.log("@$updateJoin36457");
+        }, 10*20 + 20);
+        return;
+    },
     update: (player) => {
         if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');

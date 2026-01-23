@@ -9,11 +9,11 @@ export let FOUND_GIFT_COUNT = 0;
 
 export let Events = {
     "elfo_1" : "elfo_1_win",
-    "elfo_2" : "elfo_2_win",
+    "silvan_jefe_inicio" : "silvan_jefe_win",
+    "holly_elfo_inicio": "holly_elfo_win",
+    "ivy_elfo_inicio": "ivy_elfo_win",
     "papa_noel" : "papa_noel_win",
-    "viajero" : "viajero_win",
-    
-    "kaboom_inicio" : "kaboom_win"
+    "viajero" : "viajero_win"
 }
 
 // Get info from stored variables
@@ -36,7 +36,7 @@ function loadStoredVariables() {
 
 system.afterEvents.scriptEventReceive.subscribe((event)=> {
     // const event = {id, initiator?, message, sourceBlock?, sourceEntity?, sourceType}
-    console.log(`§7§oAny script event( id ${event.id})`);
+    console.log(`§7§oAny script event( id ${event.id}) : ${event.message}`);
     
     // Handle open dialogue reqs
     if (event.id == 'event:dialogue') {
@@ -205,8 +205,8 @@ function countdownToGifts() {
     const counterEntity = world.getEntity(id)
     const displayEntity = world.getEntity(displayId);
     
-    // 20 de enero de 2026 a las 09:00 AM
-    const FECHA_FIN = new Date(2026, 0, 20, 9, 0, 0);
+    // 28 de enero de 2026 a las 09:00 AM
+    const FECHA_FIN = new Date(2026, 0, 28, 9, 0, 0);
     
     const countdown = system.runInterval(() => {
         // Validamos que la entidad exista
@@ -224,6 +224,8 @@ function countdownToGifts() {
 
         if (timeDiff <= 0) {
             counterEntity.nameTag = "§e¡Los regalos han llegado! \n§a¡Feliz §bN§aa§cv§di§gd§aa§6d§a!";
+            // displayEntity.nameTag = // TODO: Add a description of the christmas party
+            // TODO: Teleport everyone so they get to see the event
             // TODO: Trigger explosion effect & gift spawn
             return;
         }
