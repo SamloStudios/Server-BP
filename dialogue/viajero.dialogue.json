@@ -92,6 +92,16 @@
 						"name": "Que tonteria."
 					}
 				]
+			},
+			{
+				"scene_tag": "viajero_win",
+				"npc_name": "Eustaquio",
+				"text": "Venciste!!\n\nGracias amigo, luego viajare a mi casa a buscar a mis amigos para darles la noticia.\n\nRealmente has devuelto los regalos y resuelto el misterio!! Eres un heroe amigo!",
+				"buttons": [
+					{
+						"name": "Gracias!"
+					}
+				]
 			}
 		]
 	}

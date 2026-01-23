@@ -122,6 +122,16 @@
 						"name": "§0Gracias!"
 					}
 				]
+			},
+			{
+				"scene_tag": "silvan_jefe_win",
+				"npc_name": "§eElfo Silvan",
+				"text": "Hola forastero! \n\nPor tu servicio, el polo norte estara siempre agradecido!!\n\nSiempre seras bienvenido en este lugar.\n\nSi necesitamos de tus valientes hazañas te llamaremos de nuevo!",
+				"buttons": [
+					{
+						"name": "A sus ordenes!"
+					}
+				]
 			}
 		]
 	}

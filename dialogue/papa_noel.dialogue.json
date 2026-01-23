@@ -81,6 +81,16 @@
 						"commands": ["/dialogue open @s @initiator papa_noel_2"]
 					}
 				]
+			},
+			{
+				"scene_tag": "papa_noel_win",
+				"npc_name": "§c§kPapa Noel",
+				"text": "§7§o Sonrie...\n\n§rHola muchacho!!\nEscuche que devolviste los regalos, hohoho!\n\nEres un valiente, tal como cuando yo era joven hace muchos años... Recuerdo que... blah blah blah...\n§7§o Charla durante 1 hora",
+				"buttons": [
+					{
+						"name": "..."
+					}
+				]
 			}
 		]
 	}

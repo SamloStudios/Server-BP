@@ -144,9 +144,9 @@ const commands = {
             warpTo(player, args)
         }
     },
-    setwarp: (player, args) => {
-        setWarp(player, args);
-    },
+    // setwarp: (player, args) => {
+    //     setWarp(player, args);
+    // },
     delwarp: (player, args) => {
         delWarp(player, args);
     },

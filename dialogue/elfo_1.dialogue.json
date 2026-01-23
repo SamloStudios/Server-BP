@@ -12,7 +12,7 @@
 						"commands": ["/dialogue open @s @initiator elfo_lugar_secreto"]
 					},
 					{
-						"name": "§0Vengo a ayudar!",
+						"name": "Vengo a ayudar!",
 						"commands": ["/dialogue open @s @initiator elfo_ayuda"]
 					}
 				]
@@ -23,11 +23,11 @@
 				"text": "Hmff... no se supone que lo sepas, pero ya que preguntas educadamente, te lo dire!\n\nAqui guardamos y distribuimos los §4regalos de navidad §rde todo el mundo!\n\nSi! Esta es la guarida supersecreta de los elfos navideños! Y yo soy el elfo portero, como lo ves?",
 				"buttons": [
 					{
-						"name": "§0Que genial!!",
+						"name": "Que genial!!",
 						"commands": ["/dialogue open @s @initiator elfo_lugar_secreto_2"]
 					},
 					{
-						"name": "§0Eso es secreto?",
+						"name": "Eso es secreto?",
 						"commands": ["/dialogue open @s @initiator elfo_lugar_secreto_2"]
 					}
 				]
@@ -38,7 +38,7 @@
 				"text": "Oh caramelos!!\n\nSiempre olvido que es un supersecreto, no deberia decirle a nadie.\n\nEspero que no me despidan jeje, pero con los recientes acontecimientos, a cualquiera se le hubiera olvidado...",
 				"buttons": [
 					{
-						"name": "§0Respecto a eso...",
+						"name": "Respecto a eso...",
 						"commands": ["/dialogue open @s @initiator elfo_ayuda"]
 					}
 				]
@@ -49,11 +49,11 @@
 				"text": "Entonces vienes a ayudar!?\n\nQue bueno! Estamos metidos en un gran problema. La verdad necesitamos toda la ayuda posible!\n\nMe llamo Cidran, mucho gusto conocerte.\n",
 				"buttons": [
 					{
-						"name": "§0Igualmente!",
+						"name": "Igualmente!",
 						"commands": ["/dialogue open @s @initiator elfo_ayuda_2"]
 					},
 					{
-						"name": "§0Pero que paso?",
+						"name": "Pero que paso?",
 						"commands": ["/dialogue open @s @initiator elfo_ayuda_2"]
 					}
 				]
@@ -64,7 +64,17 @@
 				"text": "Bueno, resulta que los regalos desaparecieron!! Es una gran caratastrofe!\n\nO algo asi, no estoy del todo seguro.\n\nEl que sabe bien es el jefe Silvan, preguntale a él!!",
 				"buttons": [
 					{
-						"name": "§0Yo le pregunto!"
+						"name": "Yo le pregunto!"
+					}
+				]
+			},
+			{
+				"scene_tag": "elfo_victoria",
+				"npc_name": "§0Elfo Cidran",
+				"text": "¡Lo lograste!\n\nLos regalos han vuelto y el caos ya no reina entre nosotros.\nQuizá no fue la mayor de las tragedias… pero para nosotros significó todo.\n\nEn nombre del bosque y de cada elfo despistado: gracias, de verdad.",
+				"buttons": [
+					{
+						"name": "Me alegra ayudar!"
 					}
 				]
 			}
