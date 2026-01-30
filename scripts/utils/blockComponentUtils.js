@@ -63,14 +63,14 @@ export function set_state(block, params) {
 
 export function disabler(params, block) {
     if (params) {
-        const operator = params.operator ?? "==";
         const disabler_state = params.state ?? "";
-        const disabled_value = params.value ?? "";
+        const operator = params.operator ?? "==";
+        const value = params.value ?? "";
 
         const current_state = block.permutation.getState(disabler_state);
 
-        if (operator === "==" && current_state === disabled_value) return true;
-        if (operator === "!=" && current_state !== disabled_value) return true;
+        if (operator === "==" && current_state === value) return true;
+        if (operator === "!=" && current_state !== value) return true;
         return false;
     }
 }

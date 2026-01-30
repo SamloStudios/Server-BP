@@ -10,7 +10,7 @@ import { OnRandomTick } from "./blockComponents/behavior/on_random_tick";
 import { SetRandomizer } from "./blockComponents/placement/set_randomiser";
 import { UseInteraction } from "./blockComponents/behavior/use_interaction";
 import { BreakRestriction } from "./blockComponents/break/break_restriction";
-import { OnBlockBreak } from "./blockComponents/behavior/on_break";
+import { OnBlockBreakEvent } from "./blockComponents/behavior/on_break";
 import { GrinchLokoDollComponent } from "./blockComponents/custom/grinchloko_doll";
 
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
@@ -163,8 +163,8 @@ system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
 	);
 
 	blockComponentRegistry.registerCustomComponent(
-		"behavior:on_break",
-		OnBlockBreak
+		"break:event",
+		OnBlockBreakEvent
 	);
 	
 	blockComponentRegistry.registerCustomComponent(

@@ -1,5 +1,5 @@
 
-export const OnBlockBreak = {
+export const OnBlockBreakEvent = {
     onPlayerBreak({player, brokenBlockPermutation, block, dimension}, {params}) {
         const creature_to_spawn = params.onPlayerBreak.spawn;
         const location = block.location;

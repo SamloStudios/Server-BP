@@ -6,6 +6,7 @@ import { getTime } from "../bot/botUtils";
 export let MISSION_END = false;
 export let GIFT_COUNT = 0;
 export let FOUND_GIFT_COUNT = 0;
+let GIVE_AWARDS = false;
 
 export let Events = {
     "elfo_1" : "elfo_1_win",
@@ -28,7 +29,9 @@ function loadStoredVariables() {
     if (giftCount != undefined) GIFT_COUNT = giftCount;
     const foundGiftCount = world.getDynamicProperty("christmas_found_gift_count");
     if (foundGiftCount != undefined) FOUND_GIFT_COUNT = foundGiftCount;
-
+    const giveAwards = world.getDynamicProperty("christmas_give_awards");
+    // if (giveAwards != undefined) GIVE_AWARDS = giveAwards; TODO
+    
     console.log(`§a[Loader] Christmas mission status loaded: MISSION_END=${MISSION_END}, GIFT_COUNT=${GIFT_COUNT}, FOUND_GIFT_COUNT=${FOUND_GIFT_COUNT}`);
     countdownToGifts();
 };
@@ -104,7 +107,7 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
 // Handle gift count
 world.afterEvents.playerPlaceBlock.subscribe((event)=> {
     const placedBlock = event.block.permutation.type.id;
-    if (placedBlock == "christmas:gift_block") {
+    if (placedBlock == "christmas:gift_block" && event.player.getGameMode() === "Creative") {
         GIFT_COUNT++;
         displayActionBar( event.player, `§aRegalos colocados: §7( ${GIFT_COUNT} ) §eEncontrados: §5( ${FOUND_GIFT_COUNT} )`);
         world.setDynamicProperty("christmas_gift_count", GIFT_COUNT);
@@ -206,7 +209,7 @@ function countdownToGifts() {
     const displayEntity = world.getEntity(displayId);
     
     // 28 de enero de 2026 a las 09:00 AM
-    const FECHA_FIN = new Date(2026, 0, 28, 9, 0, 0);
+    const FECHA_FIN = new Date(2026, 0, 30, 9, 0, 0);
     
     const countdown = system.runInterval(() => {
         // Validamos que la entidad exista
@@ -220,13 +223,48 @@ function countdownToGifts() {
         };
 
         const currentTime = getTime(true);
-        const timeDiff = FECHA_FIN - currentTime;
+        const timeDiff = FECHA_FIN - currentTime; TODO:
 
         if (timeDiff <= 0) {
             counterEntity.nameTag = "§e¡Los regalos han llegado! \n§a¡Feliz §bN§aa§cv§di§gd§aa§6d§a!";
-            // displayEntity.nameTag = // TODO: Add a description of the christmas party
-            // TODO: Teleport everyone so they get to see the event
-            // TODO: Trigger explosion effect & gift spawn
+            let celebrationText = "--------------------------------\n";
+            celebrationText += "§fTodas las entidades del server han sido salvadas\n"
+            celebrationText += "§fpor su heroica y veloz intervención!\n"
+            celebrationText += "§fEl §cpolo norte§f les estara siempre agradecido...\n"
+            celebrationText += "§fAhora empieza la §af§fi§ce§as§ft§ca§f de los §aregalos§f!!\n"
+            celebrationText += "--------------------------------\n";
+            displayEntity.nameTag = celebrationText;
+            const randomNumber = (range) => Math.floor(Math.random()*(range*2))-range;
+            if (Math.random() < 0.3) displayEntity.runCommand(`summon fireworks_rocket ~${randomNumber(4)} ~4 ~${randomNumber(4)}`)
+            
+            if ( GIVE_AWARDS ) {
+                GIVE_AWARDS = false;
+                world.setDynamicProperty("christmas_give_awards", false)
+
+                let giftEntity = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
+
+                // Teleport everyone so they get to see the event
+                const loc = giftEntity ? giftEntity.location : displayEntity.location;
+
+                world.getAllPlayers().forEach(player => {
+                    try {
+                        player.teleport({x: loc.x + randomNumber(5), y: loc.y, z: loc.z + randomNumber(5)}, {checkForBlocks: true})
+                    } catch (error) {
+                        displayEntity.runCommand(`tp ${player.name} ~~~`);
+                    }
+                });
+                
+                // Trigger explosion effect & gift spawn
+                displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
+                displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
+
+                // Spawn gifts
+                giftEntity = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
+                
+                giftEntity.remove(); // Remove old gift entity
+            }
+            
+            
             return;
         }
 

@@ -57,7 +57,7 @@ const propertyCache = new Map();
 
 
 const commands = {
-    updateAll: (player) => {
+    updateall: (player) => {
         if (!isAdmin(player, 'admin')) {
             player.sendMessage('§cNo tienes permiso para este comando.');
             return;

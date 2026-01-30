@@ -17,11 +17,12 @@
 		},
 		"components": {
 			"minecraft:display_name": "Regalo Trampa",
-			"behavior:on_break" : {
+			"break:event" : {
 				"onPlayerBreak" : {
 					"spawn" : "christmas:grinchinion"
 				} 
 			},
+			"break:restriction" : {},
 			"placement:random_variant" : {
 				"values" : [0, 1, 2, 3]
 			},

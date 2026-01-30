@@ -17,11 +17,13 @@
 		},
 		"components": {
 			"minecraft:display_name": "Regalo",
-			"behavior:on_break" : {
+			"break:event" : {
 				"onPlayerBreak" : {
 					"sound" : "random.orb"
 				}
 			},
+			"break:restriction" : {}, // makes it non pickable
+			"tag:dirt" : {},
 			"minecraft:tick": {
 				"interval_range": [30, 30],
 				"looping": true
@@ -36,14 +38,14 @@
 				"id" : "minecraft:crop_growth_emitter",
 				"probability" : 0.2
 			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1
+			},
 			"minecraft:collision_box": {
 				"origin": [-8, 0, -8],
 				"size": [16, 8, 16]
 			},
 			"minecraft:selection_box": true,
-			"minecraft:destructible_by_mining": {
-				"seconds_to_destroy": 1
-			},
 			"minecraft:destructible_by_explosion": {
 				"explosion_resistance": 200
 			},
