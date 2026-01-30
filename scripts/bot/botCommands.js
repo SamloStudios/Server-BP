@@ -91,7 +91,8 @@ const commands = {
             return;
         }
 
-        console.log("@$admin-command545", args);
+        const command = args.slice(1).join(' ');
+        console.log("@$admin-command545", command);
         return;
     },
     help: (player) => {
