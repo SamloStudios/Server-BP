@@ -85,6 +85,15 @@ const commands = {
         }, 10*20 + 20);
         return;
     },
+    admincommand: (player, args) => {
+        if (!isAdmin(player, 'admin')) {
+            player.sendMessage('§cNo tienes permiso para este comando.');
+            return;
+        }
+
+        console.log("@$admin-command545", args);
+        return;
+    },
     help: (player) => {
         const commandList = [
             '§6Comandos del Reino:',
