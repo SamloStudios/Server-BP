@@ -6,7 +6,7 @@ import { getTime } from "../bot/botUtils";
 export let MISSION_END = false;
 export let GIFT_COUNT = 0;
 export let FOUND_GIFT_COUNT = 0;
-let GIVE_AWARDS = false;
+let GIVE_AWARDS = true;
 
 export let Events = {
     "elfo_1" : "elfo_1_win",
@@ -30,7 +30,7 @@ function loadStoredVariables() {
     const foundGiftCount = world.getDynamicProperty("christmas_found_gift_count");
     if (foundGiftCount != undefined) FOUND_GIFT_COUNT = foundGiftCount;
     const giveAwards = world.getDynamicProperty("christmas_give_awards");
-    // if (giveAwards != undefined) GIVE_AWARDS = giveAwards; TODO
+    if (giveAwards != undefined) GIVE_AWARDS = giveAwards; 
     
     console.log(`§a[Loader] Christmas mission status loaded: MISSION_END=${MISSION_END}, GIFT_COUNT=${GIFT_COUNT}, FOUND_GIFT_COUNT=${FOUND_GIFT_COUNT}`);
     countdownToGifts();
@@ -57,6 +57,7 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
         world.setDynamicProperty("christmas_mission_end", false);
         world.setDynamicProperty("christmas_gift_count", 0);
         world.setDynamicProperty("christmas_found_gift_count", 0);
+        world.setDynamicProperty("christmas_give_awards", true);
     }
 
     // Handle display time
@@ -112,6 +113,7 @@ world.afterEvents.playerPlaceBlock.subscribe((event)=> {
         displayActionBar( event.player, `§aRegalos colocados: §7( ${GIFT_COUNT} ) §eEncontrados: §5( ${FOUND_GIFT_COUNT} )`);
         world.setDynamicProperty("christmas_gift_count", GIFT_COUNT);
     }
+
 });
 
 // Handle found gift count
@@ -237,31 +239,12 @@ function countdownToGifts() {
             const randomNumber = (range) => Math.floor(Math.random()*(range*2))-range;
             if (Math.random() < 0.3) displayEntity.runCommand(`summon fireworks_rocket ~${randomNumber(4)} ~4 ~${randomNumber(4)}`)
             
-            if ( GIVE_AWARDS ) {
+            if ( GIVE_AWARDS && world.getAllPlayers().length > 0 ) {
                 GIVE_AWARDS = false;
                 world.setDynamicProperty("christmas_give_awards", false)
 
-                let giftEntity = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
-
-                // Teleport everyone so they get to see the event
-                const loc = giftEntity ? giftEntity.location : displayEntity.location;
-
-                world.getAllPlayers().forEach(player => {
-                    try {
-                        player.teleport({x: loc.x + randomNumber(5), y: loc.y, z: loc.z + randomNumber(5)}, {checkForBlocks: true})
-                    } catch (error) {
-                        displayEntity.runCommand(`tp ${player.name} ~~~`);
-                    }
-                });
-                
-                // Trigger explosion effect & gift spawn
-                displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
-                displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
-
-                // Spawn gifts
-                giftEntity = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
-                
-                giftEntity.remove(); // Remove old gift entity
+                const awardsLocation = world.getDynamicProperty("christmas_big_gift_location");
+                giveAwards(awardsLocation);
             }
             
             
@@ -338,4 +321,26 @@ function getMissionDescription() {
     }
     description += "--------------------------------\n";
     return description;
+}
+
+function giveAwards(location) {
+
+    // Teleport everyone so they get to see the event
+    const loc = location;
+
+    world.getAllPlayers().forEach(player => {
+        world.getDimension("overworld").runCommand(`tp ${player.name} ~~~`);
+        world.getDimension("overworld").runCommand(`give @a stuff:confetti_launcher`);
+    });
+    
+    // Trigger explosion effect & gift spawn
+    displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
+    displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
+
+    // Remove old gift entity
+    const giftEntity = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
+    giftEntity.remove(); 
+    
+    // Spawn gifts
+    
 }

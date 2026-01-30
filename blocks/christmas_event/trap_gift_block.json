@@ -36,7 +36,11 @@
 
 			"emitter:particles": {
 				"id" : "minecraft:crop_growth_emitter",
-				"probability" : 0.5
+				"probability" : 0.5,
+				"on_destroy" : {
+					"id" : "particle:magic_poof",
+					"probability" : 1
+				}
 			},
 			"minecraft:collision_box": true,
 			"minecraft:selection_box": true,

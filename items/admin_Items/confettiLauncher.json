@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.80",
+  "minecraft:item": {
+    "description": {
+      "identifier": "stuff:confetti_launcher",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "confetti_cannon",
+      "minecraft:damage": {
+        "value": 1
+      },
+      "minecraft:glint": true,
+      "minecraft:display_name": {
+        "value": "§7Lanzador de Confetti"
+      },
+      "minecraft:custom_components": [
+        "holidays:confetti_cannon"
+      ]
+    }
+  }
+}
