@@ -1,5 +1,5 @@
 import { world } from "@minecraft/server";
-import { getFilteredPropertyKeys } from "../botUtils";
+import { getFilteredPropertyKeys, isAdmin } from "../botUtils";
 
 
 export function modOwner(player, args){
@@ -7,6 +7,11 @@ export function modOwner(player, args){
     const oldOwner = args[1];
     const newOwner = args[2];
     const chests = getFilteredPropertyKeys('owner');
+    if (!isAdmin(player)) {
+        player.sendMessage('§cNecesitas permisos de admin para eso')
+        return
+    };
+
     for (const i in chests) {
         const check = world.getDynamicProperty(chests[i]);
         if (check.toLowerCase() === oldOwner.toLowerCase()) keysToMod.push(chests[i]);
