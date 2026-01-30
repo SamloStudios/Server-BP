@@ -9,7 +9,7 @@ const Manager = new ClaimManager();
 // { playername : [location1, location2] }
 let playerClaimAttempt = {}
 
-const PARTICLE_NAME = "minecraft:basic_flame_particle"; // Cambia por la que prefieras
+const PARTICLE_NAME = "minecraft:basic_flame_particle"; // Particula del borde
 const VIEW_RADIUS = 15; // Radio de visión circular
 const SPACING = 0.5;    // Distancia entre partículas (0.5 = 2 partículas por bloque)
 const COST = 1; // Costo por bloque de claim
