@@ -13,9 +13,14 @@
       "minecraft:damage": {
         "value": 1
       },
+      "minecraft:use_animation" : "spyglass",
+      "minecraft:use_modifiers": {
+        "use_duration": 2,
+        "movement_modifier": 1
+      },
       "minecraft:glint": true,
       "minecraft:display_name": {
-        "value": "§7Lanzador de Confetti"
+        "value": "§7Lanzador de §9C§bo§an§cf§ae§gt§ft§ci§f!!"
       },
       "minecraft:custom_components": [
         "holidays:confetti_launcher"

@@ -1,5 +1,4 @@
 import { MolangVariableMap, world, DimensionLocation } from "@minecraft/server";
-import { getVectorDirection } from "../../utils/mathUtils";
 import { displayActionBar } from "../../utils/displayUtils";
 
 
@@ -32,19 +31,10 @@ export const ConfettiLauncher = {
 
 function spawnConfettiParticles(origin, targetBlock, dimension, force = 2, sound = "confetti.launcher") {
     dimension.playSound(sound, origin)
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
         const molang = new MolangVariableMap();
 
-        const jitterTarget = {
-            x: targetBlock.x + (Math.random() - 0.5) * 2,
-            y: targetBlock.y + (Math.random() - 0.5) * 2,
-            z: targetBlock.z + (Math.random() - 0.5) * 2
-        };
-        
-        // 1. CALCULAR EL VECTOR DE DIRECCIÓN (Destino - Origen)
-        // Si no hacemos esto, la partícula volará hacia el punto 0,0,0 del mundo + el vector
-        const directionVector = getVectorDirection(origin, jitterTarget)
-
+        const direction = calculateDirectionWithSpread(origin, targetBlock, 0.4)
 
         // 2. Definir Color Aleatorio
         molang.setColorRGB("variable.color", { 
@@ -55,7 +45,7 @@ function spawnConfettiParticles(origin, targetBlock, dimension, force = 2, sound
         });
 
         // 3. Pasar el Vector Normalizado
-        molang.setVector3("variable.direction", directionVector);
+        molang.setVector3("variable.direction", direction);
 
         // 4. Velocidad personalizada (puedes variarla si quieres que unas salgan más rápido)
         molang.setFloat("variable.speed", Math.random() * force + 0.5);
@@ -63,4 +53,33 @@ function spawnConfettiParticles(origin, targetBlock, dimension, force = 2, sound
         // Spawn
         dimension.spawnParticle("particle:confetti", origin, molang);
     }
+}
+
+function calculateDirectionWithSpread(origin, target, spread) {
+    // 1. Vector bruto
+    let dx = target.x - origin.x;
+    let dy = target.y - origin.y;
+    let dz = target.z - origin.z;
+
+    // 2. Normalizar primero para tener una base estándar
+    const mag = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (mag !== 0) {
+        dx /= mag;
+        dy /= mag;
+        dz /= mag;
+    }
+
+    // 3. Aplicar Jitter al vector ya normalizado
+    // Esto asegura que la dispersión sea angular y constante
+    dx += (Math.random() - 0.5) * spread;
+    dy += (Math.random() - 0.5) * spread;
+    dz += (Math.random() - 0.5) * spread;
+
+    // 4. Re-normalizar para que la velocidad no se vea afectada por el jitter
+    const finalMag = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    return {
+        x: dx / finalMag,
+        y: dy / finalMag,
+        z: dz / finalMag
+    };
 }
