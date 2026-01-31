@@ -12,14 +12,22 @@
 				"has_gravity": true,
 				"has_collision": true
 			},
+			"minecraft:knockback_resistance": {
+				"value": 5,
+				"max": 10
+			},
+			"minecraft:health": {
+				"value": 40,
+				"max": 40
+			},
 			"minecraft:pushable": {
 				"is_pushable": false
 			},
 			"minecraft:inventory": {
 				"additional_slots_per_strength": 0,
 				"can_be_siphoned_from": false,
-				"container_type": "hopper",
-				"inventory_size": 5,
+				"container_type": "container",
+				"inventory_size": 27,
 				"private": false,
 				"restrict_to_owner": false
 			},
@@ -27,7 +35,7 @@
 				"value": 1
 			},
 			"minecraft:movement": {
-				"value": 0.2
+				"value": 0.15
 			},
 			"minecraft:collision_box": {
 				"height": 1,

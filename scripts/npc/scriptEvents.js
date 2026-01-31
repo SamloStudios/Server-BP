@@ -324,7 +324,6 @@ function getMissionDescription() {
 }
 
 function giveAwards(location) {
-
     // Teleport everyone so they get to see the event
     const loc = location;
 
@@ -336,11 +335,4 @@ function giveAwards(location) {
     // Trigger explosion effect & gift spawn
     displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
     displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
-
-    // Remove old gift entity
-    const giftEntity = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
-    giftEntity.remove(); 
-    
-    // Spawn gifts
-    
 }

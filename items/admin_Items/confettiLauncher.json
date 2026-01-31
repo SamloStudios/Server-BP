@@ -18,7 +18,7 @@
         "value": "§7Lanzador de Confetti"
       },
       "minecraft:custom_components": [
-        "holidays:confetti_cannon"
+        "holidays:confetti_launcher"
       ]
     }
   }

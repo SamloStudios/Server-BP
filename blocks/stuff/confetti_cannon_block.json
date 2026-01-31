@@ -1,0 +1,116 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "stuff:confetti_cannon_block",
+			"menu_category": {
+				"category": "equipment"
+			},
+			"traits": {
+				"minecraft:placement_direction": {
+					"enabled_states": ["minecraft:cardinal_direction"]
+				}
+			},
+			"states": {
+				"custom:angle" : [0, 1, 2, 3],
+				"custom:loaded" : [ true, false ]
+			}
+		},
+		"components": {
+			"minecraft:display_name": "Cañon de §9C§bo§an§cf§ae§gt§ft§ci§f!!",
+			"break:event" : {
+				"onPlayerBreak" : {
+					"sound" : "random.orb"
+				}
+			},
+			"minecraft:tick": {
+				"interval_range": [10, 10],
+				"looping": true
+			},
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1
+			},
+			"minecraft:collision_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:geometry": "geometry.small_cannon",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "confetti_cannon",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:map_color": "#757575"
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('custom:loaded') == true ",
+				"components": {
+					"minecraft:material_instances": {
+						"*" : {
+							"texture": "confetti_cannon_loaded"
+						}
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('custom:angle') == 1 ",
+				"components": {
+					"minecraft:geometry" : "geometry.small_cannon_1"
+				}
+			},
+			{
+				"condition": "q.block_state('custom:angle') == 2 ",
+				"components": {
+					"minecraft:geometry" : "geometry.small_cannon_2"
+				}
+			},
+			{
+				"condition": "q.block_state('custom:angle') == 3 ",
+				"components": {
+					"minecraft:geometry" : "geometry.small_cannon_3"
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'north' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 180, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'east' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 90, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 270, 0]
+					}
+				}
+			}
+		]
+	}
+}

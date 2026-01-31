@@ -1,9 +1,11 @@
 import { system } from '@minecraft/server'
 import { FireStick, KaboomStick, LauncherStick } from './holidays/kaboomStick';
-import { ConfettiCannon } from './holidays/confettiStuff';
+import { ConfettiCannon, ConfettiLauncher } from './holidays/confettiStuff';
 
 
-system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
+system.beforeEvents.startup.subscribe(({itemComponentRegistry, blockComponentRegistry}) => {
+    
+    // Kaboom
     itemComponentRegistry.registerCustomComponent(
         "holidays:kaboom",
         KaboomStick
@@ -17,8 +19,13 @@ system.beforeEvents.startup.subscribe(({itemComponentRegistry}) => {
         LauncherStick
     );
 
-    itemComponentRegistry.registerCustomComponent(
+    // Confetti
+    blockComponentRegistry.registerCustomComponent( // block confetti component
         "holidays:confetti_cannon",
         ConfettiCannon
+    );
+    itemComponentRegistry.registerCustomComponent( 
+        "holidays:confetti_launcher",
+        ConfettiLauncher
     );
 });
