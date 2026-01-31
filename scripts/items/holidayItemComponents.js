@@ -1,4 +1,4 @@
-import { system } from '@minecraft/server'
+import { system, CustomComponentParameters } from '@minecraft/server'
 import { FireStick, KaboomStick, LauncherStick } from './holidays/kaboomStick';
 import { ConfettiCannon, ConfettiLauncher } from './holidays/confettiStuff';
 

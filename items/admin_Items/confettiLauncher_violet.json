@@ -1,15 +1,15 @@
 {
-  "format_version": "1.21.80",
+  "format_version": "1.21.132",
   "minecraft:item": {
     "description": {
-      "identifier": "stuff:confetti_launcher",
+      "identifier": "stuff:violet_confetti_launcher",
       "menu_category": {
         "category": "equipment"
       }
     },
     "components": {
       "minecraft:max_stack_size": 1,
-      "minecraft:icon": "confetti_cannon",
+      "minecraft:icon": "confetti_cannon_violet",
       "minecraft:damage": {
         "value": 1
       },
@@ -20,11 +20,15 @@
       },
       "minecraft:glint": true,
       "minecraft:display_name": {
-        "value": "Lanzador de §9C§bo§an§cf§ae§gt§ft§ci§f!!"
+        "value": "§dLanzador de §9C§bo§an§cf§ae§gt§ft§ci§f!!"
       },
-      "minecraft:custom_components": [
-        "holidays:confetti_launcher"
-      ]
+      "holidays:confetti_launcher" : {
+        "color" : {
+          "red" : 1,
+          "green" : 0,
+          "blue" : 1
+        }
+      }
     }
   }
 }

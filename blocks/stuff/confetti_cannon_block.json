@@ -35,7 +35,7 @@
 			},
 			"minecraft:collision_box": {
 				"origin": [-8, 0, -8],
-				"size": [16, 8, 16]
+				"size": [16, 14, 16]
 			},
 			"minecraft:selection_box": true,
 			"minecraft:destructible_by_explosion": {
