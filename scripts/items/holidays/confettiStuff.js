@@ -1,4 +1,4 @@
-import { MolangVariableMap, world} from "@minecraft/server";
+import { MolangVariableMap, system, world} from "@minecraft/server";
 import { displayActionBar } from "../../utils/displayUtils";
 
 export const ConfettiLauncher = {
@@ -30,6 +30,14 @@ export const ConfettiCannon = {
         brain.addTag(`cannon_${block.location.x}_${block.location.y}_${block.location.z}`);
     },
 
+    onBreak(event){
+        const {block, dimension} = event
+        const entities = dimension.getEntitiesAtBlockLocation(block.location);
+        entities.forEach(entity => {
+            if (entity.typeId === "stuff:cannon_data") entity.remove();
+        });
+    },
+
     onTick(event) {
         const { block, dimension } = event;
         const brain = getCannonBrain(block);
@@ -54,12 +62,19 @@ export const ConfettiCannon = {
         const brain = getCannonBrain(block);
         if (!brain) return;
 
+        // Cambiar posicion del cañon
+        if (player.isSneaking) {
+            const currentAngle = block.permutation.getState("custom:angle")
+            block.setPermutation(block.permutation.withState("custom:angle", (currentAngle == 3 ? 0 : currentAngle + 1)))
+            return;
+        }
+
         const equipment = player.getComponent("minecraft:equippable");
         const item = equipment.getEquipment("Mainhand");
-        if (!item) return;
+        if (!item && !brain.getDynamicProperty("is_primed")) return;
 
         // PASO 1: Poner Pólvora
-        if (item.typeId === "minecraft:gunpowder" && !brain.getDynamicProperty("has_powder")) {
+        if (item?.typeId === "minecraft:gunpowder" && !brain.getDynamicProperty("has_powder")) {
             consumeItem(player);
             brain.setDynamicProperty("has_powder", true);
             player.dimension.playSound("random.ignite", block.location);
@@ -68,17 +83,17 @@ export const ConfettiCannon = {
         }
 
         // PASO 2: Poner Color (Solo si ya tiene pólvora)
-        if (item.typeId.includes("dye") && brain.getDynamicProperty("has_powder")) {
+        if (item?.typeId?.includes("dye") && brain.getDynamicProperty("has_powder") && !brain.getDynamicProperty("is_primed")) {
             const color = getRgbFromDye(item.typeId);
             consumeItem(player);
             
-            brain.setDynamicProperty("stored_color", color);
+            brain.setDynamicProperty("stored_color", JSON.stringify(color));
             brain.setDynamicProperty("is_primed", true);
             
             // Actualizamos el estado visual del bloque
-            block.setPermutation(block.getPermutation().withState("custom:loaded", true));
+            block.setPermutation(block.permutation.withState("custom:loaded", true));
             
-            player.dimension.playSound("random.orb", block.location);
+            player.dimension.playSound("crossbow.loading.middle", block.location);
             displayActionBar(player, "§a¡Cañón Listo para Disparar!");
             return;
         }
@@ -94,7 +109,7 @@ export const ConfettiCannon = {
 
 function spawnConfettiParticles(origin, targetBlock, dimension, force = 2, sound = "confetti.launcher", color) {
     dimension.playSound(sound, origin)
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < (10 * force); i++) {
         const molang = new MolangVariableMap();
 
         const direction = calculateDirectionWithSpread(origin, targetBlock, 0.4)
@@ -155,20 +170,20 @@ function tryShoot(block, brain) {
     if (!brain.getDynamicProperty("is_primed")) return;
 
     const origin = { x: block.location.x + 0.5, y: block.location.y + 0.5, z: block.location.z + 0.5 };
-    const cardinal = block.getPermutation().getState("minecraft:cardinal_direction");
-    const angleIdx = block.getPermutation().getState("custom:angle") ?? 0;
+    const cardinal = block.permutation.getState("minecraft:cardinal_direction");
+    const angleIdx = block.permutation.getState("custom:angle") ?? 0;
     
     const direction = getDirectionFromStates(cardinal, angleIdx);
     const targetLoc = { x: origin.x + direction.x * 3, y: origin.y + direction.y * 3, z: origin.z + direction.z * 3 };
-    const color = brain.getDynamicProperty("stored_color");
+    const color = JSON.parse(brain.getDynamicProperty("stored_color"));
 
     // Ejecutar disparo
-    spawnConfettiParticles(origin, targetLoc, block.dimension, 2, "confetti.launcher", color);
+    spawnConfettiParticles(origin, targetLoc, block.dimension, 4, "confetti.cannon", color);
 
     // RESETEAR TODO
     brain.setDynamicProperty("has_powder", false);
     brain.setDynamicProperty("is_primed", false);
-    block.setPermutation(block.getPermutation().withState("custom:loaded", false));
+    block.setPermutation(block.permutation.withState("custom:loaded", false));
 }
 
 /**
@@ -208,14 +223,19 @@ function getDirectionFromStates(cardinal, angleIdx) {
     else if (cardinal === "east")  baseDir.x = 1;
     else if (cardinal === "west")  baseDir.x = -1;
 
-    // Ajuste de inclinación (angle 0=horizontal, 1=un poco arriba, 2=45deg, 3=vertical)
-    const verticalY = [0, 0.4, 0.7, 1];
-    const horizontalScale = [1, 0.9, 0.7, 0];
+    // Mapeo de ángulos a radianes (Math.sin/cos usan radianes)
+    // Formula: grados * (PI / 180)
+    const anglesInDegrees = [0, 15, 30, 45];
+    const angleRad = anglesInDegrees[angleIdx] * (Math.PI / 180);
+
+    // Calcular componentes usando trigonometría
+    const verticalY = Math.sin(angleRad);
+    const horizontalScale = Math.cos(angleRad);
 
     return {
-        x: baseDir.x * horizontalScale[angleIdx],
-        y: verticalY[angleIdx],
-        z: baseDir.z * horizontalScale[angleIdx]
+        x: baseDir.x * horizontalScale,
+        y: verticalY,
+        z: baseDir.z * horizontalScale
     };
 }
 
@@ -224,10 +244,29 @@ function getDirectionFromStates(cardinal, angleIdx) {
  */
 function getRgbFromDye(typeId) {
     const dyeMap = {
-        "minecraft:red_dye": { red: 1, green: 0, blue: 0 },
-        "minecraft:blue_dye": { red: 0, green: 0, blue: 1 },
-        "minecraft:lime_dye": { red: 0.5, green: 1, blue: 0 },
-        "minecraft:yellow_dye": { red: 1, green: 1, blue: 0 }
+        "minecraft:white_dye":      { red: 1.00, green: 1.00, blue: 1.00 },
+        "minecraft:light_gray_dye": { red: 0.62, green: 0.62, blue: 0.62 },
+        "minecraft:gray_dye":       { red: 0.29, green: 0.29, blue: 0.29 },
+        "minecraft:black_dye":      { red: 0.11, green: 0.11, blue: 0.11 },
+        "minecraft:brown_dye":      { red: 0.48, green: 0.33, blue: 0.23 },
+        "minecraft:red_dye":        { red: 0.69, green: 0.15, blue: 0.15 },
+        "minecraft:orange_dye":     { red: 0.98, green: 0.50, blue: 0.07 },
+        "minecraft:yellow_dye":     { red: 0.97, green: 0.85, blue: 0.19 },
+        "minecraft:lime_dye":       { red: 0.50, green: 0.78, blue: 0.12 },
+        "minecraft:green_dye":      { red: 0.37, green: 0.49, blue: 0.08 },
+        "minecraft:cyan_dye":       { red: 0.09, green: 0.61, blue: 0.61 },
+        "minecraft:light_blue_dye": { red: 0.23, green: 0.70, blue: 0.85 },
+        "minecraft:blue_dye":       { red: 0.24, green: 0.27, blue: 0.61 },
+        "minecraft:purple_dye":     { red: 0.54, green: 0.19, blue: 0.69 },
+        "minecraft:magenta_dye":    { red: 0.74, green: 0.31, blue: 0.74 },
+        "minecraft:pink_dye":       { red: 0.95, green: 0.62, blue: 0.73 }
     };
-    return dyeMap[typeId] ?? { red: Math.random(), green: Math.random(), blue: Math.random() };
+
+    // Si el tinte existe en la lista, lo devuelve; si no (o si es un item random), 
+    // devuelve un color aleatorio para no romper el disparo.
+    return dyeMap[typeId] ?? { 
+        red: Math.random(), 
+        green: Math.random(), 
+        blue: Math.random() 
+    };
 }

@@ -1,0 +1,91 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "stuff:christmas_trophy_2025",
+			"menu_category": {
+				"category": "items"
+			},
+			"traits": {
+				"minecraft:placement_direction": {
+					"enabled_states": ["minecraft:cardinal_direction"]
+				}
+			}
+		},
+		"components": {
+			"minecraft:display_name": "§cT§fr§co§ff§ce§fo §72025",
+			"break:event" : {
+				"onPlayerBreak" : {
+					"sound" : "random.orb"
+				}
+			},
+			"minecraft:light_emission": 8,
+			"placement:rules" : {
+				"rules" : "solid, not_same_type"
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1
+			},
+			"behavior:use_interaction" : {
+				"sound" : {
+					"id" : "radio.christmas_song"
+				}
+			},
+			"minecraft:collision_box": {
+				"origin": [-4, 0, -4],
+				"size": [8, 12, 8]
+			},
+			"minecraft:selection_box": {
+				"origin": [-4, 0, -4],
+				"size": [8, 12, 8]
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:geometry": "geometry.christmas_trophy_2025",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "christmas_trophy_2025",
+					"render_method": "alpha_test",
+					"ambient_occlusion" : false,
+					"face_dimming": false
+				}
+			},
+			"minecraft:map_color": "#757575"
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'north' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 180, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'east' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 90, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 270, 0]
+					}
+				}
+			}
+		]
+	}
+}

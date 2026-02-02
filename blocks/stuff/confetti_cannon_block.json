@@ -1,5 +1,5 @@
 {
-	"format_version": "1.21.50",
+	"format_version": "1.21.100",
 	"minecraft:block": {
 		"description": {
 			"identifier": "stuff:confetti_cannon_block",
@@ -13,15 +13,17 @@
 			},
 			"states": {
 				"custom:angle" : [0, 1, 2, 3],
-				"custom:loaded" : [ true, false ]
+				"custom:loaded" : [ false, true ]
 			}
 		},
 		"components": {
+			"holidays:confetti_cannon" : {},
 			"minecraft:display_name": "Cañon de §9C§bo§an§cf§ae§gt§ft§ci§f!!",
-			"break:event" : {
-				"onPlayerBreak" : {
-					"sound" : "random.orb"
-				}
+			"minecraft:redstone_conductivity": {
+				"redstone_conductor": true
+			},
+			"minecraft:movable": {
+				"movement_type": "immovable"
 			},
 			"minecraft:tick": {
 				"interval_range": [10, 10],
@@ -31,11 +33,11 @@
 				"rules" : "solid, not_same_type"
 			},
 			"minecraft:destructible_by_mining": {
-				"seconds_to_destroy": 1
+				"seconds_to_destroy": 2
 			},
 			"minecraft:collision_box": {
 				"origin": [-8, 0, -8],
-				"size": [16, 14, 16]
+				"size": [16, 12, 16]
 			},
 			"minecraft:selection_box": true,
 			"minecraft:destructible_by_explosion": {
@@ -44,8 +46,8 @@
 			"minecraft:geometry": "geometry.small_cannon",
 			"minecraft:material_instances": {
 				"*": {
-					"texture": "confetti_cannon",
-					"render_method": "opaque"
+					"texture": "small_confetti_cannon",
+					"render_method": "alpha_test_single_sided"
 				}
 			},
 			"minecraft:map_color": "#757575"
@@ -56,7 +58,8 @@
 				"components": {
 					"minecraft:material_instances": {
 						"*" : {
-							"texture": "confetti_cannon_loaded"
+							"texture": "small_confetti_cannon_loaded",
+							"render_method": "alpha_test_single_sided"
 						}
 					}
 				}

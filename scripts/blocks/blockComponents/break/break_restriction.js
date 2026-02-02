@@ -1,4 +1,5 @@
 import { ItemStack, EquipmentSlot} from "@minecraft/server";
+import { killItemStack } from "../../../utils/itemUtils";
 
 export const BreakRestriction = {
     onPlayerBreak({player, brokenBlockPermutation, block, dimension}, {params}) {
@@ -22,15 +23,4 @@ export const BreakRestriction = {
             dimension.spawnItem(itemToDrop, block.center());
         }
     }
-}
-
-function killItemStack(location, dimension, itemStack) {
-    const itemEntities = dimension.getEntitiesAtBlockLocation(location);
-    itemEntities.forEach(entity => {
-        const itemComponent = entity.getComponent("item") // Get the item component of the floating item entity
-        if (!itemComponent) return;
-        if (itemComponent.itemStack.typeId === itemStack.typeId) {
-            entity.remove();
-        }
-    });
 }
