@@ -238,15 +238,15 @@ async function giveGifts(player, gift) {
         await sleep(3*20);
         modificarDinero(player, 5000);
         
-        // 8 seg
-        return new Promise((resolve, reject) => {
-            resolve();
-        })
-    }
         
     } catch (error) {
         world.sendMessage(error)
     }
+    // 8 seg
+    return new Promise((resolve, reject) => {
+        resolve();
+    })
+}
 
 
 function openDialogue(event) {
