@@ -213,35 +213,41 @@ async function giveGifts(player, gift) {
     await sleep(10);
     spawnConfettiParticles(loc, {x:loc.x, y:loc.y+1, z:loc.z}, dimension, 2);
 
-    // GIFT!!
-    let item = new ItemStack("stuff:blue_confetti_launcher")
-    item.setLore(epico)
-    forceGiveItem(player, item);
-
-    item = new ItemStack("stuff:green_confetti_launcher")
-    item.setLore(epico)
-    forceGiveItem(player, item);
-
-    item = new ItemStack("stuff:violet_confetti_launcher")
-    item.setLore(epico)
-    forceGiveItem(player, item);
-
-    item = new ItemStack("stuff:christmas_trophy_2025")
-    item.setLore(legendario)
-    forceGiveItem(player, item)
-
-    rewardList.forEach(reward => {
-        forceGiveItem(player, new ItemStack(reward.item, reward.amount));        
-    });
+    try {
+        // GIFT!!
+        let item = new ItemStack("stuff:blue_confetti_launcher")
+        item.setLore(epico)
+        forceGiveItem(player, item);
     
-    await sleep(3*20);
-    modificarDinero(player, 5000);
+        item = new ItemStack("stuff:green_confetti_launcher")
+        item.setLore(epico)
+        forceGiveItem(player, item);
     
-    // 8 seg
-    return new Promise((resolve, reject) => {
-        resolve();
-    })
-}
+        item = new ItemStack("stuff:violet_confetti_launcher")
+        item.setLore(epico)
+        forceGiveItem(player, item);
+    
+        item = new ItemStack("stuff:christmas_trophy_2025")
+        item.setLore(legendario)
+        forceGiveItem(player, item)
+    
+        rewardList.forEach(reward => {
+            forceGiveItem(player, new ItemStack(reward.item, reward.amount));        
+        });
+        
+        await sleep(3*20);
+        modificarDinero(player, 5000);
+        
+        // 8 seg
+        return new Promise((resolve, reject) => {
+            resolve();
+        })
+    }
+        
+    } catch (error) {
+        world.sendMessage(error)
+    }
+
 
 function openDialogue(event) {
     const attempt = event.message
