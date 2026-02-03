@@ -3,6 +3,7 @@ import { displayActionBar, formatCountdown } from "../utils/displayUtils";
 import { getTime } from "../bot/botUtils";
 import { spawnConfettiParticles } from "../items/holidays/confettiStuff";
 import { forceGiveItem } from "../utils/itemUtils";
+import { modificarDinero } from "../bot/data/playerDataUtils";
 
 
 export let MISSION_END = false;
@@ -234,6 +235,7 @@ async function giveGifts(player, gift) {
     });
     
     await sleep(3*20);
+    modificarDinero(player, 5000);
     
     // 8 seg
     return new Promise((resolve, reject) => {
