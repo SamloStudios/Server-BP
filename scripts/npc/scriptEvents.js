@@ -317,7 +317,7 @@ function countdownToGifts() {
     const displayEntity = world.getEntity(displayId);
     
     // 28 de enero de 2026 a las 09:00 AM
-    const FECHA_FIN = new Date(2026, 1, 3, 12, 0, 0);
+    const FECHA_FIN = new Date(2026, 1, 3, 10, 10, 0);
     
     const countdown = system.runInterval(() => {
         // Validamos que la entidad exista
