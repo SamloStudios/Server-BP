@@ -35,6 +35,7 @@
 			"minecraft:destructible_by_mining": {
 				"seconds_to_destroy": 2
 			},
+			"tag:minecraft:is_pickaxe_item_destructible": {},
 			"minecraft:collision_box": {
 				"origin": [-8, 0, -8],
 				"size": [16, 12, 16]

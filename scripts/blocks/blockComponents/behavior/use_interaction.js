@@ -8,8 +8,6 @@ export const UseInteraction = {
         event.face // The block face that was interacted with.
         event.faceLocation // Location relative to the bottom north-west corner of the block that the player interacted with.
         event.player // The player that interacted with the block. May be undefined.
-
-        console.log("something")
         
         const probability = p.params.probability ?? 1; 
         if (probability < Math.random()) return;

@@ -107,7 +107,7 @@ export const ConfettiCannon = {
 //                  FUNCTIONS                    //
 // --------------------------------------------- // 
 
-function spawnConfettiParticles(origin, targetBlock, dimension, force = 2, sound = "confetti.launcher", color) {
+export function spawnConfettiParticles(origin, targetBlock, dimension, force = 2, sound = "confetti.launcher", color) {
     dimension.playSound(sound, origin)
     for (let i = 0; i < (10 * force); i++) {
         const molang = new MolangVariableMap();

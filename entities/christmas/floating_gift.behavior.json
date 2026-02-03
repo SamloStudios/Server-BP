@@ -2,7 +2,7 @@
 	"format_version": "1.16.100",
 	"minecraft:entity": {
 		"description": {
-			"identifier": "stuff:big_gift",
+			"identifier": "christmas:floating_gift",
 			"runtime_identifier": "minecraft:npc",
 			"is_spawnable": true,
 			"is_summonable": true,
@@ -17,8 +17,19 @@
 		},
 		"components": {
 			"minecraft:physics": {
-				"has_gravity": true,
-				"has_collision": true
+				"has_gravity": false,
+				"has_collision": false
+			},
+			"minecraft:collision_box": {
+				"height": 1,
+				"width": 1
+			},
+			"minecraft:interact": {
+				"interactions": [
+					{
+						"interact_text": "§aObtener Regalo"
+					}
+				]
 			},
 			"minecraft:damage_sensor": {
 				"triggers": {
@@ -47,6 +58,10 @@
 			},
 			"minecraft:push_through": {
 				"value": 1
+			}
+		},
+		"events": {
+			"custom:example" :{
 			}
 		}
 	}

@@ -1,6 +1,8 @@
-import { system, world } from "@minecraft/server";
+import { ItemStack, system, world } from "@minecraft/server";
 import { displayActionBar, formatCountdown } from "../utils/displayUtils";
 import { getTime } from "../bot/botUtils";
+import { spawnConfettiParticles } from "../items/holidays/confettiStuff";
+import { forceGiveItem } from "../utils/itemUtils";
 
 
 export let MISSION_END = false;
@@ -93,6 +95,7 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
     if (event.id == "event:win" ) {
         if (event.message == "true") {
             win();
+            world.setDynamicProperty("christmas_give_awards", true);
         } else {
             // Mission end false
             world.setDynamicProperty("christmas_mission_end", false);
@@ -136,6 +139,107 @@ world.beforeEvents.playerBreakBlock.subscribe((event) => {
     }
 }, {blockTypes: ["christmas:gift_block"]});
 
+let opening_gift = false;
+world.afterEvents.playerInteractWithEntity.subscribe(async (event)=> {
+    const {player, target, itemStack, beforeItemStack} = event;
+
+    if (target.typeId !== "christmas:floating_gift" || opening_gift) return;
+    
+    console.log("§aREWARDING")
+    target.setProperty("custom:open", true);
+    opening_gift = true;
+    
+    target.dimension.spawnParticle("particle:generic_smoke", target.location);
+    target.dimension.playSound("sfx.poof", target.location);
+    await giveGifts(player, target);
+    
+    target.setProperty("custom:open", false);
+    await sleep(5);
+    opening_gift= false;
+})
+
+const rewardList = [
+    { item: "stuff:confetti_cannon_block", amount: 8},
+    { item: "minecraft:gunpowder", amount: 64},
+    { item: "minecraft:cyan_dye", amount: 64},
+    { item: "minecraft:yellow_dye", amount: 64},
+    { item: "minecraft:red_dye", amount: 64},
+    { item: "minecraft:lime_dye", amount: 64},
+    { item: "minecraft:diamond", amount: 64},
+    { item: "minecraft:emerald", amount: 64},
+    { item: "minecraft:gold_ingot", amount: 64},
+    { item: "endupdate:lightvine_fruit_heart", amount: 16},
+    { item: "minecraft:cake", amount: 1},
+    { item: "minecraft:diamond_spear", amount: 1},
+]
+
+const legendario = [
+    "§9Item limitado de evento",
+    "§9navideño 2025:",
+    "§fEl robo de los elfos durmientes",
+    "§b[Legendario]"
+]
+
+const epico = [
+    "§7Item limitado de evento",
+    "§7navideño 2025:",
+    "§fEl robo de los elfos durmientes",
+    "§d[Epico]"
+]
+
+async function giveGifts(player, gift) {
+    const loc = gift.location;
+    const dimension = gift.dimension;
+    await sleep(2*20);
+
+    dimension.playSound("firework.twinkle", loc);
+    dimension.spawnParticle("particle:generic_magic", gift.location);
+    await sleep(2*20)
+
+    dimension.playSound("random.fizz", loc);
+    dimension.spawnParticle("particle:generic_smoke", gift.location);
+    dimension.spawnParticle("particle:generic_magic", gift.location);
+    
+    if (player.getDynamicProperty("christmas:rewarded")) {
+        displayActionBar(player, "§cYa canjeaste tu regalo!!");
+        dimension.playSound("sfx.fart.doink", loc);
+        return;
+    };
+    
+    player.setDynamicProperty("christmas:rewarded", true);
+    displayActionBar(player, "§aDisfruta tu regalo!!");
+    dimension.playSound("twinkle.reward", loc);
+    await sleep(10);
+    spawnConfettiParticles(loc, {x:loc.x, y:loc.y+1, z:loc.z}, dimension, 2);
+
+    // GIFT!!
+    let item = new ItemStack("stuff:blue_confetti_launcher")
+    item.setLore(epico)
+    forceGiveItem(player, item);
+
+    item = new ItemStack("stuff:green_confetti_launcher")
+    item.setLore(epico)
+    forceGiveItem(player, item);
+
+    item = new ItemStack("stuff:violet_confetti_launcher")
+    item.setLore(epico)
+    forceGiveItem(player, item);
+
+    item = new ItemStack("stuff:christmas_trophy_2025")
+    item.setLore(legendario)
+    forceGiveItem(player, item)
+
+    rewardList.forEach(reward => {
+        forceGiveItem(player, new ItemStack(reward.item, reward.amount));        
+    });
+    
+    await sleep(3*20);
+    
+    // 8 seg
+    return new Promise((resolve, reject) => {
+        resolve();
+    })
+}
 
 function openDialogue(event) {
     const attempt = event.message
@@ -211,7 +315,7 @@ function countdownToGifts() {
     const displayEntity = world.getEntity(displayId);
     
     // 28 de enero de 2026 a las 09:00 AM
-    const FECHA_FIN = new Date(2026, 0, 30, 12, 0, 0);
+    const FECHA_FIN = new Date(2026, 1, 2, 9+12, 7, 0);
     
     const countdown = system.runInterval(() => {
         // Validamos que la entidad exista
@@ -225,7 +329,7 @@ function countdownToGifts() {
         };
 
         const currentTime = getTime(true);
-        const timeDiff = FECHA_FIN - currentTime; TODO:
+        const timeDiff = FECHA_FIN - currentTime;
 
         if (timeDiff <= 0) {
             counterEntity.nameTag = "§e¡Los regalos han llegado! \n§a¡Feliz §bN§aa§cv§di§gd§aa§6d§a!";
@@ -246,7 +350,6 @@ function countdownToGifts() {
                 const awardsLocation = world.getDynamicProperty("christmas_big_gift_location");
                 giveAwards(awardsLocation);
             }
-            
             
             return;
         }
@@ -323,16 +426,52 @@ function getMissionDescription() {
     return description;
 }
 
-function giveAwards(location) {
+async function giveAwards(location) {
     // Teleport everyone so they get to see the event
     const loc = location;
+    const dim = world.getDimension("overworld");
 
     world.getAllPlayers().forEach(player => {
-        world.getDimension("overworld").runCommand(`tp ${player.name} ~~~`);
-        world.getDimension("overworld").runCommand(`give @a stuff:confetti_launcher`);
+        player.teleport(loc);
+        let item = new ItemStack('stuff:confetti_launcher');
+        item.setLore(legendario)
+        forceGiveItem(player, item)
     });
     
-    // Trigger explosion effect & gift spawn
-    displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
-    displayEntity.dimension.spawnParticle("minecraft:huge_explosion_emitter", loc);
+    dim.playSound("random.fizz", loc);
+    dim.spawnParticle("particle:generic_smoke", {x:loc.x, y:loc.y + 2, z:loc.z});
+    await sleep(20 * 2); // Esperar 2 seg
+    dim.playSound("random.fizz", loc);
+    dim.spawnParticle("particle:generic_smoke", {x:loc.x, y:loc.y + 2, z:loc.z});
+    await sleep(20 * 3); // Esperar 3 segundos
+
+    // Trigger explosion effect
+    let times = 0;
+    const interval = system.runInterval(()=> {
+        dim.spawnParticle("minecraft:huge_explosion_emitter", loc);
+        dim.playSound("random.fizz", loc);
+        times++;
+        if (times === 5) system.clearRun(interval);
+    }, 20)
+    
+    // Remove old gift block
+    try {
+        const gift_block = world.getEntity(world.getDynamicProperty("christmas_gift_entity_id"));
+        gift_block.setProperty("custom:open", true);
+        dim.playSound("sfx.poof", loc);
+        dim.spawnParticle("particle:generic_smoke", {x:loc.x, y:loc.y + 1, z:loc.z});
+    } catch(err) {}
+
+    await sleep(20 * 4);
+
+    // Spawn new gift
+    const newGiftLoc = {x:loc.x, y:loc.y + 1, z:loc.z}
+    dim.spawnEntity("christmas:floating_gift", newGiftLoc);
+    dim.spawnParticle("particle:generic_smoke", location);
+    dim.spawnParticle("particle:generic_magic", newGiftLoc);
+    dim.runCommand(`summon stuff:floating_text "§gObten tu regalo ya!!" ${loc.x} ${loc.y+2} ${loc.z}`)
+    dim.setBlockType(newGiftLoc, "minecraft:light_block_15");
+    spawnConfettiParticles(loc, {x:loc.x, y:loc.y+1, z:loc.z}, dim, 4, "confetti.cannon");
 }
+
+const sleep = (ticks) => new Promise(resolve => system.runTimeout(resolve, ticks));
