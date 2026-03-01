@@ -328,7 +328,6 @@ function countdownToGifts() {
         // Validamos que la entidad exista
         if (!counterEntity || !counterEntity.isValid || !displayEntity || !displayEntity.isValid) {
             // Timeout required for proper world loading 
-            console.log(`§c[Error] Countdown entity with id ${id} not found or invalid... Retrying next second!`);
             
             system.clearRun(countdown);
             countdownToGifts();
