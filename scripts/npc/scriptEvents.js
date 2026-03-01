@@ -313,7 +313,6 @@ function countdownToGifts() {
     const id = world.getDynamicProperty("christmas_countdown_entity_id");
     const displayId = world.getDynamicProperty("christmas_information_entity_id");
     if (!id || !displayId) {
-        console.log(`§c[Error] ${displayId ? "Countdown entity" : "information entity" } id not found... Retrying next tick!`);
         system.runTimeout(() => countdownToGifts(), 20);
         return;
     }
