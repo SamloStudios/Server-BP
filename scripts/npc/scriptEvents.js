@@ -109,7 +109,7 @@ system.afterEvents.scriptEventReceive.subscribe((event)=> {
     }
 })
 
-// Handle gift count
+// Handle add to gift count
 world.afterEvents.playerPlaceBlock.subscribe((event)=> {
     const placedBlock = event.block.permutation.type.id;
     if (placedBlock == "christmas:gift_block" && event.player.getGameMode() === "Creative") {
@@ -395,8 +395,14 @@ export function getMissionStatus() {
     const percentage = GIFT_COUNT > 0 ? Math.floor((FOUND_GIFT_COUNT / GIFT_COUNT) * 100) : 0;
     status += `§fPorcentaje de la misión completado: §d${percentage}%\n`;
     
-    if (FOUND_GIFT_COUNT > 0) {
+    if (FOUND_GIFT_COUNT > 0 && !MISSION_END) {
         status += `§fRegalos recuperados [§a${FOUND_GIFT_COUNT} §f/ §a${GIFT_COUNT}§f]\n`;
+    }
+
+    if (MISSION_END) {
+        status += "§fObten tu recompensa ahora!!!\n"
+        status += "§bAdemas aun puedes jugar a busqueda de regalos!!"
+        status += "§7(La entrada se encuentra a la izquierda del arbol navideño)"
     }
 
     return status; 

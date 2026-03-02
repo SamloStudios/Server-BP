@@ -104,8 +104,8 @@
 				"table": "loot_tables/nothing.json"
 			},
 			"minecraft:health": {
-				"value": 8000,
-				"max": 8000
+				"value": 400,
+				"max": 400
 			},
 			"minecraft:hurt_on_condition": {
 				"damage_conditions": [
