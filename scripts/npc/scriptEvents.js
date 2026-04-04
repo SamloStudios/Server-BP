@@ -6,6 +6,8 @@ import { forceGiveItem } from "../utils/itemUtils";
 import { modificarDinero } from "../bot/data/playerDataUtils";
 
 
+
+// OLD
 export let MISSION_END = false;
 export let GIFT_COUNT = 0;
 export let FOUND_GIFT_COUNT = 0;

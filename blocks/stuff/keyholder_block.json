@@ -1,0 +1,94 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "stuff:keyholder",
+			"menu_category": {
+				"category": "construction"
+			},
+			"traits": {
+				"minecraft:placement_direction": {
+					"enabled_states": ["minecraft:cardinal_direction"]
+				}
+			},
+			"states": {
+				"custom:variant" : [0, 1, 2, 3, 4, 5]
+			}			
+		},
+		"components": {
+			"minecraft:display_name": "§cDungeon Keyholder",
+			"break:event" : {
+				"onPlayerBreak" : {
+					"sound" : "random.orb"
+				}
+			},
+			"placement:random_variant" : {
+				"values" : [0,1,2,3,4,5]
+			},
+			"emitter:particles": {
+				"id" : "particle:generic_magic",
+				"probability" : 0.5
+			},
+			"minecraft:tick": {
+				"interval_range": [30, 30],
+				"looping": true
+			},
+			"minecraft:destructible_by_mining": false,
+			"minecraft:collision_box": {
+				"origin": [-5, 0, 5],
+				"size": [10, 13, 3]
+			},
+			"minecraft:selection_box": {
+				"origin": [-5, 0, 5],
+				"size": [10, 13, 3]
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 200
+			},
+			"minecraft:geometry": "geometry.keyholder",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "keyholder",
+					"render_method": "alpha_test",
+					"ambient_occlusion" : false,
+					"face_dimming": false
+				}
+			},
+			"minecraft:map_color": "#757575"
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'north' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 180, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'south' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 0, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'east' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 90, 0]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'west' ",
+				"components": {
+					"minecraft:transformation": {
+						"rotation": [0, 270, 0]
+					}
+				}
+			}
+		]
+	}
+}
